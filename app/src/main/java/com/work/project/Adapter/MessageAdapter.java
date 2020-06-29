@@ -56,60 +56,64 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             return new MessageAdapter.ViewHolder(view);
         } else {
             final View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_left, parent, false);
-            Button but = view.findViewById(R.id.plus);
+            final Button but = view.findViewById(R.id.plus);
             but.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final TextView txt = view.findViewById(R.id.show_message);
-                    final String s = txt.getText().toString();
-                    final String[] message2 = {s};
-                    TranslatorOptions options =
-                            new TranslatorOptions.Builder()
-                                    .setSourceLanguage(TranslateLanguage.RUSSIAN)
-                                    .setTargetLanguage(TranslateLanguage.ENGLISH)
-                                    .build();
-                    final Translator englishGermanTranslator =
-                            Translation.getClient(options);
-                    DownloadConditions conditions = new DownloadConditions.Builder()
-                            .build();
-                    englishGermanTranslator.downloadModelIfNeeded(conditions)
-                            .addOnSuccessListener(
-                                    new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void v) {
-                                            // Model downloaded successfully. Okay to start translating.
-                                            // (Set a flag, unhide the translation UI, etc.)
-                                            // Toast.makeText(MessageActivity.this, "error1", Toast.LENGTH_SHORT).show();
-                                            englishGermanTranslator.translate(s)
-                                                    .addOnSuccessListener(
-                                                            new OnSuccessListener<String>() {
-                                                                @Override
-                                                                public void onSuccess(@NonNull String translatedText) { ;
-                                                                    message2[0] = translatedText;
-                                                                    if (!s.equals("")){
-                                                                        txt.setText(s + "\n" +"(" +message2[0] + ")");
+                    if (but.getText().equals("+")) {
+                        final TextView txt = view.findViewById(R.id.show_message);
+                        final String s = txt.getText().toString();
+                        final String[] message2 = {s};
+                        TranslatorOptions options =
+                                new TranslatorOptions.Builder()
+                                        .setSourceLanguage(TranslateLanguage.RUSSIAN)
+                                        .setTargetLanguage(TranslateLanguage.ENGLISH)
+                                        .build();
+                        final Translator englishGermanTranslator =
+                                Translation.getClient(options);
+                        DownloadConditions conditions = new DownloadConditions.Builder()
+                                .build();
+                        englishGermanTranslator.downloadModelIfNeeded(conditions)
+                                .addOnSuccessListener(
+                                        new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void v) {
+                                                // Model downloaded successfully. Okay to start translating.
+                                                // (Set a flag, unhide the translation UI, etc.)
+                                                // Toast.makeText(MessageActivity.this, "error1", Toast.LENGTH_SHORT).show();
+                                                englishGermanTranslator.translate(s)
+                                                        .addOnSuccessListener(
+                                                                new OnSuccessListener<String>() {
+                                                                    @Override
+                                                                    public void onSuccess(@NonNull String translatedText) {
+                                                                        ;
+                                                                        message2[0] = translatedText;
+                                                                        if (!s.equals("")) {
+                                                                            txt.setText(s + "\n" + "(" + message2[0] + ")");
+                                                                            but.setText("-");
+                                                                        }
                                                                     }
-                                                                }
-                                                            })
-                                                    .addOnFailureListener(
-                                                            new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    // Error.
-                                                                    //Toast.makeText(MessageActivity.this, "ERROR2", Toast.LENGTH_SHORT).show();
-                                                                    // ...
-                                                                }
-                                                            });
-                                        }
-                                    })
-                            .addOnFailureListener(
-                                    new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // Model couldn’t be downloaded or other internal error.
-                                            // ...
-                                        }
-                                    });
+                                                                })
+                                                        .addOnFailureListener(
+                                                                new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        // Error.
+                                                                        //Toast.makeText(MessageActivity.this, "ERROR2", Toast.LENGTH_SHORT).show();
+                                                                        // ...
+                                                                    }
+                                                                });
+                                            }
+                                        })
+                                .addOnFailureListener(
+                                        new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                // Model couldn’t be downloaded or other internal error.
+                                                // ...
+                                            }
+                                        });
+                    }
                 }
             });
             return new MessageAdapter.ViewHolder(view);
