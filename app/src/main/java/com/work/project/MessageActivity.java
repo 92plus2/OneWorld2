@@ -76,6 +76,8 @@ public class MessageActivity extends AppCompatActivity {
 
     boolean notify = false;
 
+    private final static String TAG = "oneworld";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -276,8 +278,14 @@ public class MessageActivity extends AppCompatActivity {
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                onMessagesUpdated(dataSnapshot, myid);
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                // загружаем новые сообщения в фоновом процессе
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadNewMessages(dataSnapshot, myid);
+                    }
+                }).start();
             }
 
             @Override
@@ -285,17 +293,28 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    // race condition, ну и ладно 
-    private void onMessagesUpdated(DataSnapshot newMessages, String myid){
-        for (DataSnapshot snapshot : newMessages.getChildren()){
+    private void loadNewMessages(DataSnapshot messages, String myid){
+        final List<Chat> newMessages = new ArrayList<>();
+        for (DataSnapshot snapshot : messages.getChildren()){
             Chat chat = snapshot.getValue(Chat.class);
             if (!chatSet.contains(chat) && (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
                     chat.getReceiver().equals(userid) && chat.getSender().equals(myid))){
-                mChat.add(chat);
-                chatSet.add(chat);
-                messageAdapter.notifyItemChanged(mChat.size() - 1);
+                newMessages.add(chat);
+                //Log.d(TAG, "new message:" + chat.getMessage());
             }
         }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for(Chat newMessage : newMessages){
+                    mChat.add(newMessage);
+                    chatSet.add(newMessage);
+                    messageAdapter.notifyItemInserted(mChat.size() - 1);
+                }
+                // скроллим в конец
+                recyclerView.scrollToPosition(mChat.size() - 1);
+            }
+        });
     }
 
     private void currentUser(String userid){
