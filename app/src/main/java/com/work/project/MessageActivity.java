@@ -285,7 +285,7 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    // race condition, ну и ладно
+    // race condition, ну и ладно 
     private void onMessagesUpdated(DataSnapshot newMessages, String myid){
         for (DataSnapshot snapshot : newMessages.getChildren()){
             Chat chat = snapshot.getValue(Chat.class);
