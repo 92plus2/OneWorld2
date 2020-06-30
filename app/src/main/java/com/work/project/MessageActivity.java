@@ -127,7 +127,7 @@ public class MessageActivity extends AppCompatActivity {
 
         reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
 
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -280,12 +280,14 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 // загружаем новые сообщения в фоновом процессе
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadNewMessages(dataSnapshot, myid);
-                    }
-                }).start();
+                if(!isLoadingMessages){
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadNewMessages(dataSnapshot, myid);
+                        }
+                    }).start();
+                }
             }
 
             @Override
@@ -293,26 +295,32 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
+    private volatile boolean isLoadingMessages = false;
+
     private void loadNewMessages(DataSnapshot messages, String myid){
+        isLoadingMessages = true;
         final List<Chat> newMessages = new ArrayList<>();
-        for (DataSnapshot snapshot : messages.getChildren()){
+        for (DataSnapshot snapshot : messages.getChildren()) {
             Chat chat = snapshot.getValue(Chat.class);
             if (!chatSet.contains(chat) && (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
-                    chat.getReceiver().equals(userid) && chat.getSender().equals(myid))){
+                    chat.getReceiver().equals(userid) && chat.getSender().equals(myid))) {
                 newMessages.add(chat);
                 //Log.d(TAG, "new message:" + chat.getMessage());
             }
         }
+
+        chatSet.addAll(newMessages);
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for(Chat newMessage : newMessages){
+                for (Chat newMessage : newMessages) {
                     mChat.add(newMessage);
-                    chatSet.add(newMessage);
                     messageAdapter.notifyItemInserted(mChat.size() - 1);
                 }
                 // скроллим в конец
                 recyclerView.scrollToPosition(mChat.size() - 1);
+                isLoadingMessages = false;
             }
         });
     }
