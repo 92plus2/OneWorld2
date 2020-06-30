@@ -24,31 +24,36 @@ import com.work.project.Model.Chat;
 import com.work.project.Model.User;
 import com.work.project.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
-
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private Context mContext;
+    private RecyclerView recyclerView;
     private List<User> mUsers;
-    private boolean ischat;
+    private Map<User, Long> lastMessageTimes;
+    private Map<DatabaseReference, ValueEventListener> listeners;
 
-    String theLastMessage;
+    private boolean isChat;
 
-    public UserAdapter(Context mContext, List<User> mUsers, boolean ischat){
+    public UserAdapter(Context mContext, List<User> mUsers, boolean isChat){
         this.mUsers = mUsers;
         this.mContext = mContext;
-        this.ischat = ischat;
+        this.isChat = isChat;
+        this.lastMessageTimes = new HashMap<>();
+        this.listeners = new HashMap<>();
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.user_item, parent, false);
-        return new UserAdapter.ViewHolder(view);
+        return new UserViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         final User user = mUsers.get(position);
         holder.username.setText(user.getUsername());
         if (user.getImageURL().equals("default")){
@@ -57,13 +62,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             Glide.with(mContext).load(user.getImageURL()).into(holder.profile_image);
         }
 
-        if (ischat){
-            lastMessage(user.getId(), holder.last_msg);
+        if (isChat){
+            observeLastMessage(user, holder);
         } else {
             holder.last_msg.setVisibility(View.GONE);
         }
 
-        if (ischat){
+        if (isChat){
             if (user.getStatus().equals("online")){
                 holder.img_on.setVisibility(View.VISIBLE);
                 holder.img_off.setVisibility(View.GONE);
@@ -91,8 +96,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return mUsers.size();
     }
 
-    public  class ViewHolder extends RecyclerView.ViewHolder{
-
+    public static class UserViewHolder extends RecyclerView.ViewHolder {
         public TextView username;
         public ImageView profile_image;
         private ImageView img_on;
@@ -100,7 +104,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         private TextView last_msg;
 
         @SuppressLint("ResourceAsColor")
-        public ViewHolder(View itemView) {
+        public UserViewHolder(View itemView) {
             super(itemView);
 
             username = itemView.findViewById(R.id.username);
@@ -111,36 +115,65 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
     }
 
-    //check for last message
-    private void lastMessage(final String userid, final TextView last_msg){
-        theLastMessage = "default";
+    private void observeLastMessage(final User user, final UserViewHolder holder){
+        //Log.d("oneworld", "user name to observe: " + user.getUsername());
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = User.getChatBetween(firebaseUser.getUid(), userid);
 
-        reference.limitToLast(1).addValueEventListener(new ValueEventListener() {
+        final DatabaseReference chatReference = User.getChatBetween(firebaseUser.getUid(), user.getId());
+        final ValueEventListener chatListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String theLastMessage = null;
+                long lastMessageTime = 0;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
                     if (chat != null) {
                         theLastMessage = chat.getMessage();
+                        lastMessageTime = chat.getExactTime();
                     }
                 }
-                switch (theLastMessage) {
-                    case "default":
-                        last_msg.setText("No Message");
-                        break;
 
-                    default:
-                        last_msg.setText(theLastMessage);
+                if(theLastMessage != null)
+                    holder.last_msg.setText(theLastMessage);
+                else
+                    holder.last_msg.setText("No Messages");
+
+                // Мы хотим, чтобы пользователи были отсортированы
+                int oldPosition = mUsers.indexOf(user);
+                mUsers.remove(user);
+                int position;
+                for(position = mUsers.size() - 1; position >= 0; position--){
+                    User otherUser = mUsers.get(position);
+                    if(lastMessageTimes.containsKey(otherUser)
+                            && lastMessageTimes.get(otherUser) >= lastMessageTime)
                         break;
                 }
-
-                theLastMessage = "default";
+                position++;
+                if(position == mUsers.size() && position != 0)
+                    position--;
+                mUsers.add(position, user);
+                notifyItemMoved(oldPosition, position);
+                lastMessageTimes.put(user, lastMessageTime);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
+        };
+        listeners.put(chatReference, chatListener);
+        chatReference.limitToLast(1).addValueEventListener(chatListener);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+        recyclerView.setItemAnimator(null);
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        for(Map.Entry<DatabaseReference, ValueEventListener> kv : listeners.entrySet()){
+            kv.getKey().removeEventListener(kv.getValue());
+        }
     }
 }
