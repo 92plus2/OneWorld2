@@ -61,6 +61,7 @@ public class MessageActivity extends AppCompatActivity {
     DatabaseReference otherUserRef;
 
     ImageButton btn_send;
+    ImageButton photo_but;
     EditText text_send;
 
     MessageAdapter messageAdapter;
@@ -75,6 +76,7 @@ public class MessageActivity extends AppCompatActivity {
     boolean notify = false;
 
     private final static String TAG = "oneworld";
+    private static final int IMAGE_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,7 @@ public class MessageActivity extends AppCompatActivity {
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
         btn_send = findViewById(R.id.btn_send);
+        photo_but = findViewById(R.id.btn_img);
         text_send = findViewById(R.id.text_send);
 
         Intent intent = getIntent();
@@ -105,6 +108,12 @@ public class MessageActivity extends AppCompatActivity {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
 
+        photo_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openImage();
+            }
+        });
 
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,7 +154,12 @@ public class MessageActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
     }
-
+    private void openImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, IMAGE_REQUEST);
+    }
     private void sendMessage(String message, String time){
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", currentUserId);
@@ -154,6 +168,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("seen", false);
         hashMap.put("time", time);
         hashMap.put("exactTime", System.currentTimeMillis());
+        hashMap.put("photo", getIntent());
         chats.push().setValue(hashMap);
 
 

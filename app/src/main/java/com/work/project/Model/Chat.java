@@ -1,17 +1,21 @@
 package com.work.project.Model;
 
+import android.media.Image;
+
 import java.util.Objects;
 
 public class Chat {  // на самом деле сообщение ffs
     private String sender;
+    private Image photo;
     private String receiver;
     private String message;
     private String time;
     private long exactTime;
     private boolean seen;
 
-    public Chat(String sender, String receiver, String message, boolean seen, String time) {
+    public Chat(String sender, String receiver, String message, boolean seen, String time, Image photo) {
         this.sender = sender;
+        this.photo = photo;
         this.receiver = receiver;
         this.message = message;
         this.seen = seen;
@@ -24,15 +28,20 @@ public class Chat {  // на самом деле сообщение ffs
     public String getSender() {
         return sender;
     }
-
     public void setSender(String sender) {
         this.sender = sender;
+    }
+
+    public Image getPhoto() {
+        return photo;
+    }
+    public void setPhoto(String photo) {
+        this.sender = photo;
     }
 
     public String getReceiver() {
         return receiver;
     }
-
     public void setReceiver(String receiver) {
         this.receiver = receiver;
     }
@@ -40,7 +49,6 @@ public class Chat {  // на самом деле сообщение ffs
     public String getTime() {
         return time;
     }
-
     public void setTime(String time) {
         this.time = time;
     }
@@ -48,7 +56,6 @@ public class Chat {  // на самом деле сообщение ffs
     public String getMessage() {
         return message;
     }
-
     public void setMessage(final String message) {
 
         this.message = message;
@@ -84,6 +91,6 @@ public class Chat {  // на самом деле сообщение ffs
                 Objects.equals(receiver, otherChat.receiver) &&
                 Objects.equals(message, otherChat.message) &&
                 Objects.equals(time, otherChat.time) &&
-                Objects.equals(exactTime, otherChat.exactTime);
+                Objects.equals(exactTime, otherChat.exactTime) && Objects.equals(photo, otherChat.photo);
     }
 }
