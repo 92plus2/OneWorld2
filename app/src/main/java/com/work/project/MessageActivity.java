@@ -67,9 +67,6 @@ public class MessageActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
     Intent intent;
-
-    ValueEventListener seenListener;
-
     String userid;
 
     APIService apiService;
@@ -363,7 +360,7 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        reference.removeEventListener(seenListener);
+        //reference.remov
         status("offline");
         currentUser("none");
     }
