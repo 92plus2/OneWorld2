@@ -23,8 +23,6 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/show_message"
-            android:layout_toLeftOf="@id/show_message"
             android:gravity="bottom"
             android:padding="8dp"
             android:text="hello"

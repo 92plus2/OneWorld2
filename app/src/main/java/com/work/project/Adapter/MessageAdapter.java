@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -151,7 +152,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             Glide.with(mContext).load(avatarUrl).into(holder.profilePicture);
         }
 
-        if (holder.clickPlusToTranslate == null) {
+        if (holder.isRightMessage()) {
             holder.txtSeen.setVisibility(View.VISIBLE);
             if (chat.isSeen()) {
                 holder.txtSeen.setText("Seen");
@@ -167,7 +168,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.messagePhoto.setVisibility(View.VISIBLE);
             holder.showMessage.setVisibility(View.GONE);
             Glide.with(mContext).load(chat.getPhoto()).into(holder.messagePhoto);
-            if (holder.clickPlusToTranslate != null) {
+            if (holder.isLeftMessage()) {
                 holder.clickPlusToTranslate.setVisibility(View.GONE);
                 holder.plus.setVisibility(View.GONE);
             }
@@ -175,10 +176,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         else {
             holder.messagePhoto.setVisibility(View.GONE);
             holder.showMessage.setVisibility(View.VISIBLE);
-            if (holder.clickPlusToTranslate != null) {
+            if (holder.isLeftMessage()) {
                 holder.clickPlusToTranslate.setVisibility(View.VISIBLE);
                 holder.plus.setVisibility(View.VISIBLE);
             }
+        }
+
+        // распологаем time правильно
+        if(holder.isRightMessage()) {
+            RelativeLayout.LayoutParams params =
+                    (RelativeLayout.LayoutParams) holder.time.getLayoutParams();
+            View alignView = chat.getPhoto() == null? holder.showMessage : holder.photoLayout;
+            params.addRule(RelativeLayout.LEFT_OF, alignView.getId());
         }
     }
 
@@ -195,6 +204,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         public ImageView profilePicture;
         public TextView txtSeen;
         public ImageView messagePhoto;
+        public RelativeLayout photoLayout;
 
         public TextView clickPlusToTranslate;
         public Button plus;
@@ -208,6 +218,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             profilePicture = itemView.findViewById(R.id.profile_image);
             txtSeen = itemView.findViewById(R.id.txt_seen);
             messagePhoto = itemView.findViewById(R.id.message_photo);
+            photoLayout = itemView.findViewById(R.id.photoLayout);
+        }
+
+        public boolean isRightMessage(){
+            return clickPlusToTranslate == null;
+        }
+
+        public boolean isLeftMessage(){
+            return !isRightMessage();
         }
     }
 
