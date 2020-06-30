@@ -35,8 +35,8 @@ public class Chat {  // на самом деле сообщение ffs
     public Image getPhoto() {
         return photo;
     }
-    public void setPhoto(String photo) {
-        this.sender = photo;
+    public void setPhoto(Image photo) {
+        this.photo = photo;
     }
 
     public String getReceiver() {
