@@ -1,5 +1,6 @@
 package com.work.project.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -25,6 +26,8 @@ import com.work.project.Model.User;
 import com.work.project.R;
 
 import java.util.List;
+
+import static com.work.project.R.color.colorWhite;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
@@ -100,6 +103,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         private ImageView img_off;
         private TextView last_msg;
 
+        @SuppressLint("ResourceAsColor")
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -129,7 +133,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                         }
                     }
                 }
-
                 switch (theLastMessage){
                     case  "default":
                         last_msg.setText("No Message");
