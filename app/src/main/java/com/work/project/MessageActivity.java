@@ -58,6 +58,7 @@ public class MessageActivity extends AppCompatActivity {
     String otherUserId;
     DatabaseReference chats;
     ValueEventListener chatsListener;
+    boolean hasChatsListener;
     DatabaseReference otherUserRef;
 
     ImageButton btn_send;
@@ -76,6 +77,7 @@ public class MessageActivity extends AppCompatActivity {
     boolean notify = false;
 
     private final static String TAG = "oneworld";
+    private final static int MAX_MESSAGES = 10;
     private static final int IMAGE_REQUEST = 1;
 
     @Override
@@ -260,7 +262,8 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         };
-        chats.limitToLast(10).addValueEventListener(chatsListener);
+        chats.limitToLast(MAX_MESSAGES).addValueEventListener(chatsListener);
+        hasChatsListener = true;
     }
 
     private volatile boolean isLoadingMessages = false;
@@ -338,6 +341,10 @@ public class MessageActivity extends AppCompatActivity {
         super.onResume();
         status("online");
         currentUser(currentUserId);
+        if(chats != null && !hasChatsListener) {
+            chats.limitToLast(MAX_MESSAGES).addValueEventListener(chatsListener);
+            hasChatsListener = true;
+        }
     }
 
     @Override
@@ -346,5 +353,6 @@ public class MessageActivity extends AppCompatActivity {
         status("offline");
         currentUser("none");
         chats.removeEventListener(chatsListener);
+        hasChatsListener = false;
     }
 }

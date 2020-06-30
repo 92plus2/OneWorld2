@@ -1,19 +1,17 @@
 package com.work.project.Model;
 
-import android.media.Image;
-
 import java.util.Objects;
 
 public class Chat {  // на самом деле сообщение ffs
     private String sender;
-    private Image photo;
+    private String photo;
     private String receiver;
     private String message;
     private String time;
     private long exactTime;
     private boolean seen;
 
-    public Chat(String sender, String receiver, String message, boolean seen, String time, Image photo) {
+    public Chat(String sender, String receiver, String message, boolean seen, String time, String photo) {
         this.sender = sender;
         this.photo = photo;
         this.receiver = receiver;
@@ -32,10 +30,10 @@ public class Chat {  // на самом деле сообщение ffs
         this.sender = sender;
     }
 
-    public Image getPhoto() {
+    public String getPhoto() {
         return photo;
     }
-    public void setPhoto(Image photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
