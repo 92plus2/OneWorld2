@@ -263,7 +263,6 @@ public class MessageActivity extends AppCompatActivity {
             if (!chatMap.containsKey(chat)) {
                 // добавляем новое сообщение
                 newMessages.add(chat);
-                Log.d(TAG, "exact time: " + chat.getExactTime());
                 // прочитаем его, если оно послано нам
                 if(chat.getReceiver().equals(currentUserId)) {
                     HashMap<String, Object> hashMap = new HashMap<>();
