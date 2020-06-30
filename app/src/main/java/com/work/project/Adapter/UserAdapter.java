@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -152,6 +153,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 if(position == mUsers.size() && position != 0)
                     position--;
                 mUsers.add(position, user);
+                if(recyclerView.getItemAnimator() == null && allUsersHaveTimes())
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
                 notifyItemMoved(oldPosition, position);
                 lastMessageTimes.put(user, lastMessageTime);
             }
@@ -162,6 +165,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         listeners.put(chatReference, chatListener);
         chatReference.limitToLast(1).addValueEventListener(chatListener);
     }
+
+    private boolean allUsersHaveTimes(){
+        for(User user : mUsers){
+            if(!lastMessageTimes.containsKey(user))
+                return false;
+        }
+        return true;
+    }
+
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
