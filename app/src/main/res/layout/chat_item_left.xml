@@ -84,14 +84,22 @@
         android:background="@drawable/background_plus"
         android:text="+" />
 
-    <ImageView
-        android:visibility="gone"
-        android:id="@+id/message_photo"
+    <RelativeLayout
+        android:id="@+id/photoLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/messageLayout"
-        android:adjustViewBounds="true"
-        />
+        android:background="@drawable/background_left">
 
+        <ImageView
+            android:id="@+id/message_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+
+            android:maxHeight="200dp"
+            android:padding="10dp"
+            android:visibility="gone" />
+    </RelativeLayout>
 
 </RelativeLayout>
