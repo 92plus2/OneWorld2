@@ -60,11 +60,12 @@
             android:id="@+id/text_send"
             android:background="@android:color/transparent"
             android:textColor="#ffffff"
-            android:inputType="textCapSentences"
+            android:inputType="textCapSentences|textMultiLine"
             android:textColorHint="#ffffff"
             android:hint="Type a message..."
             android:layout_toLeftOf="@id/btn_send"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            />
 
         <ImageButton
             android:id="@+id/btn_send"
