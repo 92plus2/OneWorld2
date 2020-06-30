@@ -62,6 +62,17 @@
             android:src="@mipmap/ic_launcher" />
 
         <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/testr"
+            android:layout_toEndOf="@id/testr"
+            android:gravity="bottom"
+            android:padding="8dp"
+            android:text="hello"
+            android:textColor="#fff"
+            android:textSize="18sp" />
+        <TextView
             android:id="@+id/txt_seen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
