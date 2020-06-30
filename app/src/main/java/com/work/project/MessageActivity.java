@@ -34,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
@@ -55,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -96,6 +98,7 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        storageReference = FirebaseStorage.getInstance().getReference("uploads");
         setContentView(R.layout.activity_message);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -196,9 +199,7 @@ public class MessageActivity extends AppCompatActivity {
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()){
-                        throw  task.getException();
-                    }
+                    if (!task.isSuccessful()) throw Objects.requireNonNull(task.getException());
 
                     return  fileReference.getDownloadUrl();
                 }
@@ -207,6 +208,7 @@ public class MessageActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()){
                         Uri downloadUri = task.getResult();
+                        assert downloadUri != null;
                         String mUri = downloadUri.toString();
                         pd.dismiss();
                     } else {
