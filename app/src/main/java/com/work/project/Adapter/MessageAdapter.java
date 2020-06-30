@@ -3,6 +3,7 @@ package com.work.project.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.telephony.IccOpenLogicalChannelResponse;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,11 +58,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         } else {
             final View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_left, parent, false);
             final Button but = view.findViewById(R.id.plus);
+            final TextView txt = view.findViewById(R.id.show_message);
+            final TextView txt2 = view.findViewById(R.id.show_message3);
+            if(txt2.getText().toString().equals("click + to translate"))
+                but.setText("+");
+            else
+                but.setText("-");
             but.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View v) {
                     if (but.getText().equals("+")) {
-                        final TextView txt = view.findViewById(R.id.show_message);
                         final String s = txt.getText().toString();
                         final String[] message2 = {s};
                         TranslatorOptions options =
@@ -84,12 +91,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                                                 englishGermanTranslator.translate(s)
                                                         .addOnSuccessListener(
                                                                 new OnSuccessListener<String>() {
+                                                                    @SuppressLint("ResourceAsColor")
                                                                     @Override
                                                                     public void onSuccess(@NonNull String translatedText) {
                                                                         ;
                                                                         message2[0] = translatedText;
                                                                         if (!s.equals("")) {
-                                                                            txt.setText(s + "\n" + "(" + message2[0] + ")");
+                                                                            txt2.setTextSize(18);
+                                                                            //txt2.setTextColor(R.color.colorblack);
+                                                                            txt2.setText("(" + message2[0] + ")");
                                                                             but.setText("-");
                                                                         }
                                                                     }
@@ -114,6 +124,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                                             }
                                         });
                     }
+                    else {
+                        txt2.setTextSize(12);
+                        //txt2.setTextColor(R.color.colorPrimaryDark);
+                        txt2.setText("click + to translate");
+                        but.setText("+");
+                    }
+
                 }
             });
             return new MessageAdapter.ViewHolder(view);
