@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,10 +35,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.work.project.Adapter.LanguageAdapter;
+import com.work.project.Model.LanguageItem;
 import com.work.project.Model.User;
 import com.work.project.R;
 import com.work.project.StartActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -56,6 +61,9 @@ public class ProfileFragment extends Fragment {
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
+
+    private ArrayList<LanguageItem> mLanguageList;
+    private LanguageAdapter mLanguageAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,13 +110,40 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getActivity(), StartActivity.class);
+                Intent intent = new Intent(getContext(), StartActivity.class);
                 startActivity(intent);
-                ((Activity) getActivity()).overridePendingTransition(0, 0);
+            }
+        });
+
+        //adding languages to list
+        initList();
+        Spinner spinnerCountries = (Spinner) view.findViewById(R.id.spinner_languages);
+        mLanguageAdapter = new LanguageAdapter(getContext(), mLanguageList);
+        spinnerCountries.setAdapter(mLanguageAdapter);
+        spinnerCountries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
+                String clickedLanguageName = clickedItem.getLanguageName();
+                Toast.makeText(getContext(), clickedLanguageName + " selected", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
         return view;
+    }
+
+    private void initList() {
+        mLanguageList = new ArrayList<>();
+        mLanguageList.add(new LanguageItem("Russian", R.drawable.russian));
+        mLanguageList.add(new LanguageItem("English", R.drawable.english));
+        mLanguageList.add(new LanguageItem("German", R.drawable.german));
+        mLanguageList.add(new LanguageItem("Spanish", R.drawable.spanish));
+        mLanguageList.add(new LanguageItem("French", R.drawable.french));
+        mLanguageList.add(new LanguageItem("Italian", R.drawable.italian));
+        mLanguageList.add(new LanguageItem("Chinese", R.drawable.chinese));
     }
 
     private void openImage() {
