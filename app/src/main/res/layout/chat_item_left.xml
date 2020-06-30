@@ -27,7 +27,6 @@
                 android:layout_below="@id/show_message"
                 android:layout_alignParentEnd="false"
                 android:layout_centerInParent="true"
-                android:layout_centerVertical="false"
                 android:gravity="center"
                 android:maxEms="8"
                 android:paddingLeft="8dp"
@@ -35,7 +34,7 @@
                 android:paddingBottom="8dp"
                 android:singleLine="false"
                 android:text="click + to translate"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/colorblack"
                 android:textIsSelectable="true"
                 android:textSize="12sp" />
 

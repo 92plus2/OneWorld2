@@ -92,6 +92,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                                                                         ;
                                                                         message2[0] = translatedText;
                                                                         if (!s.equals("")) {
+                                                                            txt2.setSingleLine(false);
                                                                             txt2.setTextSize(18);
                                                                             //txt2.setTextColor(R.color.colorblack);
                                                                             txt2.setText("(" + message2[0] + ")");
@@ -122,6 +123,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     else {
                         txt2.setTextSize(12);
                         //txt2.setTextColor(R.color.colorPrimaryDark);
+                        txt2.setSingleLine();
                         txt2.setText("click + to translate");
                         but.setText("+");
                     }
