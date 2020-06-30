@@ -3,6 +3,7 @@ package com.work.project;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,10 +40,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -50,22 +50,22 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MessageActivity extends AppCompatActivity {
-
     CircleImageView profile_image;
     TextView username;
 
     FirebaseUser currentUser;
     String currentUserId;
     String otherUserId;
-    DatabaseReference chats, otherUserRef;
+    DatabaseReference chats;
     ValueEventListener chatsListener;
+    DatabaseReference otherUserRef;
 
     ImageButton btn_send;
     EditText text_send;
 
     MessageAdapter messageAdapter;
     List<Chat> mChat;
-    Set<Chat> chatSet;
+    Map<Chat, Integer> chatMap;
 
     RecyclerView recyclerView;
 
@@ -116,7 +116,7 @@ public class MessageActivity extends AppCompatActivity {
                     Date currentDate = new Date();
                     DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
                     String time = timeFormat.format(currentDate);
-                    sendMessage(currentUser.getUid(), otherUserId, msg, time);
+                    sendMessage(msg, time);
                 } else {
                     Toast.makeText(MessageActivity.this, "You can't send empty message", Toast.LENGTH_SHORT).show();
                 }
@@ -138,7 +138,7 @@ public class MessageActivity extends AppCompatActivity {
                     Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
                 }
 
-                startReadingMessages(currentUserId, otherUserId, user.getImageURL());
+                startReadingMessages(user.getImageURL());
             }
 
             @Override
@@ -146,29 +146,27 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(String sender, final String receiver, String message, String time){
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
+    private void sendMessage(String message, String time){
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("sender", sender);
-        hashMap.put("receiver", receiver);
+        hashMap.put("sender", currentUserId);
+        hashMap.put("receiver", otherUserId);
         hashMap.put("message", message);
-        hashMap.put("isseen", false);
+        hashMap.put("seen", false);
         hashMap.put("time", time);
-        reference.child("Chats").push().setValue(hashMap);
+        hashMap.put("exactTime", System.currentTimeMillis());
+        chats.push().setValue(hashMap);
 
 
         // add user to chat fragment
-        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
+        final DatabaseReference ourChatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(currentUserId)
                 .child(otherUserId);
 
-        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        ourChatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()){
-                    chatRef.child("id").setValue(otherUserId);
+                    ourChatRef.child("id").setValue(otherUserId);
                 }
             }
 
@@ -176,29 +174,17 @@ public class MessageActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
-        final DatabaseReference chatRefReceiver = FirebaseDatabase.getInstance().getReference("Chatlist")
+        final DatabaseReference receiverChatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(otherUserId)
                 .child(currentUserId);
-        chatRefReceiver.child("id").setValue(currentUserId);
+        receiverChatRef.child("id").setValue(currentUserId);
 
-        final String msg = message;
-
-        otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if (notify) {
-                    sendNotification(receiver, user.getUsername(), msg);
-                }
-                notify = false;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
+        if (notify) {
+            sendNotification(otherUserId, username.getText().toString(), message);
+        }
     }
 
-    private void sendNotification(String receiver, final String username, final String message){
+    private void sendNotification(String receiver, final String sender, final String message){
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = tokens.orderByKey().equalTo(receiver);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -206,7 +192,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(currentUserId, R.mipmap.ic_launcher, username+": "+message, "New Message",
+                    Data data = new Data(currentUserId, R.mipmap.ic_launcher, sender+": "+message, "New Message",
                             otherUserId);
 
                     Sender sender = new Sender(data, token.getToken());
@@ -235,13 +221,13 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void startReadingMessages(final String myid, final String userid, final String imageurl){
+    private void startReadingMessages(final String imageurl){
         mChat = new ArrayList<>();
-        chatSet = new HashSet<>();
+        chatMap = new HashMap<>();
         messageAdapter = new MessageAdapter(MessageActivity.this, mChat, imageurl);
         recyclerView.setAdapter(messageAdapter);
 
-        chats = FirebaseDatabase.getInstance().getReference("Chats");
+        chats = User.getChatBetween(currentUserId, otherUserId);
         chatsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
@@ -250,7 +236,7 @@ public class MessageActivity extends AppCompatActivity {
                     new Thread() {
                         @Override
                         public void run() {
-                            loadNewMessages(dataSnapshot, myid);
+                            loadNewMessages(dataSnapshot);
                         }
                     }.start();
                 }
@@ -259,49 +245,40 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         };
-        chats.addValueEventListener(chatsListener);
+        chats.limitToLast(10).addValueEventListener(chatsListener);
     }
 
     private volatile boolean isLoadingMessages = false;
 
     // метод для чтения сообщений в фоновом процессе
-    private void loadNewMessages(DataSnapshot messages, String myid){
+    private void loadNewMessages(DataSnapshot messages){
         isLoadingMessages = true;
 
         final List<Chat> newMessages = new ArrayList<>();
-        Chat lastChat = null;  // последнее сообщение в диалоге
-        DataSnapshot lastChatSnaphot = null;
+        final List<Chat> seenMessages = new ArrayList<>();
 
         for (DataSnapshot snapshot : messages.getChildren()) {
             Chat chat = snapshot.getValue(Chat.class);
 
-            if (chatSet.contains(chat)) {
-                // это сообщение у нас уже есть
-                lastChat = chat;
-                lastChatSnaphot = snapshot;
-            }
-            else if (chat.getReceiver().equals(myid) && chat.getSender().equals(otherUserId) ||
-                    chat.getReceiver().equals(otherUserId) && chat.getSender().equals(myid)) {
+            if (!chatMap.containsKey(chat)) {
                 // добавляем новое сообщение
                 newMessages.add(chat);
-                lastChat = chat;
-                lastChatSnaphot = snapshot;
+                Log.d(TAG, "exact time: " + chat.getExactTime());
+                // прочитаем его, если оно послано нам
+                if(chat.getReceiver().equals(currentUserId)) {
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("seen", true);
+                    snapshot.getRef().updateChildren(hashMap);
+                }
+            }
+            else {
+                // это старое сообщение. Проверим, прочитали ли его
+                int index = chatMap.get(chat);
+                Chat ourChat = mChat.get(index);
+                if(ourChat.isSeen() != chat.isSeen())
+                    seenMessages.add(ourChat);
             }
         }
-
-        chatSet.addAll(newMessages);
-
-        /*
-        // если последнее сообщение послано нам, прочитаем его
-        if (lastChat != null &&
-                lastChat.getReceiver().equals(myid) && lastChat.getSender().equals(userid)) {
-            HashMap<String, Object> hashMap = new HashMap<>();
-            hashMap.put("isseen", true);
-            lastChatSnaphot.getRef().updateChildren(hashMap);
-        }
-        */
-
-        final Chat lastMessageFromServer = lastChat;
 
         runOnUiThread(new Runnable() {
             @Override
@@ -309,17 +286,15 @@ public class MessageActivity extends AppCompatActivity {
                 // добавляем в список новые сообщения
                 for (Chat newMessage : newMessages) {
                     mChat.add(newMessage);
+                    chatMap.put(newMessage, mChat.size() - 1);
                     messageAdapter.notifyItemInserted(mChat.size() - 1);
                 }
 
-                // если надо, помечаем последнее сообщение как прочитанное
-                if(lastMessageFromServer != null) {
-                    Chat lastMessage = mChat.get(mChat.size() - 1);
-
-                    if (lastMessageFromServer.isSeen() != lastMessage.isSeen()) {
-                        lastMessage.setSeen(lastMessageFromServer.isSeen());
-                        messageAdapter.notifyItemChanged(mChat.size() - 1);
-                    }
+                // если надо, помечаем сообщения как прочитанное
+                for(Chat message : seenMessages){
+                    Log.d(TAG, "seen message: " + message.getMessage());
+                    message.setSeen(true);
+                    messageAdapter.notifyItemChanged(chatMap.get(message));
                 }
 
                 // скроллим в конец
@@ -348,7 +323,7 @@ public class MessageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         status("online");
-        currentUser(otherUserId);
+        currentUser(currentUserId);
     }
 
     @Override
@@ -356,5 +331,6 @@ public class MessageActivity extends AppCompatActivity {
         super.onPause();
         status("offline");
         currentUser("none");
+        chats.removeEventListener(chatsListener);
     }
 }

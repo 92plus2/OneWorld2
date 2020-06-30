@@ -2,11 +2,12 @@ package com.work.project.Model;
 
 import java.util.Objects;
 
-public class Chat {
+public class Chat {  // на самом деле сообщение ffs
     private String sender;
     private String receiver;
     private String message;
     private String time;
+    private long exactTime;
     private boolean seen;
 
     public Chat(String sender, String receiver, String message, boolean seen, String time) {
@@ -53,6 +54,14 @@ public class Chat {
         this.message = message;
     }
 
+    public long getExactTime() {
+        return exactTime;
+    }
+
+    public void setExactTime(long exactTime) {
+        this.exactTime = exactTime;
+    }
+
     public boolean isSeen() {
         return seen;
     }
@@ -74,6 +83,7 @@ public class Chat {
         return Objects.equals(sender, otherChat.sender) &&
                 Objects.equals(receiver, otherChat.receiver) &&
                 Objects.equals(message, otherChat.message) &&
-                Objects.equals(time, otherChat.time);
+                Objects.equals(time, otherChat.time) &&
+                Objects.equals(exactTime, otherChat.exactTime);
     }
 }

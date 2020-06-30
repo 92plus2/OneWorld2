@@ -137,8 +137,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
-
-
         Chat chat = mChat.get(position);
         holder.time.setText(chat.getTime());
         holder.time.setTextSize(11);
@@ -150,7 +148,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             Glide.with(mContext).load(imageurl).into(holder.profile_image);
         }
 
-        if (position == mChat.size()-1){
+        if (true || position == mChat.size()-1){
             if (chat.isSeen()){
                 holder.txt_seen.setText("Seen");
             } else {
