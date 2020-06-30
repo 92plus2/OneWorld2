@@ -168,7 +168,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("seen", false);
         hashMap.put("time", time);
         hashMap.put("exactTime", System.currentTimeMillis());
-        hashMap.put("photo", getIntent());
+        hashMap.put("photo", "null");
         chats.push().setValue(hashMap);
 
 
