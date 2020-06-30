@@ -27,34 +27,34 @@ import com.work.project.R;
 
 import java.util.List;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
-    public static  final int MSG_TYPE_LEFT = 0;
-    public static  final int MSG_TYPE_RIGHT = 1;
+    public static final int MSG_TYPE_LEFT = 0;
+    public static final int MSG_TYPE_RIGHT = 1;
 
     private Context mContext;
     private List<Chat> mChat;
-    private String imageurl;
+    private String avatarUrl;
 
     FirebaseUser fuser;
 
-    public MessageAdapter(Context mContext, List<Chat> mChat, String imageurl){
+    public MessageAdapter(Context mContext, List<Chat> mChat, String avatarUrl){
         this.mChat = mChat;
         this.mContext = mContext;
-        this.imageurl = imageurl;
+        this.avatarUrl = avatarUrl;
     }
 
     @NonNull
     @Override
-    public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == MSG_TYPE_RIGHT) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_right, parent, false);
-            return new MessageAdapter.ViewHolder(view);
+            return new MessageViewHolder(view);
         } else {
             final View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_left, parent, false);
             final Button but = view.findViewById(R.id.plus);
             final TextView txt = view.findViewById(R.id.show_message);
-            final TextView txt2 = view.findViewById(R.id.show_message3);
+            final TextView txt2 = view.findViewById(R.id.clickPlusToTranslate);
             if(txt2.getText().toString().equals("click + to translate"))
                 but.setText("+");
             else
@@ -130,34 +130,46 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
                 }
             });
-            return new MessageAdapter.ViewHolder(view);
+            return new MessageViewHolder(view);
         }
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         Chat chat = mChat.get(position);
-        holder.time.setText(chat.getTime());
-        holder.time.setTextSize(11);
-        holder.show_message.setText(chat.getMessage());
+        if(holder.time != null) {
+            holder.time.setText(chat.getTime());
+            holder.time.setTextSize(11);
+        }
+        holder.showMessage.setText(chat.getMessage());
 
-        if (imageurl.equals("default")){
-            holder.profile_image.setImageResource(R.mipmap.ic_launcher);
+        if (avatarUrl.equals("default")){
+            holder.profilePicture.setImageResource(R.mipmap.ic_launcher);
         } else {
-            Glide.with(mContext).load(imageurl).into(holder.profile_image);
+            Glide.with(mContext).load(avatarUrl).into(holder.profilePicture);
         }
 
         if (true || position == mChat.size()-1){
             if (chat.isSeen()){
-                holder.txt_seen.setText("Seen");
+                holder.txtSeen.setText("Seen");
             } else {
-                holder.txt_seen.setText("Delivered");
+                holder.txtSeen.setText("Delivered");
             }
         } else {
-            holder.txt_seen.setVisibility(View.GONE);
+            holder.txtSeen.setVisibility(View.GONE);
         }
 
+        if(chat.getPhoto() != null){
+            holder.messagePhoto.setVisibility(View.VISIBLE);
+            Glide.with(mContext).load(chat.getPhoto()).into(holder.messagePhoto);
+            if(holder.clickPlusToTranslate != null) {
+                holder.clickPlusToTranslate.setVisibility(View.GONE);
+                holder.plus.setVisibility(View.GONE);
+                int padding = holder.showMessage.getPaddingTop();
+                holder.showMessage.setPadding(padding, padding, padding, padding);
+            }
+        }
     }
 
     @Override
@@ -165,30 +177,37 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         return mChat.size();
     }
 
-    public  class ViewHolder extends RecyclerView.ViewHolder{
+    public static class MessageViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView show_message;
+        public TextView showMessage;
         public TextView time;
 
-        public ImageView profile_image;
-        public TextView txt_seen;
+        public ImageView profilePicture;
+        public TextView txtSeen;
+        public ImageView messagePhoto;
 
-        public ViewHolder(View itemView) {
+        public TextView clickPlusToTranslate;
+        public Button plus;
+
+        public MessageViewHolder(View itemView) {
             super(itemView);
-            time = itemView.findViewById(R.id.show_message2);
-            show_message = itemView.findViewById(R.id.show_message);
-            profile_image = itemView.findViewById(R.id.profile_image);
-            txt_seen = itemView.findViewById(R.id.txt_seen);
+            showMessage = itemView.findViewById(R.id.show_message);
+            time = itemView.findViewById(R.id.time);
+            clickPlusToTranslate = itemView.findViewById(R.id.clickPlusToTranslate);
+            plus = itemView.findViewById(R.id.plus);
+            profilePicture = itemView.findViewById(R.id.profile_image);
+            txtSeen = itemView.findViewById(R.id.txt_seen);
+            messagePhoto = itemView.findViewById(R.id.message_photo);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
         fuser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mChat.get(position).getSender().equals(fuser.getUid())){
+        Chat chat = mChat.get(position);
+        if (chat.getSender().equals(fuser.getUid()))
             return MSG_TYPE_RIGHT;
-        } else {
+        else
             return MSG_TYPE_LEFT;
-        }
     }
 }

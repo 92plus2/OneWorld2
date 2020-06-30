@@ -2,7 +2,6 @@ package com.work.project;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -140,10 +139,7 @@ public class MessageActivity extends AppCompatActivity {
                 final String msg = text_send.getText().toString();
 
                 if (!msg.equals("")){
-                    Date currentDate = new Date();
-                    DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-                    String time = timeFormat.format(currentDate);
-                    sendMessage(msg, time);
+                    sendMessage(msg, null);
                 } else {
                     Toast.makeText(MessageActivity.this, "You can't send empty message", Toast.LENGTH_SHORT).show();
                 }
@@ -211,6 +207,7 @@ public class MessageActivity extends AppCompatActivity {
                         assert downloadUri != null;
                         String mUri = downloadUri.toString();
                         pd.dismiss();
+                        sendMessage("Image attachment", mUri);
                     } else {
                         //Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
@@ -243,15 +240,19 @@ public class MessageActivity extends AppCompatActivity {
             }
         }
     }
-    private void sendMessage(String message, String time){
+
+    private void sendMessage(String message, String photoUrl){
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", currentUserId);
         hashMap.put("receiver", otherUserId);
         hashMap.put("message", message);
         hashMap.put("seen", false);
+        Date currentDate = new Date();
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        String time = timeFormat.format(currentDate);
         hashMap.put("time", time);
         hashMap.put("exactTime", System.currentTimeMillis());
-        hashMap.put("photo", null);
+        hashMap.put("photo", photoUrl);
         chats.push().setValue(hashMap);
 
 
