@@ -55,4 +55,5 @@
         android:background="@color/colorPrimaryDark"
         android:text="log out"
         android:textColor="#fff" />
+
 </RelativeLayout>

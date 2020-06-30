@@ -94,7 +94,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/background_left"
+        android:background="@drawable/background_plus"
         android:text="+" />
 
 
