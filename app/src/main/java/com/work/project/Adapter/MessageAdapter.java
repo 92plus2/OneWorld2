@@ -138,36 +138,46 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         Chat chat = mChat.get(position);
-        if(holder.time != null) {
+        if (holder.time != null) {
             holder.time.setText(chat.getTime());
             holder.time.setTextSize(11);
         }
         holder.showMessage.setText(chat.getMessage());
 
-        if (avatarUrl.equals("default")){
+        if (avatarUrl.equals("default")) {
             holder.profilePicture.setImageResource(R.mipmap.ic_launcher);
-        } else {
+        }
+        else {
             Glide.with(mContext).load(avatarUrl).into(holder.profilePicture);
         }
 
-        if (true || position == mChat.size()-1){
-            if (chat.isSeen()){
+        if (holder.clickPlusToTranslate == null) {
+            holder.txtSeen.setVisibility(View.VISIBLE);
+            if (chat.isSeen()) {
                 holder.txtSeen.setText("Seen");
             } else {
                 holder.txtSeen.setText("Delivered");
             }
-        } else {
+        }
+        else {
             holder.txtSeen.setVisibility(View.GONE);
         }
 
-        if(chat.getPhoto() != null){
+        if (chat.getPhoto() != null) {
             holder.messagePhoto.setVisibility(View.VISIBLE);
+            holder.showMessage.setVisibility(View.GONE);
             Glide.with(mContext).load(chat.getPhoto()).into(holder.messagePhoto);
-            if(holder.clickPlusToTranslate != null) {
+            if (holder.clickPlusToTranslate != null) {
                 holder.clickPlusToTranslate.setVisibility(View.GONE);
                 holder.plus.setVisibility(View.GONE);
-                int padding = holder.showMessage.getPaddingTop();
-                holder.showMessage.setPadding(padding, padding, padding, padding);
+            }
+        }
+        else {
+            holder.messagePhoto.setVisibility(View.GONE);
+            holder.showMessage.setVisibility(View.VISIBLE);
+            if (holder.clickPlusToTranslate != null) {
+                holder.clickPlusToTranslate.setVisibility(View.VISIBLE);
+                holder.plus.setVisibility(View.VISIBLE);
             }
         }
     }
