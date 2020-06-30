@@ -109,7 +109,6 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
 
-            android:maxHeight="200dp"
             android:padding="10dp"
             android:visibility="gone" />
     </RelativeLayout>

@@ -2,6 +2,7 @@ package com.work.project.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -167,6 +168,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         if (chat.getPhoto() != null) {
             holder.messagePhoto.setVisibility(View.VISIBLE);
             holder.showMessage.setVisibility(View.GONE);
+            int height = (int) convertDpToPixel(200, holder.time.getContext());
+            setHeight(holder.messagePhoto, height);
             Glide.with(mContext).load(chat.getPhoto()).into(holder.messagePhoto);
             if (holder.isLeftMessage()) {
                 holder.clickPlusToTranslate.setVisibility(View.GONE);
@@ -175,6 +178,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
         else {
             holder.messagePhoto.setVisibility(View.GONE);
+            setHeight(holder.messagePhoto, 0);
             holder.showMessage.setVisibility(View.VISIBLE);
             if (holder.isLeftMessage()) {
                 holder.clickPlusToTranslate.setVisibility(View.VISIBLE);
@@ -189,6 +193,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             View alignView = chat.getPhoto() == null? holder.showMessage : holder.photoLayout;
             params.addRule(RelativeLayout.LEFT_OF, alignView.getId());
         }
+    }
+
+    private void setHeight(View view, int height){
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = height;
+        view.setLayoutParams(params);
+    }
+
+    public static float convertDpToPixel(float dp, Context context){
+        return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
     @Override
