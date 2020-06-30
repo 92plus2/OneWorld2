@@ -139,31 +139,7 @@ public class MessageActivity extends AppCompatActivity {
                     Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
                 }
 
-                readMessages(fuser.getUid(), userid, user.getImageURL());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        seenMessage(userid);
-    }
-
-    private void seenMessage(final String userid){
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
-        seenListener = reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Chat chat = snapshot.getValue(Chat.class);
-                    if (chat.getReceiver().equals(fuser.getUid()) && chat.getSender().equals(userid)){
-                        HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("isseen", true);
-                        snapshot.getRef().updateChildren(hashMap);
-                    }
-                }
+                startReadingMessages(fuser.getUid(), userid, user.getImageURL());
             }
 
             @Override
@@ -269,7 +245,7 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void readMessages(final String myid, final String userid, final String imageurl){
+    private void startReadingMessages(final String myid, final String userid, final String imageurl){
         mChat = new ArrayList<>();
         chatSet = new HashSet<>();
         messageAdapter = new MessageAdapter(MessageActivity.this, mChat, imageurl);
@@ -280,13 +256,13 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 // загружаем новые сообщения в фоновом процессе
-                if(!isLoadingMessages){
-                    new Thread(new Runnable() {
+                if(!isLoadingMessages) {
+                    new Thread() {
                         @Override
                         public void run() {
                             loadNewMessages(dataSnapshot, myid);
                         }
-                    }).start();
+                    }.start();
                 }
             }
 
@@ -297,27 +273,64 @@ public class MessageActivity extends AppCompatActivity {
 
     private volatile boolean isLoadingMessages = false;
 
+    // метод для чтения сообщений в фоновом процессе
     private void loadNewMessages(DataSnapshot messages, String myid){
         isLoadingMessages = true;
+
         final List<Chat> newMessages = new ArrayList<>();
+        Chat lastChat = null;  // последнее сообщение в диалоге
+        DataSnapshot lastChatSnaphot = null;
+
         for (DataSnapshot snapshot : messages.getChildren()) {
             Chat chat = snapshot.getValue(Chat.class);
-            if (!chatSet.contains(chat) && (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
-                    chat.getReceiver().equals(userid) && chat.getSender().equals(myid))) {
+
+            if (chatSet.contains(chat)) {
+                // это сообщение у нас уже есть
+                lastChat = chat;
+                lastChatSnaphot = snapshot;
+            }
+            else if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
+                    chat.getReceiver().equals(userid) && chat.getSender().equals(myid)) {
+                // добавляем новое сообщение
                 newMessages.add(chat);
-                //Log.d(TAG, "new message:" + chat.getMessage());
+                lastChat = chat;
+                lastChatSnaphot = snapshot;
             }
         }
 
         chatSet.addAll(newMessages);
 
+        /*
+        // если последнее сообщение послано нам, прочитаем его
+        if (lastChat != null &&
+                lastChat.getReceiver().equals(myid) && lastChat.getSender().equals(userid)) {
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("isseen", true);
+            lastChatSnaphot.getRef().updateChildren(hashMap);
+        }
+        */
+
+        final Chat lastMessageFromServer = lastChat;
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                // добавляем в список новые сообщения
                 for (Chat newMessage : newMessages) {
                     mChat.add(newMessage);
                     messageAdapter.notifyItemInserted(mChat.size() - 1);
                 }
+
+                // если надо, помечаем последнее сообщение как прочитанное
+                if(lastMessageFromServer != null) {
+                    Chat lastMessage = mChat.get(mChat.size() - 1);
+
+                    if (lastMessageFromServer.isSeen() != lastMessage.isSeen()) {
+                        lastMessage.setSeen(lastMessageFromServer.isSeen());
+                        messageAdapter.notifyItemChanged(mChat.size() - 1);
+                    }
+                }
+
                 // скроллим в конец
                 recyclerView.scrollToPosition(mChat.size() - 1);
                 isLoadingMessages = false;

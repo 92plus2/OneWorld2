@@ -1,30 +1,19 @@
 package com.work.project.Model;
 
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.mlkit.common.model.DownloadConditions;
-import com.google.mlkit.nl.translate.TranslateLanguage;
-import com.google.mlkit.nl.translate.Translation;
-import com.google.mlkit.nl.translate.Translator;
-import com.google.mlkit.nl.translate.TranslatorOptions;
-import java.util.*;
+import java.util.Objects;
 
 public class Chat {
     private String sender;
     private String receiver;
     private String message;
     private String time;
-    private boolean isseen;
+    private boolean seen;
 
-    public Chat(String sender, String receiver, String message, boolean isseen, String time) {
+    public Chat(String sender, String receiver, String message, boolean seen, String time) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
-        this.isseen = isseen;
+        this.seen = seen;
         this.time = time;
     }
 
@@ -64,12 +53,12 @@ public class Chat {
         this.message = message;
     }
 
-    public boolean isIsseen() {
-        return isseen;
+    public boolean isSeen() {
+        return seen;
     }
 
-    public void setIsseen(boolean isseen) {
-        this.isseen = isseen;
+    public void setSeen(boolean isseen) {
+        this.seen = isseen;
     }
 
     @Override
