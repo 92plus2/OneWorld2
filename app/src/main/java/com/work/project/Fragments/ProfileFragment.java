@@ -144,13 +144,13 @@ public class ProfileFragment extends Fragment {
 
     private void initList() {
         mLanguageList = new ArrayList<>();
-        mLanguageList.add(new LanguageItem("Russian", R.drawable.russian));
-        mLanguageList.add(new LanguageItem("English", R.drawable.english));
-        mLanguageList.add(new LanguageItem("German", R.drawable.german));
-        mLanguageList.add(new LanguageItem("Spanish", R.drawable.spanish));
-        mLanguageList.add(new LanguageItem("French", R.drawable.french));
-        mLanguageList.add(new LanguageItem("Italian", R.drawable.italian));
-        mLanguageList.add(new LanguageItem("Chinese", R.drawable.chinese));
+        mLanguageList.add(new LanguageItem("RU", R.drawable.russian));
+        mLanguageList.add(new LanguageItem("EN", R.drawable.english));
+        mLanguageList.add(new LanguageItem("DE", R.drawable.german));
+        mLanguageList.add(new LanguageItem("ES", R.drawable.spanish));
+        mLanguageList.add(new LanguageItem("FR", R.drawable.french));
+        mLanguageList.add(new LanguageItem("IT", R.drawable.italian));
+        mLanguageList.add(new LanguageItem("ZH", R.drawable.chinese));
     }
 
     private void openImage() {

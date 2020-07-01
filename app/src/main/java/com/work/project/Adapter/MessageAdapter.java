@@ -28,6 +28,7 @@ import com.work.project.Model.Chat;
 import com.work.project.R;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
@@ -68,10 +69,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     if (but.getText().equals("+")) {
                         final String s = txt.getText().toString();
                         final String[] message2 = {s};
+                        String s1 = "RU";
+                        String s2 = "EN";
                         TranslatorOptions options =
                                 new TranslatorOptions.Builder()
-                                        .setSourceLanguage(TranslateLanguage.RUSSIAN)
-                                        .setTargetLanguage(TranslateLanguage.ENGLISH)
+                                        .setSourceLanguage(Objects.requireNonNull(TranslateLanguage.fromLanguageTag(s1)))
+                                        .setTargetLanguage(Objects.requireNonNull(TranslateLanguage.fromLanguageTag(s2)))
                                         .build();
                         final Translator englishGermanTranslator =
                                 Translation.getClient(options);
