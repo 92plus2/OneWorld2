@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +27,6 @@ import com.google.mlkit.nl.translate.TranslateLanguage;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
-import com.work.project.MessageActivity;
 import com.work.project.Fragments.ProfileFragment;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
@@ -252,6 +250,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public void showBigPhoto(Context context, String url){
         MessageActivity activity = (MessageActivity) context;
         activity.bigPhotoLayout.setVisibility(View.VISIBLE);
+        activity.bigPhotoLayout.setAlpha(0.0f);
+        // Плавно показываем наш layout
+        activity.bigPhotoLayout.animate()
+                .alpha(1.0f)
+                .setListener(null);
+
         Glide.with(context).load(url).into(activity.bigPhotoView);
     }
 
