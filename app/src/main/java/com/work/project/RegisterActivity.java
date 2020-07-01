@@ -81,6 +81,8 @@ public class RegisterActivity extends AppCompatActivity {
                             hashMap.put("search", username.toLowerCase());
                             hashMap.put("password", password);
                             hashMap.put("email", email);
+                            hashMap.put("language", "Russian");
+                            hashMap.put("languageID", "0");
                             
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

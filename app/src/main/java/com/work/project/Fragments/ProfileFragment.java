@@ -3,7 +3,9 @@ package com.work.project.Fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -62,6 +64,8 @@ public class ProfileFragment extends Fragment {
     private Uri imageUri;
     private StorageTask uploadTask;
 
+    int languageID = 0;
+
     private ArrayList<LanguageItem> mLanguageList;
     private LanguageAdapter mLanguageAdapter;
 
@@ -79,11 +83,13 @@ public class ProfileFragment extends Fragment {
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
 
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
+                languageID = Integer.parseInt(user.getLanguageID());
+                Toast.makeText(getContext(), String.valueOf(languageID) + " bb", Toast.LENGTH_SHORT).show();
                 if (user.getImageURL().equals("default")){
                     image_profile.setImageResource(R.mipmap.ic_launcher);
                 } else {
@@ -115,16 +121,21 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+
         //adding languages to list
         initList();
         Spinner spinnerCountries = (Spinner) view.findViewById(R.id.spinner_languages);
         mLanguageAdapter = new LanguageAdapter(getContext(), mLanguageList);
         spinnerCountries.setAdapter(mLanguageAdapter);
+        Toast.makeText(getContext(), String.valueOf(languageID) + " hello", Toast.LENGTH_SHORT).show();
+        spinnerCountries.setSelection(languageID, false);
         spinnerCountries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
                 String clickedLanguageName = clickedItem.getLanguageName();
+                reference.child("languageID").setValue(String.valueOf(position));
+                reference.child("language").setValue(clickedLanguageName);
                 Toast.makeText(getContext(), clickedLanguageName + " selected", Toast.LENGTH_SHORT).show();
             }
             @Override

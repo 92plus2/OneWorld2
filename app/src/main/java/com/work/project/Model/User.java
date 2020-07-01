@@ -12,13 +12,17 @@ public class User {
     private String imageURL;
     private String status;
     private String search;
+    private String language;
+    private String languageID;
 
-    public User(String id, String username, String imageURL, String status, String search) {
+    public User(String id, String username, String imageURL, String status, String search){//, String language, int languageID) {
         this.id = id;
         this.username = username;
         this.imageURL = imageURL;
         this.status = status;
         this.search = search;
+        this.language = language;
+        this.languageID = languageID;
     }
 
     public User() {
@@ -64,6 +68,23 @@ public class User {
     public void setSearch(String search) {
         this.search = search;
     }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getLanguageID() {
+        return languageID;
+    }
+
+    public void setLanguageID(String languageID) {
+        this.languageID = languageID;
+    }
+
 
     public static DatabaseReference getChatBetween(String userId1, String userId2){
         String[] ids = {userId1, userId2};
