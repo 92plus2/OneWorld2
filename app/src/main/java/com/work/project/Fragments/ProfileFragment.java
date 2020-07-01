@@ -62,6 +62,7 @@ public class ProfileFragment extends Fragment {
     private StorageTask uploadTask;
 
     public static int languageID = 0;
+    public static String language;
     public static final int RU = 0, EN = 1, DE = 2, ES = 3, FR = 4, IT = 5, ZH = 6;
 
     private ArrayList<LanguageItem> mLanguageList;
@@ -126,6 +127,7 @@ public class ProfileFragment extends Fragment {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
                 languageID = Integer.parseInt(user.getLanguageID());
+               language = (user.getLanguage());
                 spinnerCountries.setSelection(languageID, false);
                 if (user.getImageURL().equals("default")){
                     image_profile.setImageResource(R.mipmap.ic_launcher);

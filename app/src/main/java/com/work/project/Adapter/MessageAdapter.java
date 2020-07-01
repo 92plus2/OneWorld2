@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,10 +22,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.mlkit.common.model.DownloadConditions;
+import com.google.mlkit.nl.languageid.LanguageIdentification;
+import com.google.mlkit.nl.languageid.LanguageIdentifier;
 import com.google.mlkit.nl.translate.TranslateLanguage;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
+import com.work.project.MessageActivity;
+import com.work.project.Fragments.ProfileFragment;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
 import com.work.project.R;
@@ -70,11 +76,33 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     if (but.getText().equals("+")) {
                         final String s = txt.getText().toString();
                         final String[] message2 = {s};
-                        String s1 = "RU";
-                        String s2 = "EN";
+                        final String[] s1 = {"RU"};
+                        String s2 = ProfileFragment.language;
+                        LanguageIdentifier languageIdentifier =
+                                LanguageIdentification.getClient();
+                        languageIdentifier.identifyLanguage(s)
+                                .addOnSuccessListener(
+                                        new OnSuccessListener<String>() {
+                                            @Override
+                                            public void onSuccess(@Nullable String languageCode) {
+                                                if (languageCode.equals("und")) {
+                                                   s1[0] = "EN";
+                                                } else {
+                                                    s1[0] = languageCode;
+                                                }
+                                            }
+                                        })
+                                .addOnFailureListener(
+                                        new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                // Model couldn’t be loaded or other internal error.
+                                                // ...
+                                            }
+                                        });
                         TranslatorOptions options =
                                 new TranslatorOptions.Builder()
-                                        .setSourceLanguage(Objects.requireNonNull(TranslateLanguage.fromLanguageTag(s1)))
+                                        .setSourceLanguage(Objects.requireNonNull(TranslateLanguage.fromLanguageTag(s1[0])))
                                         .setTargetLanguage(Objects.requireNonNull(TranslateLanguage.fromLanguageTag(s2)))
                                         .build();
                         final Translator englishGermanTranslator =
