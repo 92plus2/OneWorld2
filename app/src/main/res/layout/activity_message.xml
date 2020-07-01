@@ -83,4 +83,22 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/big_photo_layout"
+        android:background="#A9000000"
+        android:visibility="gone"
+        android:onClick="hideBigPhoto"
+        >
+        <ImageView
+            android:id="@+id/big_photo_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:layout_margin="20dp"
+            android:onClick="hideBigPhoto"
+        />
+    </LinearLayout>
+
 </RelativeLayout>

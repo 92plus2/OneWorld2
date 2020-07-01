@@ -24,6 +24,7 @@ import com.google.mlkit.nl.translate.TranslateLanguage;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
+import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
 import com.work.project.R;
 
@@ -141,8 +142,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        Chat chat = mChat.get(position);
+    public void onBindViewHolder(@NonNull final MessageViewHolder holder, int position) {
+        final Chat chat = mChat.get(position);
         if (holder.time != null) {
             holder.time.setText(chat.getTime());
             holder.time.setTextSize(11);
@@ -178,6 +179,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 holder.clickPlusToTranslate.setVisibility(View.GONE);
                 holder.plus.setVisibility(View.GONE);
             }
+
+            holder.messagePhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showBigPhoto(holder.showMessage.getContext(), chat.getPhoto());
+                }
+            });
         }
         else {
             holder.messagePhoto.setVisibility(View.GONE);
@@ -211,6 +219,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public int getItemCount() {
         return mChat.size();
+    }
+
+    public void showBigPhoto(Context context, String url){
+        MessageActivity activity = (MessageActivity) context;
+        activity.bigPhotoLayout.setVisibility(View.VISIBLE);
+        Glide.with(context).load(url).into(activity.bigPhotoView);
     }
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder{

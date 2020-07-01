@@ -11,6 +11,8 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,6 +85,8 @@ public class MessageActivity extends AppCompatActivity {
     StorageReference storageReference;
     RecyclerView recyclerView;
 
+    public LinearLayout bigPhotoLayout;
+    public ImageView bigPhotoView;
 
     APIService apiService;
 
@@ -119,6 +123,9 @@ public class MessageActivity extends AppCompatActivity {
         btn_send = findViewById(R.id.btn_send);
         photo_but = findViewById(R.id.btn_img);
         text_send = findViewById(R.id.text_send);
+
+        bigPhotoLayout = findViewById(R.id.big_photo_layout);
+        bigPhotoView = findViewById(R.id.big_photo_image_view);
 
         Intent intent = getIntent();
         otherUserId = intent.getStringExtra("userid");
@@ -437,5 +444,9 @@ public class MessageActivity extends AppCompatActivity {
         currentUser("none");
         chats.removeEventListener(chatsListener);
         hasChatsListener = false;
+    }
+
+    public void hideBigPhoto(View view){
+        bigPhotoLayout.setVisibility(View.GONE);
     }
 }
