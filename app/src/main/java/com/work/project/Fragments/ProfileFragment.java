@@ -61,7 +61,8 @@ public class ProfileFragment extends Fragment {
     private Uri imageUri;
     private StorageTask uploadTask;
 
-    int languageID = 0;
+    public static int languageID = 0;
+    public static final int RU = 0, EN = 1, DE = 2, ES = 3, FR = 4, IT = 5, ZH = 6;
 
     private ArrayList<LanguageItem> mLanguageList;
     private LanguageAdapter mLanguageAdapter;
