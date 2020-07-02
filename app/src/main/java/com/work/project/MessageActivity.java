@@ -1,5 +1,7 @@
 package com.work.project;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -447,6 +449,14 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     public void hideBigPhoto(View view){
-        bigPhotoLayout.setVisibility(View.GONE);
+        bigPhotoLayout.animate()
+                .alpha(0.0f)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        bigPhotoLayout.setVisibility(View.GONE);
+                    }
+                });
     }
 }
