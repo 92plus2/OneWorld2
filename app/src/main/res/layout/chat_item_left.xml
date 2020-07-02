@@ -31,11 +31,11 @@
                 android:gravity="center"
                 android:maxEms="8"
                 android:paddingLeft="8dp"
-                android:paddingBottom="8dp"
                 android:paddingRight="8dp"
+                android:paddingBottom="8dp"
                 android:singleLine="false"
                 android:text="click + to translate"
-                android:textColor="@color/colorblack"
+                android:textColor="@color/colorWhite"
                 android:textIsSelectable="true"
                 android:textSize="12sp" />
 
@@ -49,7 +49,7 @@
                 android:paddingLeft="8dp"
                 android:paddingTop="8dp"
                 android:paddingRight="8dp"
-                android:textColor="#000000"
+                android:textColor="@color/colorWhite"
                 android:textIsSelectable="true"
                 android:textSize="18sp" />
 
@@ -93,7 +93,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/background_plus"
-        android:text="+" />
+        android:text="+"
+        android:textColor="@color/colorWhite" />
 
     <RelativeLayout
         android:id="@+id/photoLayout"

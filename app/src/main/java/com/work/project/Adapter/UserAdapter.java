@@ -122,22 +122,32 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         final DatabaseReference chatReference = User.getChatBetween(firebaseUser.getUid(), user.getId());
         final ValueEventListener chatListener = new ValueEventListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String theLastMessage = null;
                 long lastMessageTime = 0;
+                String lasttime = null;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
                     if (chat != null) {
                         theLastMessage = chat.getMessage();
                         lastMessageTime = chat.getExactTime();
+                        lasttime = chat.getTime();
                     }
                 }
 
-                if(theLastMessage != null)
-                    holder.last_msg.setText(theLastMessage);
-                else
+                if(theLastMessage != null) {
+                    holder.last_msg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+                    if(theLastMessage.length() > 30){
+                        theLastMessage = theLastMessage.substring(0, 30) + "...";
+                    }
+                    holder.last_msg.setText(theLastMessage + " (" + lasttime + ")");
+                }
+                else {
+                    holder.last_msg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
                     holder.last_msg.setText("No Messages");
+                }
 
                 // Мы хотим, чтобы пользователи были отсортированы
                 int oldPosition = mUsers.indexOf(user);

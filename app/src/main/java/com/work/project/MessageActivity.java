@@ -216,7 +216,7 @@ public class MessageActivity extends AppCompatActivity {
                         assert downloadUri != null;
                         String mUri = downloadUri.toString();
                         pd.dismiss();
-                        sendMessage("Image attachment", mUri);
+                        sendMessage("Photo", mUri);
                     } else {
                         //Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
@@ -292,7 +292,7 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
-    private void sendNotification(String receiver, final String sender, final String message){
+    private void sendNotification(final String receiver, final String sender, final String message){
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = tokens.orderByKey().equalTo(receiver);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
