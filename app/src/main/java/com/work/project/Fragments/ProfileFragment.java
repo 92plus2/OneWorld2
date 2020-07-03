@@ -67,7 +67,7 @@ public class ProfileFragment extends Fragment {
 
     private ArrayList<LanguageItem> mLanguageList;
     private LanguageAdapter mLanguageAdapter;
-    private Spinner spinnerCountries;
+    private Spinner spinnerLanguages;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,10 +101,10 @@ public class ProfileFragment extends Fragment {
 
         //adding languages to list
         initList();
-        spinnerCountries = view.findViewById(R.id.spinner_languages);
+        spinnerLanguages = view.findViewById(R.id.spinner_languages);
         mLanguageAdapter = new LanguageAdapter(getContext(), mLanguageList);
-        spinnerCountries.setAdapter(mLanguageAdapter);
-        spinnerCountries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerLanguages.setAdapter(mLanguageAdapter);
+        spinnerLanguages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
@@ -128,7 +128,7 @@ public class ProfileFragment extends Fragment {
                 username.setText(user.getUsername());
                 languageID = Integer.parseInt(user.getLanguageID());
                language = (user.getLanguage());
-                spinnerCountries.setSelection(languageID, false);
+                spinnerLanguages.setSelection(languageID, false);
                 if (user.getImageURL().equals("default")){
                     image_profile.setImageResource(R.mipmap.ic_launcher);
                 } else {

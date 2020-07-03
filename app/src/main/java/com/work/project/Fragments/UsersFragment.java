@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -41,11 +42,13 @@ public class UsersFragment extends Fragment {
 
     EditText search_users;
 
+    DatabaseReference reference;;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        reference = FirebaseDatabase.getInstance().getReference("InSearch");
 
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         final int[] sz = {0};
@@ -100,15 +103,59 @@ public class UsersFragment extends Fragment {
 
             }
         });
-        Button rand = view.findViewById(R.id.btn_rand);
-        rand.setOnClickListener(new View.OnClickListener() {
+        Button btn_rand = view.findViewById(R.id.btn_rand);
+        final int[] users_number = {0};
+        btn_rand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RandUser(sz);
+                reference.child(fuser.getUid()).setValue(fuser.getUid());
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        users_number[0] = (int) dataSnapshot.getChildrenCount();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                reference.orderByKey().addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<String> list = new ArrayList<>();
+                        for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                            String userId = ds.getKey();
+                            list.add(userId);
+                        }
+                        if (list.size() == 2) {
+                            if (fuser.getUid().equals(list.get(0))) {
+                                Toast.makeText(getContext(), list.get(1), Toast.LENGTH_SHORT).show();
+                            }
+                            if (fuser.getUid().equals(list.get(1))) {
+                                Toast.makeText(getContext(), list.get(0), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
         return view;
     }
+
+    private int min(int a, int b) {
+        if (a < b) {
+            return a;
+        } else {
+            return b;
+        }
+    }
+
     private void RandUser(final int[] sz){
         final FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
         Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("search")
