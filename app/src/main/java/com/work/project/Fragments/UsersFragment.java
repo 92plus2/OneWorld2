@@ -170,15 +170,15 @@ public class UsersFragment extends Fragment {
         private void stopScrollAnimation(float eventY){
             long time = SystemClock.uptimeMillis();
 
-            MotionEvent eventUp = MotionEvent.obtain(time, time, MotionEvent.ACTION_DOWN,
-                    0, eventY, 0);
-            super.onTouchEvent(eventUp);
-            eventUp.recycle();
-
             MotionEvent eventDown = MotionEvent.obtain(time, time, MotionEvent.ACTION_DOWN,
                     0, eventY, 0);
             super.onTouchEvent(eventDown);
             eventDown.recycle();
+
+            MotionEvent eventUp = MotionEvent.obtain(time, time, MotionEvent.ACTION_UP,
+                    0, eventY, 0);
+            super.onTouchEvent(eventUp);
+            eventUp.recycle();
         }
     }
 }
