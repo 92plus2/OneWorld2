@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -31,7 +32,7 @@ public class UsersFragment extends Fragment {
     private UserAdapter userAdapter;
     private List<User> mUsers;
     private List<String> userIds;
-
+    Button but;
     DatabaseReference inSearch;
     String currentUserId;
     final static int MAX_USERS = 10;
@@ -47,7 +48,6 @@ public class UsersFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         mUsers = new ArrayList<>();
         userIds = new ArrayList<>();
         userAdapter = new UserAdapter(getContext(),  mUsers, false);
@@ -74,21 +74,20 @@ public class UsersFragment extends Fragment {
         });
     }
 
-    private void updateSearch(DataSnapshot userIdsSnapshot){
+    private void updateSearch(DataSnapshot userIdsSnapshot) {
         List<String> newIds = new ArrayList<>();
-        for(DataSnapshot ds : userIdsSnapshot.getChildren()) {
+        for (DataSnapshot ds : userIdsSnapshot.getChildren()) {
             String userId = ds.getKey();
-            if(!userId.equals(currentUserId))
+            if (!userId.equals(currentUserId))
                 newIds.add(userId);
         }
 
-        for(int i = mUsers.size() - 1; i >= 0; i--){
+        for (int i = mUsers.size() - 1; i >= 0; i--) {
             User user = mUsers.get(i);
-            if(!newIds.contains(user.getId())){
+            if (!newIds.contains(user.getId())) {
                 mUsers.remove(i);
                 userAdapter.notifyItemRemoved(i);
-            }
-            else
+            } else
                 newIds.remove(user.getId());
         }
 
@@ -96,21 +95,23 @@ public class UsersFragment extends Fragment {
 
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("Users");
 
-        for(String newId : newIds){
+        for (String newId : newIds) {
             users.child(newId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //mUsers.clear();
                     User newUser = dataSnapshot.getValue(User.class);
                     mUsers.add(newUser);
                     userAdapter.notifyItemInserted(mUsers.size() - 1);
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {}
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
             });
+
         }
     }
-
     @Override
     public void onPause() {
         super.onPause();
