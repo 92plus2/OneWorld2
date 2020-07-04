@@ -25,6 +25,8 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
+
 public class MainActivity extends AppCompatActivity {
 
     CircleImageView profile_image;
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         final TabLayout tabLayout = findViewById(R.id.tab_layout);
         final ViewPager viewPager = findViewById(R.id.view_pager);
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         int unread = 0;
         if (unread == 0) {
             viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             viewPagerAdapter.addFragment(new ChatsFragment(), "(" + unread + ") Chats");
         }
 
-        viewPagerAdapter.addFragment(new UsersFragment(), "Users");
+        viewPagerAdapter.addFragment(new UsersFragment(), "Search Users");
         viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
 
         viewPager.setAdapter(viewPagerAdapter);
@@ -71,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
         private ArrayList<Fragment> fragments;
         private ArrayList<String> titles;
 
-        ViewPagerAdapter(FragmentManager fm){
-            super(fm);
+        ViewPagerAdapter(FragmentManager fm, int behaviour){
+            super(fm, behaviour);
             this.fragments = new ArrayList<>();
             this.titles = new ArrayList<>();
         }
@@ -92,8 +94,6 @@ public class MainActivity extends AppCompatActivity {
             fragments.add(fragment);
             titles.add(title);
         }
-
-        // Ctrl + O
 
         @Nullable
         @Override
