@@ -6,12 +6,11 @@
     android:background="@color/colorPrimary"
     tools:context=".Fragments.UsersFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <view class="com.work.project.Fragments.UsersFragment$MyRecyclerView"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="false">
-
-    </androidx.recyclerview.widget.RecyclerView>
+    </view>
 
 </RelativeLayout>

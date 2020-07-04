@@ -1,12 +1,17 @@
 package com.work.project.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,7 +32,7 @@ import java.util.List;
 
 public class UsersFragment extends Fragment {
 
-    private RecyclerView recyclerView;
+    private MyRecyclerView recyclerView;
 
     private UserAdapter userAdapter;
     private List<User> mUsers;
@@ -121,5 +126,59 @@ public class UsersFragment extends Fragment {
     public void onPause() {
         super.onPause();
         inSearch.child(currentUserId).removeValue();
+    }
+
+    public static class MyRecyclerView extends RecyclerView {
+        int currentItem = 0;
+
+        public MyRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        public MyRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent e) {
+            if(!super.onTouchEvent(e))
+                return false;
+            if(e.getActionMasked() == MotionEvent.ACTION_UP) {
+                int scrollY = computeVerticalScrollOffset();
+
+                if (scrollY % getHeight() != 0) {
+                    int oldScrollY = currentItem * getHeight();
+                    int dy = scrollY - oldScrollY;
+                    if(Math.abs(dy) >= getHeight() * 0.15) {
+                        if(dy > 0)
+                            currentItem++;
+                        else
+                            currentItem--;
+                    }
+
+                    int itemCount = getAdapter().getItemCount();
+                    if(currentItem >= itemCount)
+                        currentItem = itemCount - 1;
+
+                    stopScrollAnimation(e.getY());
+                    smoothScrollToPosition(currentItem);
+                }
+            }
+            return true;
+        }
+
+        private void stopScrollAnimation(float eventY){
+            long time = SystemClock.uptimeMillis();
+
+            MotionEvent eventUp = MotionEvent.obtain(time, time, MotionEvent.ACTION_DOWN,
+                    0, eventY, 0);
+            super.onTouchEvent(eventUp);
+            eventUp.recycle();
+
+            MotionEvent eventDown = MotionEvent.obtain(time, time, MotionEvent.ACTION_DOWN,
+                    0, eventY, 0);
+            super.onTouchEvent(eventDown);
+            eventDown.recycle();
+        }
     }
 }
