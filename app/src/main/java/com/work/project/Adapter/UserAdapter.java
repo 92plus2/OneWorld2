@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,8 +39,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private Map<User, Long> lastMessageTimes;
     private Map<DatabaseReference, ValueEventListener> listeners;
 
-    private boolean isChat;
-
+    public boolean isChat;
+    ImageButton ok;
     public UserAdapter(Context mContext, List<User> mUsers, boolean isChat){
         this.mUsers = mUsers;
         this.mContext = mContext;
@@ -85,38 +88,47 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             holder.img_on.setVisibility(View.GONE);
             holder.img_off.setVisibility(View.GONE);
         }
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, MessageActivity.class);
-                intent.putExtra("userid", user.getId());
-                mContext.startActivity(intent);
-            }
-        });
+        if(isChat)
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, MessageActivity.class);
+                    intent.putExtra("userid", user.getId());
+                    mContext.startActivity(intent);
+                }
+            });
+        else{
+            holder.ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, MessageActivity.class);
+                    intent.putExtra("userid", user.getId());
+                    mContext.startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
         return mUsers.size();
     }
-
     public static class UserViewHolder extends RecyclerView.ViewHolder {
+        private final ImageButton ok;
         public TextView username;
         public ImageView profile_image;
         private ImageView img_on;
         private ImageView img_off;
         private TextView last_msg;
-
         @SuppressLint("ResourceAsColor")
         public UserViewHolder(View itemView) {
             super(itemView);
-
             username = itemView.findViewById(R.id.username);
             profile_image = itemView.findViewById(R.id.profile_image);
             img_on = itemView.findViewById(R.id.img_on);
             img_off = itemView.findViewById(R.id.img_off);
             last_msg = itemView.findViewById(R.id.last_msg);
+            ok = itemView.findViewById(R.id.ok);
         }
     }
 
