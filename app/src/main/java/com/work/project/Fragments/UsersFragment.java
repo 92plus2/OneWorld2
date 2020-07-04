@@ -74,7 +74,11 @@ public class UsersFragment extends Fragment {
         });
     }
 
+    private int toUpdate = 0;
+
     private void updateSearch(DataSnapshot userIdsSnapshot) {
+        if (toUpdate > 0)
+            return;
         List<String> newIds = new ArrayList<>();
         for (DataSnapshot ds : userIdsSnapshot.getChildren()) {
             String userId = ds.getKey();
@@ -92,6 +96,7 @@ public class UsersFragment extends Fragment {
         }
 
         userIds.addAll(newIds);
+        toUpdate = newIds.size();
 
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("Users");
 
@@ -99,19 +104,19 @@ public class UsersFragment extends Fragment {
             users.child(newId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    //mUsers.clear();
                     User newUser = dataSnapshot.getValue(User.class);
                     mUsers.add(newUser);
                     userAdapter.notifyItemInserted(mUsers.size() - 1);
+                    toUpdate--;
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
             });
-
         }
     }
+
     @Override
     public void onPause() {
         super.onPause();
