@@ -110,7 +110,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     intent.putExtra("userid", user.getId());
                     reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).setValue(0);
                     reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).setValue(0);
-                    mContext.startActivity(intent);
+                  //  mContext.startActivity(intent);
                 }
             });
         }

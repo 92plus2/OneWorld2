@@ -30,6 +30,8 @@ import com.work.project.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static androidx.recyclerview.widget.RecyclerView.*;
+
 
 public class UsersFragment extends Fragment {
 
@@ -75,7 +77,7 @@ public class UsersFragment extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String userId = ds.getKey();
                     likesIds.add(userId);
-                    Toast.makeText(getContext(), "Hello", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getContext(), "Hello", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -87,7 +89,7 @@ public class UsersFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 updateSearch(dataSnapshot, likesIds);
-                Toast.makeText(getContext(), "ByeBye", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "ByeBye", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -103,9 +105,6 @@ public class UsersFragment extends Fragment {
             return;
         List<String> newIds = new ArrayList<>();
 
-        for (int i = likesIds.size() - 1; i >= 0; i--) {
-            newIds.add(likesIds.get(i));
-        }
 
         for (DataSnapshot ds : userIdsSnapshot.getChildren()) {
             String userId = ds.getKey();
@@ -121,7 +120,7 @@ public class UsersFragment extends Fragment {
             } else
                 newIds.remove(user.getId());
         }
-
+        userIds.addAll(likesIds);
         userIds.addAll(newIds);
         toUpdate = newIds.size();
 

@@ -27,15 +27,21 @@
             android:textStyle="bold"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/email"
-            android:inputType="textEmailAddress"
             android:layout_marginTop="10dp"
-            app:met_floatingLabel="normal"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
             android:textColor="#ffffff"
-            app:met_textColorHint="#ffffff"
-            android:hint="Email"/>
+            android:textColorHint="#FFFFFF"
+            app:met_baseColor="@color/colorWhite"
+            app:met_underlineColor="@color/colorWhite"
+            android:textColorHighlight="@color/colorWhite"
+            app:met_textColor="@color/colorWhite"
+            android:textColorLink="@color/colorWhite"
+            app:met_floatingLabel="normal"
+            app:met_textColorHint="#ffffff" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
@@ -45,7 +51,13 @@
             android:layout_marginTop="10dp"
             app:met_floatingLabel="normal"
             android:textColor="#ffffff"
-            app:met_textColorHint="#ffffff"
+            android:textColorHint="#FFFFFF"
+            app:met_baseColor="@color/colorWhite"
+            app:met_underlineColor="@color/colorWhite"
+            android:textColorHighlight="@color/colorWhite"
+            app:met_textColor="@color/colorWhite"
+            app:met_textColorHint="@color/colorWhite"
+            android:textColorLink="@color/colorWhite"
             android:hint="Password"/>
 
         <Button
@@ -67,7 +79,7 @@
             android:layout_marginTop="10dp"
             android:layout_gravity="end"
             android:textStyle="bold"
-            android:id="@+id/forgot_password"></TextView>
+            android:id="@+id/forgot_password" />
 
 
 
