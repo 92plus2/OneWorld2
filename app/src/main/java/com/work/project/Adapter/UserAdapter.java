@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
@@ -38,6 +39,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private List<User> mUsers;
     private Map<User, Long> lastMessageTimes;
     private Map<DatabaseReference, ValueEventListener> listeners;
+
+    FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Likes");
+
 
     public boolean isChat;
     ImageButton ok;
@@ -103,6 +108,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, MessageActivity.class);
                     intent.putExtra("userid", user.getId());
+                    reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).setValue(0);
+                    reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).setValue(0);
                     mContext.startActivity(intent);
                 }
             });

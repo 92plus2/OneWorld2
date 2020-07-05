@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.work.project.R;
 
 import java.util.ArrayList;
+
 public class LanguageAdapter extends ArrayAdapter<com.work.project.Model.LanguageItem> {
     public LanguageAdapter(Context context, ArrayList<com.work.project.Model.LanguageItem> languageList) {
         super(context, 0, languageList);

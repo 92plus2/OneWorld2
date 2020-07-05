@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,7 +47,7 @@ public class UsersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        inSearch = FirebaseDatabase.getInstance().getReference("InSearch");
+        inSearch = FirebaseDatabase.getInstance().getReference();
 
         View view = inflater.inflate(R.layout.fragment_users, container, false);
 
@@ -66,25 +67,46 @@ public class UsersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        inSearch.child(currentUserId).setValue(0);
-
-        inSearch.limitToFirst(MAX_USERS).addValueEventListener(new ValueEventListener() {
+        inSearch.child("InSearch").child(currentUserId).setValue(0);
+        final List<String> likesIds = new ArrayList<>();
+        inSearch.child("Likes").child("YouWereLikedBy").child(currentUserId).limitToFirst(MAX_USERS).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                updateSearch(dataSnapshot);
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String userId = ds.getKey();
+                    likesIds.add(userId);
+                    Toast.makeText(getContext(), "Hello", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+
+        inSearch.child("InSearch").limitToFirst(MAX_USERS).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                updateSearch(dataSnapshot, likesIds);
+                Toast.makeText(getContext(), "ByeBye", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
+
     }
 
     private int toUpdate = 0;
 
-    private void updateSearch(DataSnapshot userIdsSnapshot) {
+    private void updateSearch(DataSnapshot userIdsSnapshot, List<String> likesIds) {
         if (toUpdate > 0)
             return;
         List<String> newIds = new ArrayList<>();
+
+        for (int i = likesIds.size() - 1; i >= 0; i--) {
+            newIds.add(likesIds.get(i));
+        }
+
         for (DataSnapshot ds : userIdsSnapshot.getChildren()) {
             String userId = ds.getKey();
             if (!userId.equals(currentUserId))
@@ -125,7 +147,7 @@ public class UsersFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        inSearch.child(currentUserId).removeValue();
+        inSearch.child("InSearch").child(currentUserId).removeValue();
     }
 
     public static class MyRecyclerView extends RecyclerView {
