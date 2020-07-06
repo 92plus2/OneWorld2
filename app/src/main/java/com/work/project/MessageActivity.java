@@ -176,6 +176,18 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+
+        // add user to chat fragment
+        final DatabaseReference ourChatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(currentUserId)
+                .child(otherUserId);
+
+        ourChatRef.child("id").setValue(otherUserId);
+
+        final DatabaseReference receiverChatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(otherUserId)
+                .child(currentUserId);
+        receiverChatRef.child("id").setValue(currentUserId);
     }
 
     private void openImage() {
@@ -263,29 +275,6 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("exactTime", System.currentTimeMillis());
         hashMap.put("photo", photoUrl);
         chats.push().setValue(hashMap);
-
-
-        // add user to chat fragment
-        final DatabaseReference ourChatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
-                .child(currentUserId)
-                .child(otherUserId);
-
-        ourChatRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()){
-                    ourChatRef.child("id").setValue(otherUserId);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
-
-        final DatabaseReference receiverChatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
-                .child(otherUserId)
-                .child(currentUserId);
-        receiverChatRef.child("id").setValue(currentUserId);
 
         if (notify) {
             sendNotification(otherUserId, username.getText().toString(), message);

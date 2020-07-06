@@ -108,7 +108,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                         reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).setValue(0);
                         reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).setValue(0);
                     }
-                    else{
+                    else{  // мы принимаем заявку в друзья
+                        // удаляем все лайки
+                        reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).removeValue();
+                        reference.child("YourLikes").child(user.getId()).child(fuser.getUid()).removeValue();
+                        reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).removeValue();
+                        reference.child("YouWereLikedBy").child(fuser.getUid()).child(user.getId()).removeValue();
+                        // открываем диалог
                         Intent intent = new Intent(mContext, MessageActivity.class);
                         intent.putExtra("userid", user.getId());
                         mContext.startActivity(intent);

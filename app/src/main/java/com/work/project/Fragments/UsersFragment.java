@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.work.project.Adapter.UserAdapter;
+import com.work.project.Model.Chatlist;
 import com.work.project.Model.User;
 import com.work.project.R;
 
@@ -33,18 +34,25 @@ import java.util.Set;
 
 
 public class UsersFragment extends Fragment {
-    private boolean searchUsers;  // UsersAdapter используется и в Search Users, и в Friend Requests
     private MyRecyclerView recyclerView;
     private UserAdapter userAdapter;
     private List<User> mUsers;
-    private Set<String> likesIds;
-    DatabaseReference reference;
-    String currentUserId;
+    private Set<String> likesIds;  // id пользователей, которые нас лайкнули. Используется только в "Search Users"
+    private DatabaseReference reference;
+    private String currentUserId;
+    private boolean fragmentIsVisible;
     final static int MAX_USERS = 10;
 
+    public static UsersFragment newInstance(boolean searchUsers){
+        Bundle args = new Bundle();
+        args.putBoolean("searchUsers", searchUsers);
+        UsersFragment fragment = new UsersFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-    public UsersFragment(boolean searchUsers){
-        this.searchUsers = searchUsers;
+    private boolean isSearchUsers(){
+        return getArguments().getBoolean("searchUsers");
     }
 
     @Override
@@ -60,12 +68,12 @@ public class UsersFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mUsers = new ArrayList<>();
         likesIds = new HashSet<>();
-        userAdapter = new UserAdapter(getContext(),  mUsers, searchUsers? UserAdapter.SEARCH_USERS : UserAdapter.FRIEND_REQUESTS);
+        userAdapter = new UserAdapter(getContext(),  mUsers, isSearchUsers()? UserAdapter.SEARCH_USERS : UserAdapter.FRIEND_REQUESTS);
         recyclerView.setAdapter(userAdapter);
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        if(searchUsers)
+        if(isSearchUsers())
             startListeningForLikes();
         startListeningForUsersUpdate();
         return view;
@@ -75,12 +83,17 @@ public class UsersFragment extends Fragment {
         reference.child("Likes").child("YouWereLikedBy").child(currentUserId).limitToLast(MAX_USERS).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Set<String> newLikeIds = new HashSet<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String userId = ds.getKey();
-                    likesIds.add(userId);
-                    deleteUsersWithLikes();
-                    Toast.makeText(getContext(), "You were liked by someone!", Toast.LENGTH_SHORT).show();
+                    newLikeIds.add(userId);
+                    if(!likesIds.contains(userId)) {
+                        if (fragmentIsVisible)
+                            Toast.makeText(getContext(), "You were liked by someone!", Toast.LENGTH_SHORT).show();
+                    }
                 }
+                likesIds = newLikeIds;
+                deleteUsersWithLikes();
             }
 
             @Override
@@ -88,6 +101,7 @@ public class UsersFragment extends Fragment {
         });
     }
 
+    // если пользователь поставил нам лайк, то он не отображается во вкладке Search Users
     private void deleteUsersWithLikes(){
         for (int i = mUsers.size() - 1; i >= 0; i--) {
             User user = mUsers.get(i);
@@ -99,7 +113,7 @@ public class UsersFragment extends Fragment {
     }
 
     private void startListeningForUsersUpdate(){
-        DatabaseReference users = searchUsers? reference.child("InSearch") :
+        DatabaseReference users = isSearchUsers()? reference.child("InSearch") :
                                                reference.child("Likes").child("YouWereLikedBy").child(currentUserId);
 
         users.limitToFirst(MAX_USERS).addValueEventListener(new ValueEventListener() {
@@ -117,7 +131,8 @@ public class UsersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(searchUsers) {
+        fragmentIsVisible = true;
+        if(isSearchUsers()) {
             reference.child("InSearch").child(currentUserId).setValue(0);
         }
     }
@@ -125,8 +140,10 @@ public class UsersFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if(searchUsers)
+        fragmentIsVisible = false;
+        if(isSearchUsers()) {
             reference.child("InSearch").child(currentUserId).removeValue();
+        }
     }
 
     private int toUpdate = 0;
@@ -139,14 +156,13 @@ public class UsersFragment extends Fragment {
 
         for (DataSnapshot ds : userIdsSnapshot.getChildren()) {
             String userId = ds.getKey();
-            // если пользователь нас лайкнул, то он не должен отображаться во вкладке "Search users"
-            if (!userId.equals(currentUserId) && !likesIds.contains(userId))
+            if (shouldShowUser(userId))
                 newIds.add(userId);
         }
 
         for (int i = mUsers.size() - 1; i >= 0; i--) {
             User user = mUsers.get(i);
-            if (!newIds.contains(user.getId()) || likesIds.contains(user.getId())) {
+            if (!newIds.contains(user.getId())) {
                 mUsers.remove(i);
                 userAdapter.notifyItemRemoved(i);
             } else
@@ -171,6 +187,21 @@ public class UsersFragment extends Fragment {
                 }
             });
         }
+    }
+
+    // если мы переписывались с пользователем, то он не должен отображаться
+    // если пользователь нас лайкнул, то он не должен отображаться во вкладке "Search users"
+    private boolean shouldShowUser(String userId){
+        if(userId.equals(currentUserId))
+            return false;
+        if(likesIds.contains(userId))
+            return false;
+        // проверяем, переписывались ли мы с пользователем
+        for(Chatlist chatlist : ChatsFragment.usersList){
+            if(chatlist.id.equals(userId))
+                return false;
+        }
+        return true;
     }
 
     public static class MyRecyclerView extends RecyclerView {

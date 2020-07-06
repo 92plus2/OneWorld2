@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
             viewPagerAdapter.addFragment(new ChatsFragment(), "(" + unread + ") Chats");
         }
 
-        viewPagerAdapter.addFragment(new UsersFragment(true), "Search Users");
-        viewPagerAdapter.addFragment(new UsersFragment(false), "Friend Requests");
+        viewPagerAdapter.addFragment(UsersFragment.newInstance(true), "Search Users");
+        viewPagerAdapter.addFragment(UsersFragment.newInstance(false), "Friend Requests");
         viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
 
         viewPager.setAdapter(viewPagerAdapter);
