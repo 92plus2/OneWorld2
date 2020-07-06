@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,22 +41,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Likes");
 
+    public static int CHATS = 0, SEARCH_USERS = 1, FRIEND_REQUESTS = 2;
+    private int pageType;
 
-    public boolean isChat;
-    ImageButton ok;
-    public UserAdapter(Context mContext, List<User> mUsers, boolean isChat){
+    public UserAdapter(Context mContext, List<User> mUsers, int pageType){
         this.mUsers = mUsers;
         this.mContext = mContext;
-        this.isChat = isChat;
         this.lastMessageTimes = new HashMap<>();
         this.listeners = new HashMap<>();
+        this.pageType = pageType;
     }
 
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        if(isChat)
+        if(isChat())
             view = LayoutInflater.from(mContext).inflate(R.layout.user_item, parent, false);
         else
             view = LayoutInflater.from(mContext).inflate(R.layout.user_item2, parent, false);
@@ -75,13 +73,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             Glide.with(mContext).load(user.getImageURL()).into(holder.profile_image);
         }
 
-        if (isChat){
+        if (isChat()){
             observeLastMessage(user, holder);
         } else {
             holder.last_msg.setVisibility(View.GONE);
         }
 
-        if (isChat){
+        if (isChat()){
             if (user.getStatus().equals("online")){
                 holder.img_on.setVisibility(View.VISIBLE);
                 holder.img_off.setVisibility(View.GONE);
@@ -93,7 +91,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             holder.img_on.setVisibility(View.GONE);
             holder.img_off.setVisibility(View.GONE);
         }
-        if(isChat)
+        if(isChat())
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -106,11 +104,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             holder.ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, MessageActivity.class);
-                    intent.putExtra("userid", user.getId());
-                    reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).setValue(0);
-                    reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).setValue(0);
-                  //  mContext.startActivity(intent);
+                    if(pageType == SEARCH_USERS) {
+                        reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).setValue(0);
+                        reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).setValue(0);
+                    }
+                    else{
+                        Intent intent = new Intent(mContext, MessageActivity.class);
+                        intent.putExtra("userid", user.getId());
+                        mContext.startActivity(intent);
+                    }
                 }
             });
         }
@@ -120,6 +122,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public int getItemCount() {
         return mUsers.size();
     }
+
+    private boolean isChat(){
+        return pageType == CHATS;
+    }
+
     public static class UserViewHolder extends RecyclerView.ViewHolder {
         private final ImageButton ok;
         public TextView username;

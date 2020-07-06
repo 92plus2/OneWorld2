@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,28 +27,31 @@ import com.work.project.Model.User;
 import com.work.project.R;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
-import static androidx.recyclerview.widget.RecyclerView.*;
+import java.util.Set;
 
 
 public class UsersFragment extends Fragment {
-
+    private boolean searchUsers;  // UsersAdapter используется и в Search Users, и в Friend Requests
     private MyRecyclerView recyclerView;
-
     private UserAdapter userAdapter;
     private List<User> mUsers;
-    private List<String> userIds;
-    Button but;
-    DatabaseReference inSearch;
+    private Set<String> likesIds;
+    DatabaseReference reference;
     String currentUserId;
     final static int MAX_USERS = 10;
+
+
+    public UsersFragment(boolean searchUsers){
+        this.searchUsers = searchUsers;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        inSearch = FirebaseDatabase.getInstance().getReference();
+        reference = FirebaseDatabase.getInstance().getReference();
 
         View view = inflater.inflate(R.layout.fragment_users, container, false);
 
@@ -57,50 +59,79 @@ public class UsersFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mUsers = new ArrayList<>();
-        userIds = new ArrayList<>();
-        userAdapter = new UserAdapter(getContext(),  mUsers, false);
+        likesIds = new HashSet<>();
+        userAdapter = new UserAdapter(getContext(),  mUsers, searchUsers? UserAdapter.SEARCH_USERS : UserAdapter.FRIEND_REQUESTS);
         recyclerView.setAdapter(userAdapter);
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        if(searchUsers)
+            startListeningForLikes();
+        startListeningForUsersUpdate();
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        inSearch.child("InSearch").child(currentUserId).setValue(0);
-        final List<String> likesIds = new ArrayList<>();
-        inSearch.child("Likes").child("YouWereLikedBy").child(currentUserId).limitToFirst(MAX_USERS).addValueEventListener(new ValueEventListener() {
+    private void startListeningForLikes(){
+        reference.child("Likes").child("YouWereLikedBy").child(currentUserId).limitToLast(MAX_USERS).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String userId = ds.getKey();
                     likesIds.add(userId);
-                   // Toast.makeText(getContext(), "Hello", Toast.LENGTH_SHORT).show();
+                    deleteUsersWithLikes();
+                    Toast.makeText(getContext(), "You were liked by someone!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+    }
 
-        inSearch.child("InSearch").limitToFirst(MAX_USERS).addValueEventListener(new ValueEventListener() {
+    private void deleteUsersWithLikes(){
+        for (int i = mUsers.size() - 1; i >= 0; i--) {
+            User user = mUsers.get(i);
+            if (likesIds.contains(user.getId())) {
+                mUsers.remove(i);
+                userAdapter.notifyItemRemoved(i);
+            }
+        }
+    }
+
+    private void startListeningForUsersUpdate(){
+        DatabaseReference users = searchUsers? reference.child("InSearch") :
+                                               reference.child("Likes").child("YouWereLikedBy").child(currentUserId);
+
+        users.limitToFirst(MAX_USERS).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                updateSearch(dataSnapshot, likesIds);
-                //Toast.makeText(getContext(), "ByeBye", Toast.LENGTH_SHORT).show();
+                updateUsers(dataSnapshot);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(searchUsers) {
+            reference.child("InSearch").child(currentUserId).setValue(0);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(searchUsers)
+            reference.child("InSearch").child(currentUserId).removeValue();
     }
 
     private int toUpdate = 0;
 
-    private void updateSearch(DataSnapshot userIdsSnapshot, List<String> likesIds) {
+    private void updateUsers(DataSnapshot userIdsSnapshot) {
         if (toUpdate > 0)
             return;
         List<String> newIds = new ArrayList<>();
@@ -108,20 +139,19 @@ public class UsersFragment extends Fragment {
 
         for (DataSnapshot ds : userIdsSnapshot.getChildren()) {
             String userId = ds.getKey();
-            if (!userId.equals(currentUserId))
+            // если пользователь нас лайкнул, то он не должен отображаться во вкладке "Search users"
+            if (!userId.equals(currentUserId) && !likesIds.contains(userId))
                 newIds.add(userId);
         }
 
         for (int i = mUsers.size() - 1; i >= 0; i--) {
             User user = mUsers.get(i);
-            if (!newIds.contains(user.getId())) {
+            if (!newIds.contains(user.getId()) || likesIds.contains(user.getId())) {
                 mUsers.remove(i);
                 userAdapter.notifyItemRemoved(i);
             } else
                 newIds.remove(user.getId());
         }
-        userIds.addAll(likesIds);
-        userIds.addAll(newIds);
         toUpdate = newIds.size();
 
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("Users");
@@ -141,12 +171,6 @@ public class UsersFragment extends Fragment {
                 }
             });
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        inSearch.child("InSearch").child(currentUserId).removeValue();
     }
 
     public static class MyRecyclerView extends RecyclerView {
