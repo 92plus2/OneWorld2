@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,6 +43,7 @@ public class UsersFragment extends Fragment {
     private Set<String> likesIds;  // id пользователей, которые нас лайкнули. Используется только в "Search Users"
     private DatabaseReference reference;
     private String currentUserId;
+    ImageView ghost;
     private boolean fragmentIsVisible;
 
     public static UsersFragment newInstance(boolean searchUsers){
@@ -69,6 +71,7 @@ public class UsersFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mUsers = new ArrayList<>();
         likesIds = new HashSet<>();
+        ghost = view.findViewById(R.id.ghost);
         userAdapter = new UserAdapter(getContext(),  mUsers, isSearchUsers()? UserAdapter.SEARCH_USERS : UserAdapter.FRIEND_REQUESTS);
         recyclerView.setAdapter(userAdapter);
 
@@ -94,6 +97,9 @@ public class UsersFragment extends Fragment {
                     }
                 }
                 likesIds = newLikeIds;
+                if(!isSearchUsers() && likesIds.isEmpty()){
+                    ghost.setVisibility(View.VISIBLE);
+                }
                 deleteUsersWithLikes();
             }
 

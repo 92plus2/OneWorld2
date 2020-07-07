@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -37,14 +38,14 @@ public class ChatsFragment extends Fragment {
 
     FirebaseUser fuser;
     DatabaseReference reference;
-
+    ImageView ghost;
     public static List<Chatlist> usersList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chats, container, false);
-
+        ghost = view.findViewById(R.id.ghost);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -101,6 +102,12 @@ public class ChatsFragment extends Fragment {
                 }
                 userAdapter = new UserAdapter(getContext(), mUsers, UserAdapter.CHATS);
                 recyclerView.setAdapter(userAdapter);
+                if(mUsers.isEmpty()){
+                    ghost.setVisibility(View.VISIBLE);
+                }
+                else{
+                    ghost.setVisibility(View.GONE);
+                }
             }
 
             @Override
