@@ -11,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <ImageView
+    <com.work.project.GhostView
+        app:ghost_text="No chats"
+        android:adjustViewBounds="true"
         android:id="@+id/ghost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
