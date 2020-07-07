@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.text.StaticLayout;
 import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
@@ -15,12 +14,12 @@ public class GhostView extends androidx.appcompat.widget.AppCompatImageView {
     String text;
     float textLength;
     Paint paint;
-    StaticLayout staticLayout;
 
     public GhostView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.GhostView);
         text = attributes.getString(R.styleable.GhostView_ghost_text);
+        attributes.recycle();
 
         paint = new Paint();
         paint.setColor(Color.BLACK);
