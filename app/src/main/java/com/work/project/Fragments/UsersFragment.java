@@ -34,6 +34,8 @@ import java.util.Set;
 
 
 public class UsersFragment extends Fragment {
+    final static int MAX_USERS = 10;
+    final static boolean STAY_IN_SEARCH = true;  // оставаться в поиске. Пока что так, потому что мало пользователей
     private MyRecyclerView recyclerView;
     private UserAdapter userAdapter;
     private List<User> mUsers;
@@ -41,7 +43,6 @@ public class UsersFragment extends Fragment {
     private DatabaseReference reference;
     private String currentUserId;
     private boolean fragmentIsVisible;
-    final static int MAX_USERS = 10;
 
     public static UsersFragment newInstance(boolean searchUsers){
         Bundle args = new Bundle();
@@ -141,8 +142,10 @@ public class UsersFragment extends Fragment {
     public void onPause() {
         super.onPause();
         fragmentIsVisible = false;
-        if(isSearchUsers()) {
-            reference.child("InSearch").child(currentUserId).removeValue();
+        if(!STAY_IN_SEARCH) {
+            if (isSearchUsers()) {
+                reference.child("InSearch").child(currentUserId).removeValue();
+            }
         }
     }
 
