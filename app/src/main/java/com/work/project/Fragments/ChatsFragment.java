@@ -34,12 +34,12 @@ public class ChatsFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private UserAdapter userAdapter;
-    private List<User> mUsers;
+    private List<User> mUsers = new ArrayList<>();
 
     FirebaseUser fuser;
     DatabaseReference reference;
     ImageView ghost;
-    public static List<Chatlist> usersList;
+    public static List<Chatlist> usersList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,19 +52,27 @@ public class ChatsFragment extends Fragment {
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
 
-        usersList = new ArrayList<>();
-
         reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(fuser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                usersList.clear();
+                List<Chatlist> newUsersList = new ArrayList<>();
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chatlist chatlist = snapshot.getValue(Chatlist.class);
-                    usersList.add(chatlist);
+                    newUsersList.add(chatlist);
                 }
 
-                chatList();
+                usersList = newUsersList;
+
+                if(usersList.isEmpty()){
+                    ghost.setVisibility(View.VISIBLE);
+                }
+                else{
+                    ghost.setVisibility(View.GONE);
+                }
+
+                updateChatList();
             }
 
             @Override
@@ -85,8 +93,7 @@ public class ChatsFragment extends Fragment {
         reference.child(fuser.getUid()).setValue(token1);
     }
 
-    private void chatList() {
-        mUsers = new ArrayList<>();
+    private void updateChatList() {
         reference = FirebaseDatabase.getInstance().getReference("Users");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -100,14 +107,9 @@ public class ChatsFragment extends Fragment {
                         }
                     }
                 }
+
                 userAdapter = new UserAdapter(getContext(), mUsers, UserAdapter.CHATS);
                 recyclerView.setAdapter(userAdapter);
-                if(mUsers.isEmpty()){
-                    ghost.setVisibility(View.VISIBLE);
-                }
-                else{
-                    ghost.setVisibility(View.GONE);
-                }
             }
 
             @Override
