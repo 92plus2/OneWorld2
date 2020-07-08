@@ -86,5 +86,4 @@
         app:met_textColor="@color/colorWhite"
         android:textColorLink="@color/colorWhite"
         android:hint="Write about yourself"/>
-
 </RelativeLayout>
