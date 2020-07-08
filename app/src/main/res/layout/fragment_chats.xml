@@ -17,6 +17,8 @@
         android:id="@+id/ghost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
         android:src="@drawable/ghost"
         tools:visibility="gone" />
 </RelativeLayout>
