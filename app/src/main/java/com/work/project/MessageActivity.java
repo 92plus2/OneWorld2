@@ -90,7 +90,7 @@ public class MessageActivity extends AppCompatActivity {
     public LinearLayout bigPhotoLayout;
     public ImageView bigPhotoView;
 
-    APIService apiService;
+    private static APIService apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
     boolean notify = false;
 
@@ -110,9 +110,6 @@ public class MessageActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
-
-
-        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -286,47 +283,49 @@ public class MessageActivity extends AppCompatActivity {
         chats.push().setValue(hashMap);
 
         if (notify) {
-            sendNotification(otherUserId, currentUser.getSearch(), message);
+            sendMessageNotification(currentUser.getSearch(), currentUserId, otherUserId, message);
         }
     }
 
-    private void sendNotification(final String receiver, final String sender, final String message){
+    private void sendMessageNotification(final String senderName, final String currentUserId, final String receiverId, final String message) {
+        sendNotification(currentUserId, receiverId, "New Message", senderName + ": " + message);
+    }
+
+    public static void sendNotification(final String currentUserId, final String receiverId, final String title, final String message){
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = tokens.orderByKey().equalTo(receiver);
+        Query query = tokens.child(receiverId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(currentUserId, R.mipmap.ic_launcher, sender+": "+message, "New Message",
-                            otherUserId);
+                Token token = dataSnapshot.getValue(Token.class);
+                Data data = new Data(currentUserId, R.mipmap.ic_launcher, message, title,
+                        receiverId);
 
-                    Sender sender = new Sender(data, token.getToken());
+                Sender sender = new Sender(data, token.getToken());
 
-                    apiService.sendNotification(sender)
-                            .enqueue(new Callback<MyResponse>() {
-                                @Override
-                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                    if (response.code() == 200){
-                                        if (response.body().success != 1){
-                                            Toast.makeText(MessageActivity.this, "Failed to deliver notification",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                }
+                apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
+                    @Override
+                    public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                        /*if (response.code() == 200){
+                            if (response.body().success != 1){
+                                Toast.makeText(MessageActivity.this, "Failed to deliver notification",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }*/
+                    }
 
-                                @Override
-                                public void onFailure(Call<MyResponse> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<MyResponse> call, Throwable t) {
 
-                                }
-                            });
-                }
+                    }
+                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
     }
+
 
     private void startReadingMessages(final String imageurl, final String destLanguage){
         mChat = new ArrayList<>();
