@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
@@ -75,6 +74,7 @@ public class MessageActivity extends AppCompatActivity {
     DatabaseReference chats;
     ValueEventListener chatsListener;
     boolean hasChatsListener;
+    DatabaseReference currentUserRef;
     DatabaseReference otherUserRef;
 
     ImageButton btn_send;
@@ -94,7 +94,7 @@ public class MessageActivity extends AppCompatActivity {
 
     boolean notify = false;
 
-    private final static String TAG = "oneworld";
+    public final static String TAG = "oneworld";
     private final static int MAX_MESSAGES = 100;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
@@ -156,21 +156,30 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-
+        currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserId);
         otherUserRef = FirebaseDatabase.getInstance().getReference("Users").child(otherUserId);
 
         otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getUsername());
-                if (user.getImageURL().equals("default")){
+                final User otherUser = dataSnapshot.getValue(User.class);
+                username.setText(otherUser.getUsername());
+                if (otherUser.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 } else {
-                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
+                    Glide.with(getApplicationContext()).load(otherUser.getImageURL()).into(profile_image);
                 }
 
-                startReadingMessages(user.getImageURL());
+                currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        final User currentUser = dataSnapshot.getValue(User.class);
+                        startReadingMessages(otherUser.getImageURL(), currentUser.getLanguage());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
             }
 
             @Override
@@ -319,10 +328,10 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void startReadingMessages(final String imageurl){
+    private void startReadingMessages(final String imageurl, final String destLanguage){
         mChat = new ArrayList<>();
         chatMap = new HashMap<>();
-        messageAdapter = new MessageAdapter(MessageActivity.this, mChat, imageurl);
+        messageAdapter = new MessageAdapter(MessageActivity.this, mChat, imageurl, destLanguage);
         recyclerView.setAdapter(messageAdapter);
 
         chats = User.getChatBetween(currentUserId, otherUserId);
@@ -390,7 +399,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 // если надо, помечаем сообщения как прочитанное
                 for(Chat message : seenMessages){
-                    Log.d(TAG, "seen message: " + message.getMessage());
+                    //Log.d(TAG, "seen message: " + message.getMessage());
                     message.setSeen(true);
                     messageAdapter.notifyItemChanged(chatMap.get(message));
                 }

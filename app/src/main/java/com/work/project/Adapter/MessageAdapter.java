@@ -13,25 +13,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.mlkit.common.model.DownloadConditions;
-import com.google.mlkit.nl.languageid.LanguageIdentification;
-import com.google.mlkit.nl.languageid.LanguageIdentifier;
-import com.google.mlkit.nl.translate.TranslateLanguage;
-import com.google.mlkit.nl.translate.Translation;
-import com.google.mlkit.nl.translate.Translator;
-import com.google.mlkit.nl.translate.TranslatorOptions;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.work.project.Fragments.ProfileFragment;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
 import com.work.project.R;
@@ -42,9 +31,8 @@ import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Objects;
 
-import cz.msebera.android.httpclient.entity.mime.Header;
+import cz.msebera.android.httpclient.Header;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
@@ -54,14 +42,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private Context mContext;
     private List<Chat> mChat;
     private String avatarUrl;
+    private String destLanguage;
 
-    FirebaseUser fuser;
-
-    public MessageAdapter(Context mContext, List<Chat> mChat, String avatarUrl){
+    public MessageAdapter(Context mContext, List<Chat> mChat, String avatarUrl, String destLanguage){
         this.mChat = mChat;
         this.mContext = mContext;
         this.avatarUrl = avatarUrl;
+        this.destLanguage = destLanguage;
     }
+
     public static class Http {
         private static final String BASE_URL = "https://translation.googleapis.com/language/translate/v2?";
         private static final String KEY = "AIzaSyDKDoumFm_ZpPmSIHwNfMJBPsIOeinMAH8";
@@ -70,8 +59,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         private static AsyncHttpClient client = new AsyncHttpClient();
 
 
-        public static void post(String transText,String sourceLang, String destLang, AsyncHttpResponseHandler responseHandler) {
-            client.get(getAbsoluteUrl(transText, sourceLang, destLang), responseHandler);
+        public static void post(String transText, String destLang, AsyncHttpResponseHandler responseHandler) {
+            client.get(getAbsoluteUrl(transText, destLang), responseHandler);
         }
 
         private static String makeKeyChunk(String key) {
@@ -80,20 +69,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         private static String makeTransChunk(String transText) {
             String encodedText = URLEncoder.encode(transText);
-            return "&amp;q=" + encodedText;
-        }
-
-        private static String langSource(String langSource) {
-            return "&amp;source=" + langSource;
+            return "&q=" + encodedText;
         }
 
         private static String langDest(String langDest) {
-            return "&amp;target=" + langDest;
-
+            return "&target=" + langDest;
         }
 
-        private static String getAbsoluteUrl(String transText, String sourceLang, String destLang) {
-            String apiUrl = BASE_URL + makeKeyChunk(KEY) + makeTransChunk(transText) + langSource(sourceLang) + langDest(destLang);
+        private static String getAbsoluteUrl(String transText, String destLang) {
+            String apiUrl = BASE_URL + makeKeyChunk(KEY) + makeTransChunk(transText) + langDest(destLang);
+            Log.d(MessageActivity.TAG, "url: " + apiUrl);
             return apiUrl;
         }
     }
@@ -114,22 +99,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             else
                 but.setText("-");
             but.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View v) {
                     if (but.getText().equals("+")) {
-                        final String s = txt.getText().toString();
-                        final String[] message2 = {s};
-                        final String[] s1 = {"RU"};
-                        String s2 = ProfileFragment.language;
+                        String language = destLanguage.toLowerCase();
 
-
-                        String translationString = s;
-                        Http.post(translationString, "ru", "es", new JsonHttpResponseHandler() {
-                            //@Override
+                        String translationString = txt.getText().toString();
+                        Http.post(translationString, language, new JsonHttpResponseHandler() {
+                            @Override
                             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-
                                 try {
                                     JSONObject serverResp = new JSONObject(response.toString());
                                     JSONObject jsonObject = serverResp.getJSONObject("data");
@@ -141,11 +119,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                     but.setText("-");
                                     txt2.setText(transObject2.getString("translatedText"));
                                 } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
+                                    Log.d(MessageActivity.TAG, "error on http: ", e);
                                 }
                             }
-
                         });
                     } else {
                         txt2.setTextSize(12);
@@ -289,9 +265,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public int getItemViewType(int position) {
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+        String currentUserId = fuser.getUid();
         Chat chat = mChat.get(position);
-        if (chat.getSender().equals(fuser.getUid()))
+        if (chat.getSender().equals(currentUserId))
             return MSG_TYPE_RIGHT;
         else
             return MSG_TYPE_LEFT;

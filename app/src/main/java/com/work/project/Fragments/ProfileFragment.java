@@ -5,7 +5,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,8 +62,8 @@ public class ProfileFragment extends Fragment {
     private Uri imageUri;
     private StorageTask uploadTask;
 
-    public static int languageID = 0;
-    public static String language;
+    int languageID = 0;
+    String language;
     public static final int RU = 0, EN = 1, DE = 2, ES = 3, FR = 4, IT = 5, ZH = 6;
 
     private ArrayList<LanguageItem> mLanguageList;
@@ -157,7 +156,7 @@ public class ProfileFragment extends Fragment {
                 language = user.getLanguage();
                 spinnerLanguages.setSelection(languageID, false);
                 int genderId = user.getGenderId();
-                Log.d("oneworld", "gender id: " + genderId);
+                //Log.d("oneworld", "gender id: " + genderId);
                 spinnerGender.setSelection(genderId, false);
 
                 if (user.getImageURL().equals("default")){
