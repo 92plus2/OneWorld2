@@ -28,13 +28,23 @@ import com.google.mlkit.nl.translate.TranslateLanguage;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.work.project.Fragments.ProfileFragment;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
 import com.work.project.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Objects;
+
+import cz.msebera.android.httpclient.entity.mime.Header;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
@@ -51,6 +61,41 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         this.mChat = mChat;
         this.mContext = mContext;
         this.avatarUrl = avatarUrl;
+    }
+    public static class Http {
+        private static final String BASE_URL = "https://translation.googleapis.com/language/translate/v2?";
+        private static final String KEY = "AIzaSyDKDoumFm_ZpPmSIHwNfMJBPsIOeinMAH8";
+
+
+        private static AsyncHttpClient client = new AsyncHttpClient();
+
+
+        public static void post(String transText,String sourceLang, String destLang, AsyncHttpResponseHandler responseHandler) {
+            client.get(getAbsoluteUrl(transText, sourceLang, destLang), responseHandler);
+        }
+
+        private static String makeKeyChunk(String key) {
+            return "key=" + KEY;
+        }
+
+        private static String makeTransChunk(String transText) {
+            String encodedText = URLEncoder.encode(transText);
+            return "&amp;q=" + encodedText;
+        }
+
+        private static String langSource(String langSource) {
+            return "&amp;source=" + langSource;
+        }
+
+        private static String langDest(String langDest) {
+            return "&amp;target=" + langDest;
+
+        }
+
+        private static String getAbsoluteUrl(String transText, String sourceLang, String destLang) {
+            String apiUrl = BASE_URL + makeKeyChunk(KEY) + makeTransChunk(transText) + langSource(sourceLang) + langDest(destLang);
+            return apiUrl;
+        }
     }
 
     @NonNull
@@ -77,90 +122,38 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                         final String[] message2 = {s};
                         final String[] s1 = {"RU"};
                         String s2 = ProfileFragment.language;
-                        LanguageIdentifier languageIdentifier =
-                                LanguageIdentification.getClient();
-                        languageIdentifier.identifyLanguage(s)
-                                .addOnSuccessListener(
-                                        new OnSuccessListener<String>() {
-                                            @Override
-                                            public void onSuccess(@Nullable String languageCode) {
-                                                if (languageCode.equals("und")) {
-                                                   s1[0] = "EN";
-                                                } else {
-                                                    s1[0] = languageCode;
-                                                }
-                                            }
-                                        })
-                                .addOnFailureListener(
-                                        new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                // Model couldn’t be loaded or other internal error.
-                                                // ...
-                                            }
-                                        });
-                        TranslatorOptions options =
-                                new TranslatorOptions.Builder()
-                                        .setSourceLanguage(Objects.requireNonNull(TranslateLanguage.fromLanguageTag(s1[0])))
-                                        .setTargetLanguage(Objects.requireNonNull(TranslateLanguage.fromLanguageTag(s2)))
-                                        .build();
-                        final Translator englishGermanTranslator =
-                                Translation.getClient(options);
-                        DownloadConditions conditions = new DownloadConditions.Builder()
-                                .build();
-                        englishGermanTranslator.downloadModelIfNeeded(conditions)
-                                .addOnSuccessListener(
-                                        new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void v) {
-                                                // Model downloaded successfully. Okay to start translating.
-                                                // (Set a flag, unhide the translation UI, etc.)
-                                                // Toast.makeText(MessageActivity.this, "error1", Toast.LENGTH_SHORT).show();
-                                                englishGermanTranslator.translate(s)
-                                                        .addOnSuccessListener(
-                                                                new OnSuccessListener<String>() {
-                                                                    @SuppressLint("ResourceAsColor")
-                                                                    @Override
-                                                                    public void onSuccess(@NonNull String translatedText) {
-                                                                        ;
-                                                                        message2[0] = translatedText;
-                                                                        if (!s.equals("")) {
-                                                                            txt2.setSingleLine(false);
-                                                                            txt2.setTextSize(18);
-                                                                            //txt2.setTextColor(R.color.colorblack);
-                                                                            txt2.setText("(" + message2[0] + ")");
-                                                                            but.setText("-");
-                                                                        }
-                                                                    }
-                                                                })
-                                                        .addOnFailureListener(
-                                                                new OnFailureListener() {
-                                                                    @Override
-                                                                    public void onFailure(@NonNull Exception e) {
-                                                                        // Error.
-                                                                        //Toast.makeText(MessageActivity.this, "ERROR2", Toast.LENGTH_SHORT).show();
-                                                                        // ...
-                                                                    }
-                                                                });
-                                            }
-                                        })
-                                .addOnFailureListener(
-                                        new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                // Model couldn’t be downloaded or other internal error.
-                                                // ...
-                                            }
-                                        });
-                    }
-                    else {
+
+
+                        String translationString = s;
+                        Http.post(translationString, "ru", "es", new JsonHttpResponseHandler() {
+                            //@Override
+                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                                try {
+                                    JSONObject serverResp = new JSONObject(response.toString());
+                                    JSONObject jsonObject = serverResp.getJSONObject("data");
+                                    JSONArray transObject = jsonObject.getJSONArray("translations");
+                                    JSONObject transObject2 = transObject.getJSONObject(0);
+                                    txt2.setSingleLine(false);
+                                    txt2.setTextSize(18);
+                                    //txt2.setTextColor(R.color.colorblack);
+                                    but.setText("-");
+                                    txt2.setText(transObject2.getString("translatedText"));
+                                } catch (JSONException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        });
+                    } else {
                         txt2.setTextSize(12);
                         //txt2.setTextColor(R.color.colorPrimaryDark);
                         txt2.setSingleLine();
                         txt2.setText("click + to translate");
                         but.setText("+");
                     }
-
                 }
             });
             return new MessageViewHolder(view);
