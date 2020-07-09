@@ -27,7 +27,7 @@
             android:padding="8dp"
             android:text="hello"
             android:textColor="#fff"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/show_message"

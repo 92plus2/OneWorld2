@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# This rule will properly ProGuard all the model classes in 
+# the package com.yourcompany.models. Modify to fit the structure
+# of your app.
+-keepclassmembers class com.work.project.Model.* {
+*;
+}
