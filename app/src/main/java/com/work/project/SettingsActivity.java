@@ -288,8 +288,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
-
-
+    
     private static class FixedItemSelectedListener implements AdapterView.OnItemSelectedListener {
         int calledTimes = 0;
 
