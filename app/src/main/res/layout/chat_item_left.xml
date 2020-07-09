@@ -22,6 +22,7 @@
             android:background="@drawable/background_left">
 
             <TextView
+                android:clickable="true"
                 android:id="@+id/clickPlusToTranslate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,12 +35,13 @@
                 android:paddingRight="8dp"
                 android:paddingBottom="8dp"
                 android:singleLine="false"
-                android:text="click + to translate"
+                android:text="click to translate"
                 android:textColor="@color/colorWhite"
                 android:textIsSelectable="true"
                 android:textSize="12sp" />
 
             <TextView
+                android:clickable="true"
                 android:id="@+id/show_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,6 +64,7 @@
             android:src="@mipmap/ic_launcher" />
 
         <TextView
+            android:clickable="true"
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,24 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone" />
-
-
     </RelativeLayout>
-
-    <Button
-        android:id="@+id/plus"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/background_plus"
-        android:text="+"
-        android:textColor="@color/colorWhite" />
 
     <RelativeLayout
         android:id="@+id/photoLayout"

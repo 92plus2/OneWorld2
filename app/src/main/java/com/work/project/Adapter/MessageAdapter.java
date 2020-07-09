@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -78,7 +77,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         private static String getAbsoluteUrl(String transText, String destLang) {
             String apiUrl = BASE_URL + makeKeyChunk(KEY) + makeTransChunk(transText) + langDest(destLang);
-            Log.d(MessageActivity.TAG, "url: " + apiUrl);
+            //Log.d(MessageActivity.TAG, "url: " + apiUrl);
             return apiUrl;
         }
     }
@@ -86,54 +85,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == MSG_TYPE_RIGHT) {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_right, parent, false);
-            return new MessageViewHolder(view);
-        } else {
-            final View view = LayoutInflater.from(mContext).inflate(R.layout.chat_item_left, parent, false);
-            final Button but = view.findViewById(R.id.plus);
-            final TextView txt = view.findViewById(R.id.show_message);
-            final TextView txt2 = view.findViewById(R.id.clickPlusToTranslate);
-            if(txt2.getText().toString().equals("click + to translate"))
-                but.setText("+");
-            else
-                but.setText("-");
-            but.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (but.getText().equals("+")) {
-                        String language = destLanguage.toLowerCase();
+        int layoutId;
+        if(viewType == MSG_TYPE_LEFT)
+            layoutId = R.layout.chat_item_left;
+        else
+            layoutId = R.layout.chat_item_right;
 
-                        String translationString = txt.getText().toString();
-                        Http.post(translationString, language, new JsonHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                try {
-                                    JSONObject serverResp = new JSONObject(response.toString());
-                                    JSONObject jsonObject = serverResp.getJSONObject("data");
-                                    JSONArray transObject = jsonObject.getJSONArray("translations");
-                                    JSONObject transObject2 = transObject.getJSONObject(0);
-                                    txt2.setSingleLine(false);
-                                    txt2.setTextSize(18);
-                                    //txt2.setTextColor(R.color.colorblack);
-                                    but.setText("-");
-                                    txt2.setText(transObject2.getString("translatedText"));
-                                } catch (JSONException e) {
-                                    Log.d(MessageActivity.TAG, "error on http: ", e);
-                                }
-                            }
-                        });
-                    } else {
-                        txt2.setTextSize(12);
-                        //txt2.setTextColor(R.color.colorPrimaryDark);
-                        txt2.setSingleLine();
-                        txt2.setText("click + to translate");
-                        but.setText("+");
-                    }
-                }
-            });
-            return new MessageViewHolder(view);
-        }
+        View view = LayoutInflater.from(mContext).inflate(layoutId, parent, false);
+        return new MessageViewHolder(view);
     }
 
     @SuppressLint("SetTextI18n")
@@ -144,7 +103,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.time.setText(chat.getTime());
             holder.time.setTextSize(11);
         }
-        holder.showMessage.setText(chat.getMessage());
+        holder.messageText.setText(chat.getMessage());
 
         if (avatarUrl.equals("default")) {
             holder.profilePicture.setImageResource(R.mipmap.ic_launcher);
@@ -167,29 +126,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         if (chat.getPhoto() != null) {
             holder.messagePhoto.setVisibility(View.VISIBLE);
-            holder.showMessage.setVisibility(View.GONE);
+            holder.messageText.setVisibility(View.GONE);
             int height = (int) convertDpToPixel(200, holder.time.getContext());
             setHeight(holder.messagePhoto, height);
             Glide.with(mContext).load(chat.getPhoto()).into(holder.messagePhoto);
             if (holder.isLeftMessage()) {
-                holder.clickPlusToTranslate.setVisibility(View.GONE);
-                holder.plus.setVisibility(View.GONE);
+                holder.clickToTranslate.setVisibility(View.GONE);
             }
 
             holder.messagePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showBigPhoto(holder.showMessage.getContext(), chat.getPhoto());
+                    showBigPhoto(holder.messageText.getContext(), chat.getPhoto());
                 }
             });
         }
         else {
             holder.messagePhoto.setVisibility(View.GONE);
             setHeight(holder.messagePhoto, 0);
-            holder.showMessage.setVisibility(View.VISIBLE);
+            holder.messageText.setVisibility(View.VISIBLE);
             if (holder.isLeftMessage()) {
-                holder.clickPlusToTranslate.setVisibility(View.VISIBLE);
-                holder.plus.setVisibility(View.VISIBLE);
+                holder.clickToTranslate.setVisibility(View.VISIBLE);
             }
         }
 
@@ -197,10 +154,64 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         if(holder.isRightMessage()) {
             RelativeLayout.LayoutParams params =
                     (RelativeLayout.LayoutParams) holder.time.getLayoutParams();
-            View alignView = chat.getPhoto() == null? holder.showMessage : holder.photoLayout;
+            View alignView = chat.getPhoto() == null? holder.messageText : holder.photoLayout;
             params.addRule(RelativeLayout.LEFT_OF, alignView.getId());
         }
+
+        // добавляем callback для перевода
+        if(holder.isLeftMessage()){
+            View.OnClickListener translationListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(MessageActivity.TAG, "on message click!");
+                    translate(holder);
+                    setClickListenerRecursively(holder.messageLayout, null);
+                }
+            };
+            setClickListenerRecursively(holder.messageLayout, translationListener);
+        }
+        else
+            setClickListenerRecursively(holder.messageLayout, null);
     }
+
+    private static void setClickListenerRecursively(View view, View.OnClickListener listener){
+        view.setOnClickListener(listener);
+        if(view instanceof TextView) {
+            view.setClickable(true);
+            view.setFocusable(true);
+        }
+
+        if(view instanceof ViewGroup){
+            ViewGroup viewGroup = (ViewGroup) view;
+            for(int i = 0; i < viewGroup.getChildCount(); i++){
+                View child = viewGroup.getChildAt(i);
+                setClickListenerRecursively(child, listener);
+            }
+        }
+    }
+
+    private void translate(final MessageViewHolder holder) {
+        String language = destLanguage.toLowerCase();
+        String translationString = holder.messageText.getText().toString();
+        Http.post(translationString, language, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONObject serverResp = new JSONObject(response.toString());
+                    JSONObject jsonObject = serverResp.getJSONObject("data");
+                    JSONArray transObject = jsonObject.getJSONArray("translations");
+                    JSONObject transObject2 = transObject.getJSONObject(0);
+                    String translatedText = transObject2.getString("translatedText");
+                    holder.clickToTranslate.setSingleLine(false);
+                    holder.clickToTranslate.setTextSize(18);
+                    holder.clickToTranslate.setText("(" + translatedText + ")");
+                } catch (JSONException e) {
+                    Log.d(MessageActivity.TAG, "error on translate: ", e);
+                }
+            }
+        });
+    }
+
 
     private void setHeight(View view, int height){
         ViewGroup.LayoutParams params = view.getLayoutParams();
@@ -231,31 +242,30 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView showMessage;
+        public TextView messageText;
         public TextView time;
 
         public ImageView profilePicture;
         public TextView txtSeen;
         public ImageView messagePhoto;
         public RelativeLayout photoLayout;
-
-        public TextView clickPlusToTranslate;
-        public Button plus;
+        public RelativeLayout messageLayout;
+        public TextView clickToTranslate;
 
         public MessageViewHolder(View itemView) {
             super(itemView);
-            showMessage = itemView.findViewById(R.id.show_message);
+            messageText = itemView.findViewById(R.id.show_message);
             time = itemView.findViewById(R.id.time);
-            clickPlusToTranslate = itemView.findViewById(R.id.clickPlusToTranslate);
-            plus = itemView.findViewById(R.id.plus);
+            clickToTranslate = itemView.findViewById(R.id.clickPlusToTranslate);
             profilePicture = itemView.findViewById(R.id.profile_image);
             txtSeen = itemView.findViewById(R.id.txt_seen);
             messagePhoto = itemView.findViewById(R.id.message_photo);
             photoLayout = itemView.findViewById(R.id.photoLayout);
+            messageLayout = itemView.findViewById(R.id.messageLayout);
         }
 
         public boolean isRightMessage(){
-            return clickPlusToTranslate == null;
+            return clickToTranslate == null;
         }
 
         public boolean isLeftMessage(){
