@@ -29,8 +29,10 @@ import com.work.project.Model.User;
 import com.work.project.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -46,6 +48,7 @@ public class UsersFragment extends Fragment {
     List<Chatlist> chatlists = new ArrayList<>();
     ImageView ghost;
     private boolean fragmentIsVisible;
+    private Map<DatabaseReference, ValueEventListener> listeners = new HashMap<>();
 
     public static UsersFragment newInstance(boolean searchUsers){
         Bundle args = new Bundle();
@@ -87,28 +90,32 @@ public class UsersFragment extends Fragment {
     }
 
     private void startListeningForLikes(){
-        reference.child("Likes").child("YouWereLikedBy").child(currentUserId).limitToLast(MAX_USERS).addValueEventListener(new ValueEventListener() {
+        ValueEventListener likesListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Set<String> newLikeIds = new HashSet<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String userId = ds.getKey();
                     newLikeIds.add(userId);
-                    if(!likesIds.contains(userId)) {
+                    if (!likesIds.contains(userId)) {
                         if (fragmentIsVisible)
                             Toast.makeText(getContext(), "You were liked by someone!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 likesIds = newLikeIds;
-                if(!isSearchUsers() && likesIds.isEmpty()){
+                if (!isSearchUsers() && likesIds.isEmpty()) {
                     ghost.setVisibility(View.VISIBLE);
                 }
                 deleteUsersWithLikes();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+        DatabaseReference likesRef = reference.child("Likes").child("YouWereLikedBy").child(currentUserId);
+        likesRef.limitToLast(MAX_USERS).addValueEventListener(likesListener);
+        listeners.put(likesRef, likesListener);
     }
 
     // если пользователь поставил нам лайк, то он не отображается во вкладке Search Users
@@ -126,7 +133,7 @@ public class UsersFragment extends Fragment {
         DatabaseReference users = isSearchUsers()? reference.child("InSearch") :
                                                reference.child("Likes").child("YouWereLikedBy").child(currentUserId);
 
-        users.limitToFirst(MAX_USERS).addValueEventListener(new ValueEventListener() {
+        ValueEventListener usersListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 updateUsers(dataSnapshot);
@@ -135,17 +142,19 @@ public class UsersFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
-        });
+        };
+        users.limitToFirst(MAX_USERS).addValueEventListener(usersListener);
+        listeners.put(users, usersListener);
     }
 
     private void startListeningForChatlist(){
         DatabaseReference chatlistRef = reference.child("Chatlist").child(currentUserId);
-        chatlistRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener chatlistListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Chatlist> newUsersList = new ArrayList<>();
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chatlist chatlist = snapshot.getValue(Chatlist.class);
                     newUsersList.add(chatlist);
                 }
@@ -160,13 +169,17 @@ public class UsersFragment extends Fragment {
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
                 });
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+        chatlistRef.addValueEventListener(chatlistListener);
+        listeners.put(chatlistRef, chatlistListener);
     }
 
     @Override
@@ -298,6 +311,14 @@ public class UsersFragment extends Fragment {
                     0, eventY, 0);
             super.onTouchEvent(eventUp);
             eventUp.recycle();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        for(Map.Entry<DatabaseReference, ValueEventListener> kv : listeners.entrySet()){
+            kv.getKey().removeEventListener(kv.getValue());
         }
     }
 }

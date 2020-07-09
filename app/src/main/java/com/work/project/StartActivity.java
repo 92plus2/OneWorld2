@@ -1,25 +1,23 @@
 package com.work.project;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends Activity {
 
     Button login, register;
 
     FirebaseUser firebaseUser;
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //check if user is null
@@ -27,15 +25,10 @@ public class StartActivity extends AppCompatActivity {
             Intent intent = new Intent(StartActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
+            return;
         }
-    }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-
-
 
         login = findViewById(R.id.login);
         register = findViewById(R.id.register);

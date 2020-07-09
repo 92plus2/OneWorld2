@@ -3,7 +3,6 @@ package com.work.project.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -198,7 +197,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 }
                 position++;
                 mUsers.add(position, user);
-                Log.i(MessageActivity.TAG, "msg, size, position: " + theLastMessage + " " + mUsers.size() + " " + position);
                 if(recyclerView.getItemAnimator() == null && allUsersHaveTimes())
                     recyclerView.setItemAnimator(new DefaultItemAnimator());
                 notifyItemMoved(oldPosition, position);

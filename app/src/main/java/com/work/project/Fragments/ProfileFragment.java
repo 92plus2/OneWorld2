@@ -54,7 +54,7 @@ public class ProfileFragment extends Fragment {
     CircleImageView image_profile;
     TextView username;
 
-    DatabaseReference reference;
+    DatabaseReference currentUserRef;
     FirebaseUser fuser;
 
     StorageReference storageReference;
@@ -70,6 +70,7 @@ public class ProfileFragment extends Fragment {
     private LanguageAdapter mLanguageAdapter;
     private Spinner spinnerLanguages;
     private Spinner spinnerGender;
+    private ValueEventListener currentUserListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -114,8 +115,8 @@ public class ProfileFragment extends Fragment {
                     return;
                 LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
                 String clickedLanguageName = clickedItem.getLanguageName();
-                reference.child("languageID").setValue(String.valueOf(position));
-                reference.child("language").setValue(clickedLanguageName);
+                currentUserRef.child("languageID").setValue(String.valueOf(position));
+                currentUserRef.child("language").setValue(clickedLanguageName);
                 //Toast.makeText(getContext(), clickedLanguageName + " selected", Toast.LENGTH_SHORT).show();
             }
             @Override
@@ -133,7 +134,7 @@ public class ProfileFragment extends Fragment {
                 super.onItemSelected(parent, view, position, id);
                 if(calledTimes == 1)
                     return;
-                reference.child("genderId").setValue(position);
+                currentUserRef.child("genderId").setValue(position);
             }
 
             @Override
@@ -143,9 +144,8 @@ public class ProfileFragment extends Fragment {
         });
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
-
-        reference.addValueEventListener(new ValueEventListener() {
+        currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+        currentUserListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -157,7 +157,7 @@ public class ProfileFragment extends Fragment {
                 //Log.d("oneworld", "gender id: " + genderId);
                 spinnerGender.setSelection(genderId, false);
 
-                if (user.getImageURL().equals("default")){
+                if (user.getImageURL().equals("default")) {
                     image_profile.setImageResource(R.mipmap.ic_launcher);
                 } else {
                     Glide.with(getContext()).load(user.getImageURL()).into(image_profile);
@@ -165,10 +165,10 @@ public class ProfileFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        };
 
-            }
-        });
+        currentUserRef.addValueEventListener(currentUserListener);
 
         return view;
     }
@@ -223,10 +223,9 @@ public class ProfileFragment extends Fragment {
                         Uri downloadUri = task.getResult();
                         String mUri = downloadUri.toString();
 
-                        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
                         HashMap<String, Object> map = new HashMap<>();
                         map.put("imageURL", mUri);
-                        reference.updateChildren(map);
+                        currentUserRef.updateChildren(map);
 
                         pd.dismiss();
                     } else {
@@ -260,6 +259,12 @@ public class ProfileFragment extends Fragment {
                 uploadImage();
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        currentUserRef.removeEventListener(currentUserListener);
     }
 
     private static class FixedItemSelectedListener implements AdapterView.OnItemSelectedListener {

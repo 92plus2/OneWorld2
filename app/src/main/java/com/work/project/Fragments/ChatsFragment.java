@@ -37,9 +37,10 @@ public class ChatsFragment extends Fragment {
     private List<User> mUsers = new ArrayList<>();
 
     FirebaseUser fuser;
-    DatabaseReference reference;
+    DatabaseReference chatlistRef;
     ImageView ghost;
     List<Chatlist> usersList = new ArrayList<>();
+    private ValueEventListener chatlistListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,23 +53,22 @@ public class ChatsFragment extends Fragment {
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
 
-        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(fuser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
+        chatlistRef = FirebaseDatabase.getInstance().getReference("Chatlist").child(fuser.getUid());
+        chatlistListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Chatlist> newUsersList = new ArrayList<>();
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chatlist chatlist = snapshot.getValue(Chatlist.class);
                     newUsersList.add(chatlist);
                 }
 
                 usersList = newUsersList;
 
-                if(usersList.isEmpty()){
+                if (usersList.isEmpty()) {
                     ghost.setVisibility(View.VISIBLE);
-                }
-                else{
+                } else {
                     ghost.setVisibility(View.GONE);
                 }
 
@@ -76,10 +76,9 @@ public class ChatsFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        };
+        chatlistRef.addValueEventListener(chatlistListener);
 
         updateToken(FirebaseInstanceId.getInstance().getToken());
 
@@ -120,8 +119,8 @@ public class ChatsFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        //recyclerView.setAdapter(null);
+    public void onDestroyView() {
+        super.onDestroyView();
+        chatlistRef.removeEventListener(chatlistListener);
     }
 }
