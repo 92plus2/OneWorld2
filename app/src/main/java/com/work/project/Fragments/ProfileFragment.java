@@ -3,9 +3,9 @@ package com.work.project.Fragments;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,9 +107,12 @@ public class ProfileFragment extends Fragment {
         spinnerLanguages = view.findViewById(R.id.spinner_languages);
         mLanguageAdapter = new LanguageAdapter(getContext(), mLanguageList);
         spinnerLanguages.setAdapter(mLanguageAdapter);
-        spinnerLanguages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerLanguages.setOnItemSelectedListener(new FixedItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                super.onItemSelected(parent, view, position, id);
+                if(calledTimes == 1)
+                    return;
                 LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
                 String clickedLanguageName = clickedItem.getLanguageName();
                 reference.child("languageID").setValue(String.valueOf(position));
@@ -122,18 +125,18 @@ public class ProfileFragment extends Fragment {
         });
 
         spinnerGender = view.findViewById(R.id.spinner_gender);
-        ArrayAdapter<CharSequence> mGenderAdapter = ArrayAdapter.createFromResource(getContext(), R.array.gender, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> mGenderAdapter = ArrayAdapter.createFromResource(getContext(), R.array.gender, R.layout.spinner_gender_item);
         mGenderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGender.setAdapter(mGenderAdapter);
-        spinnerGender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerGender.setOnItemSelectedListener(new FixedItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getChildAt(0) != null) {
-                    ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
-                    ((TextView) parent.getChildAt(0)).setTextSize(20);
-                }
+                super.onItemSelected(parent, view, position, id);
+                if(calledTimes == 1)
+                    return;
                 String gender = parent.getItemAtPosition(position).toString();
                 reference.child("gender").setValue(gender);
+                reference.child("genderId").setValue(position);
             }
 
             @Override
@@ -151,8 +154,12 @@ public class ProfileFragment extends Fragment {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
                 languageID = Integer.parseInt(user.getLanguageID());
-               language = (user.getLanguage());
+                language = user.getLanguage();
                 spinnerLanguages.setSelection(languageID, false);
+                int genderId = user.getGenderId();
+                Log.d("oneworld", "gender id: " + genderId);
+                spinnerGender.setSelection(genderId, false);
+
                 if (user.getImageURL().equals("default")){
                     image_profile.setImageResource(R.mipmap.ic_launcher);
                 } else {
@@ -256,5 +263,17 @@ public class ProfileFragment extends Fragment {
                 uploadImage();
             }
         }
+    }
+
+    private static class FixedItemSelectedListener implements AdapterView.OnItemSelectedListener {
+        int calledTimes = 0;
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            calledTimes++;
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {}
     }
 }

@@ -14,6 +14,8 @@ public class User {
     private String search;
     private String language;
     private String languageID;
+    private String gender;
+    private int genderId;
 
     public User(String id, String username, String imageURL, String status, String search){//, String language, int languageID) {
         this.id = id;
@@ -85,6 +87,21 @@ public class User {
         this.languageID = languageID;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public int getGenderId() {
+        return genderId;
+    }
+
+    public void setGenderId(int genderId) {
+        this.genderId = genderId;
+    }
 
     public static DatabaseReference getChatBetween(String userId1, String userId2){
         String[] ids = {userId1, userId2};
