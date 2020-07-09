@@ -6,7 +6,7 @@
     android:padding="8dp">
 
     <RelativeLayout
-        android:id="@+id/messageLayout"
+        android:id="@+id/messageAndAvatar"
         android:layout_width="292dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="false"
@@ -14,7 +14,7 @@
         android:padding="8dp">
 
         <RelativeLayout
-            android:id="@+id/testr"
+            android:id="@+id/messageLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/profile_image"
@@ -68,8 +68,8 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/testr"
-            android:layout_toEndOf="@id/testr"
+            android:layout_toLeftOf="@id/messageLayout"
+            android:layout_toEndOf="@id/messageLayout"
             android:gravity="bottom"
             android:padding="8dp"
             android:text="hello"
@@ -86,7 +86,7 @@
         android:id="@+id/photoLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/messageLayout"
+        android:layout_below="@id/messageAndAvatar"
         android:layout_marginStart="40dp"
         android:background="@drawable/background_left">
 

@@ -175,11 +175,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     private static void setClickListenerRecursively(View view, View.OnClickListener listener){
-        view.setOnClickListener(listener);
         if(view instanceof TextView) {
             view.setClickable(true);
-            view.setFocusable(true);
+            view.setFocusable(false);
         }
+        view.setOnClickListener(listener);
 
         if(view instanceof ViewGroup){
             ViewGroup viewGroup = (ViewGroup) view;
