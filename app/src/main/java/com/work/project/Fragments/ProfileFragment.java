@@ -133,8 +133,6 @@ public class ProfileFragment extends Fragment {
                 super.onItemSelected(parent, view, position, id);
                 if(calledTimes == 1)
                     return;
-                String gender = parent.getItemAtPosition(position).toString();
-                reference.child("gender").setValue(gender);
                 reference.child("genderId").setValue(position);
             }
 

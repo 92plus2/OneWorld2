@@ -14,8 +14,8 @@ public class User {
     private String search;
     private String language;
     private String languageID;
-    private String gender;
     private int genderId;
+    public static final int GENDER_NOT_SPECIFIED = 0, MALE = 0, FEMALE = 2;
 
     public User(String id, String username, String imageURL, String status, String search){//, String language, int languageID) {
         this.id = id;
@@ -85,14 +85,6 @@ public class User {
 
     public void setLanguageID(String languageID) {
         this.languageID = languageID;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
     }
 
     public int getGenderId() {
