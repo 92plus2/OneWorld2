@@ -9,7 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -98,8 +97,9 @@ public class UsersFragment extends Fragment {
                     String userId = ds.getKey();
                     newLikeIds.add(userId);
                     if (!likesIds.contains(userId)) {
-                        if (fragmentIsVisible)
-                            Toast.makeText(getContext(), "You were liked by someone!", Toast.LENGTH_SHORT).show();
+                        if (fragmentIsVisible) {
+                            //Toast.makeText(getContext(), "You were liked by someone!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
                 likesIds = newLikeIds;

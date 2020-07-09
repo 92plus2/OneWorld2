@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     TextView username;
 
     FirebaseUser firebaseUser;
-    DatabaseReference users;
+    DatabaseReference userRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         username = findViewById(R.id.username);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        users = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        userRef = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
 
 
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status", status);
 
-        users.updateChildren(hashMap);
+        userRef.updateChildren(hashMap);
     }
 
     @Override

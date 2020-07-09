@@ -39,6 +39,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private Map<DatabaseReference, ValueEventListener> listeners;
 
     FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+    private String fuserName;
     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Likes");
 
     public static int CHATS = 0, SEARCH_USERS = 1, FRIEND_REQUESTS = 2;
@@ -50,6 +51,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         this.lastMessageTimes = new HashMap<>();
         this.listeners = new HashMap<>();
         this.pageType = pageType;
+
+        // получаем имя пользователя
+        FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                fuserName = user.getSearch();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
     @NonNull
@@ -104,9 +117,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             holder.ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(pageType == SEARCH_USERS) {
+                    if(pageType == SEARCH_USERS) {  // мы лайкаем человека
                         reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).setValue(0);
                         reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).setValue(0);
+                        // посылаем ему уведомление, что его лайкнули
+                        MessageActivity.sendNotification(fuser.getUid(), user.getId(),
+                                "Friend Request", "You were liked by " + fuserName);
                     }
                     else{  // мы принимаем заявку в друзья
                         // удаляем все лайки
@@ -114,6 +130,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                         reference.child("YourLikes").child(user.getId()).child(fuser.getUid()).removeValue();
                         reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).removeValue();
                         reference.child("YouWereLikedBy").child(fuser.getUid()).child(user.getId()).removeValue();
+                        // посылаем уведомление пользователю
+                        MessageActivity.sendNotification(fuser.getUid(), user.getId(),
+                                "Friend Request Accepted", "Your friend request was accepted by " + fuserName);
                         // открываем диалог
                         Intent intent = new Intent(mContext, MessageActivity.class);
                         intent.putExtra("userid", user.getId());
