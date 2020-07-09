@@ -36,10 +36,11 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/background_right"
-            android:gravity="center"
+            android:gravity="start"
             android:maxEms="10"
             android:padding="8dp"
             android:text="hello"
+            android:textAlignment="viewStart"
             android:textColor="#fff"
             android:textIsSelectable="true"
             android:textSize="18sp" />

@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:id="@+id/messageAndAvatar"
-        android:layout_width="292dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="false"
         android:background="@color/colorPrimary"
@@ -29,13 +29,14 @@
                 android:layout_alignParentEnd="false"
                 android:layout_centerInParent="true"
                 android:clickable="true"
-                android:gravity="center"
-                android:maxEms="8"
+                android:gravity="start"
+                android:maxWidth="200dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingBottom="8dp"
                 android:singleLine="false"
                 android:text="click to translate"
+                android:textAlignment="viewStart"
                 android:textColor="@color/colorWhite"
                 android:textIsSelectable="true"
                 android:textSize="12sp" />
@@ -46,11 +47,12 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_left"
                 android:clickable="true"
-                android:gravity="center"
-                android:maxEms="8"
+                android:gravity="start"
+                android:maxWidth="200dp"
                 android:paddingLeft="8dp"
                 android:paddingTop="8dp"
                 android:paddingRight="8dp"
+                android:textAlignment="viewStart"
                 android:textColor="@color/colorWhite"
                 android:textIsSelectable="true"
                 android:textSize="18sp" />
@@ -68,14 +70,14 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/messageLayout"
-            android:layout_toEndOf="@id/messageLayout"
+            android:layout_toRightOf="@id/messageLayout"
             android:gravity="bottom"
             android:padding="8dp"
             android:text="hello"
             android:textColor="#fff"
-            android:textSize="11sp" />
+            android:textSize="18sp" />
         <TextView
+            android:singleLine="true"
             android:id="@+id/txt_seen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
