@@ -10,6 +10,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -23,6 +24,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
     
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        Log.d(MessageActivity.TAG, "message received!");
         super.onMessageReceived(remoteMessage);
 
         String sented = remoteMessage.getData().get("sented");

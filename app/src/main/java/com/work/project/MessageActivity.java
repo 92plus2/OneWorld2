@@ -68,12 +68,12 @@ public class MessageActivity extends AppCompatActivity {
     CircleImageView profile_image;
     TextView username;
 
-    FirebaseUser currentUser;
     String currentUserId;
     String otherUserId;
     DatabaseReference chats;
     ValueEventListener chatsListener;
     boolean hasChatsListener;
+    User currentUser;
     DatabaseReference currentUserRef;
     DatabaseReference otherUserRef;
 
@@ -131,8 +131,8 @@ public class MessageActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         otherUserId = intent.getStringExtra("userid");
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserId = currentUser.getUid();
+        FirebaseUser fCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUserId = fCurrentUser.getUid();
 
         photo_but.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +173,7 @@ public class MessageActivity extends AppCompatActivity {
                 currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        final User currentUser = dataSnapshot.getValue(User.class);
+                        currentUser = dataSnapshot.getValue(User.class);
                         startReadingMessages(otherUser.getImageURL(), currentUser.getLanguage());
                     }
 
@@ -286,7 +286,7 @@ public class MessageActivity extends AppCompatActivity {
         chats.push().setValue(hashMap);
 
         if (notify) {
-            sendNotification(otherUserId, username.getText().toString(), message);
+            sendNotification(otherUserId, currentUser.getSearch(), message);
         }
     }
 
