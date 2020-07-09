@@ -36,7 +36,6 @@
                 android:paddingBottom="8dp"
                 android:singleLine="false"
                 android:text="click to translate"
-                android:textAlignment="viewStart"
                 android:textColor="@color/colorWhite"
                 android:textIsSelectable="true"
                 android:textSize="12sp" />
@@ -52,7 +51,6 @@
                 android:paddingLeft="8dp"
                 android:paddingTop="8dp"
                 android:paddingRight="8dp"
-                android:textAlignment="viewStart"
                 android:textColor="@color/colorWhite"
                 android:textIsSelectable="true"
                 android:textSize="18sp" />
@@ -76,7 +74,7 @@
             android:padding="8dp"
             android:text="hello"
             android:textColor="#fff"
-            android:textSize="18sp" />
+            android:textSize="11sp" />
         <TextView
             android:id="@+id/txt_seen"
             android:layout_width="wrap_content"

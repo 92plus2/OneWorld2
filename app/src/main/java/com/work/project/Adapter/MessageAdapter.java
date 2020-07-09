@@ -101,7 +101,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         final Chat chat = mChat.get(position);
         if (holder.time != null) {
             holder.time.setText(chat.getTime());
-            holder.time.setTextSize(11);
         }
         holder.messageText.setText(chat.getMessage());
 

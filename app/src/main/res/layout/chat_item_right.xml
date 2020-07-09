@@ -40,7 +40,6 @@
             android:maxEms="10"
             android:padding="8dp"
             android:text="hello"
-            android:textAlignment="viewStart"
             android:textColor="#fff"
             android:textIsSelectable="true"
             android:textSize="18sp" />
