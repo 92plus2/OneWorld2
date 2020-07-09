@@ -31,17 +31,18 @@
 
         <TextView
             android:id="@+id/show_message"
-            android:textIsSelectable="true"
-            android:maxEms="10"
-            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/background_right"
+            android:gravity="center"
+            android:maxEms="10"
             android:padding="8dp"
             android:text="hello"
+            android:textAlignment="viewStart"
             android:textColor="#fff"
+            android:textIsSelectable="true"
             android:textSize="18sp" />
 
         <TextView

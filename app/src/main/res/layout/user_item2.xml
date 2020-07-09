@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
@@ -34,7 +35,32 @@
         android:paddingTop="30dp"
         android:text="username"
         android:textColor="#fff"
-        android:textSize="18sp" />
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/Age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="20dp"
+        android:text="123"
+        android:textColor="@color/colorWhite"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/AboutUser"
+        android:layout_width="244dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ok"
+        android:layout_centerInParent="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="150dp"
+        android:paddingTop="59dp"
+        android:text="jdsvvjkjsdkvhgdjfdhjghjdkhgjkdfhghjdhfgjhdfjghdfhgjdfhjghdfhgjdfhgjfhdjghdfhgjkfdhjghfdh"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_on"
