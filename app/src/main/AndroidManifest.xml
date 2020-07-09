@@ -42,6 +42,9 @@
             android:name="com.work.project.ResetPasswordActivity"
             android:parentActivityName="com.work.project.LoginActivity"
             android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name="com.work.project.SettingsActivity"
+            android:screenOrientation="sensorPortrait" />
 
         <service
             android:name=".Notifications.MyFirebaseMessaging"

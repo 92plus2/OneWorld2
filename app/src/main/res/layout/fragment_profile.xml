@@ -49,37 +49,17 @@
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:layout_marginTop="20dp"
-        android:id="@+id/btn_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="100dp"
-        android:paddingRight="100dp"
-        android:layout_below="@id/user_info_card"
-        android:layout_centerInParent="true"
-        android:background="@color/colorPrimaryDark"
-        android:text="log out"
-        android:textColor="#fff" />
-
-    <Spinner
-        android:id="@+id/spinner_languages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_logout"
-        android:layout_marginTop="30dp" />
-
-    <Spinner
-        android:id="@+id/spinner_gender"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_logout"
-        android:layout_marginTop="100dp" />
+        android:id="@+id/btn_settings"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/settings" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/bio"
-        android:layout_below="@id/spinner_gender"
+        android:layout_marginTop="220dp"
         app:met_floatingLabel="normal"
         android:textColor="#ffffff"
         app:met_textColorHint="#ffffff"
@@ -90,4 +70,6 @@
         app:met_textColor="@color/colorWhite"
         android:textColorLink="@color/colorWhite"
         android:hint="Write about yourself"/>
+
+
 </RelativeLayout>

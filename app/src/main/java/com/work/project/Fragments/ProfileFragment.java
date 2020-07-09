@@ -39,6 +39,7 @@ import com.work.project.Adapter.LanguageAdapter;
 import com.work.project.Model.LanguageItem;
 import com.work.project.Model.User;
 import com.work.project.R;
+import com.work.project.SettingsActivity;
 import com.work.project.StartActivity;
 
 import java.util.ArrayList;
@@ -62,14 +63,6 @@ public class ProfileFragment extends Fragment {
     private Uri imageUri;
     private StorageTask uploadTask;
 
-    int languageID = 0;
-    String language;
-    public static final int RU = 0, EN = 1, DE = 2, ES = 3, FR = 4, IT = 5, ZH = 6;
-
-    private ArrayList<LanguageItem> mLanguageList;
-    private LanguageAdapter mLanguageAdapter;
-    private Spinner spinnerLanguages;
-    private Spinner spinnerGender;
     private ValueEventListener currentUserListener;
 
     @Override
@@ -90,56 +83,13 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        Button btn_logout = view.findViewById(R.id.btn_logout);
+        Button btn_settings = view.findViewById(R.id.btn_settings);
 
-        btn_logout.setOnClickListener(new View.OnClickListener(){
+        btn_settings.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getContext(), StartActivity.class);
+                Intent intent = new Intent(getContext(), SettingsActivity.class);
                 startActivity(intent);
-            }
-        });
-
-
-        //adding languages to list
-        initList();
-        spinnerLanguages = view.findViewById(R.id.spinner_languages);
-        mLanguageAdapter = new LanguageAdapter(getContext(), mLanguageList);
-        spinnerLanguages.setAdapter(mLanguageAdapter);
-        spinnerLanguages.setOnItemSelectedListener(new FixedItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                super.onItemSelected(parent, view, position, id);
-                if(calledTimes == 1)
-                    return;
-                LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
-                String clickedLanguageName = clickedItem.getLanguageName();
-                currentUserRef.child("languageID").setValue(String.valueOf(position));
-                currentUserRef.child("language").setValue(clickedLanguageName);
-                //Toast.makeText(getContext(), clickedLanguageName + " selected", Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        spinnerGender = view.findViewById(R.id.spinner_gender);
-        ArrayAdapter<CharSequence> mGenderAdapter = ArrayAdapter.createFromResource(getContext(), R.array.gender, R.layout.spinner_gender_item);
-        mGenderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerGender.setAdapter(mGenderAdapter);
-        spinnerGender.setOnItemSelectedListener(new FixedItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                super.onItemSelected(parent, view, position, id);
-                if(calledTimes == 1)
-                    return;
-                currentUserRef.child("genderId").setValue(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
@@ -150,13 +100,6 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
-                languageID = Integer.parseInt(user.getLanguageID());
-                language = user.getLanguage();
-                spinnerLanguages.setSelection(languageID, false);
-                int genderId = user.getGenderId();
-                //Log.d("oneworld", "gender id: " + genderId);
-                spinnerGender.setSelection(genderId, false);
-
                 if (user.getImageURL().equals("default")) {
                     image_profile.setImageResource(R.mipmap.ic_launcher);
                 } else {
@@ -171,17 +114,6 @@ public class ProfileFragment extends Fragment {
         currentUserRef.addValueEventListener(currentUserListener);
 
         return view;
-    }
-
-    private void initList() {
-        mLanguageList = new ArrayList<>();
-        mLanguageList.add(new LanguageItem("RU", R.drawable.russian));
-        mLanguageList.add(new LanguageItem("EN", R.drawable.english));
-        mLanguageList.add(new LanguageItem("DE", R.drawable.german));
-        mLanguageList.add(new LanguageItem("ES", R.drawable.spanish));
-        mLanguageList.add(new LanguageItem("FR", R.drawable.french));
-        mLanguageList.add(new LanguageItem("IT", R.drawable.italian));
-        mLanguageList.add(new LanguageItem("ZH", R.drawable.chinese));
     }
 
     private void openImage() {
@@ -265,17 +197,5 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         currentUserRef.removeEventListener(currentUserListener);
-    }
-
-    private static class FixedItemSelectedListener implements AdapterView.OnItemSelectedListener {
-        int calledTimes = 0;
-
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            calledTimes++;
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {}
     }
 }

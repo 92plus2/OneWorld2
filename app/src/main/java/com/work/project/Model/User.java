@@ -12,6 +12,7 @@ public class User {
     private String imageURL;
     private String status;
     private String search;
+    private String countryID;
     private String language;
     private String languageID;
     private int genderId;
@@ -23,6 +24,7 @@ public class User {
         this.imageURL = imageURL;
         this.status = status;
         this.search = search;
+        this.countryID = countryID;
         this.language = language;
         this.languageID = languageID;
     }
@@ -69,6 +71,14 @@ public class User {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public String getCountryID() {
+        return countryID;
+    }
+
+    public void setCountryID(String countryID) {
+        this.countryID = countryID;
     }
 
     public String getLanguage() {
