@@ -22,13 +22,13 @@
             android:background="@drawable/background_left">
 
             <TextView
-                android:clickable="true"
                 android:id="@+id/clickPlusToTranslate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/show_message"
                 android:layout_alignParentEnd="false"
                 android:layout_centerInParent="true"
+                android:clickable="true"
                 android:gravity="center"
                 android:maxEms="8"
                 android:paddingLeft="8dp"
@@ -36,21 +36,23 @@
                 android:paddingBottom="8dp"
                 android:singleLine="false"
                 android:text="click to translate"
+                android:textAlignment="viewStart"
                 android:textColor="@color/colorWhite"
                 android:textIsSelectable="true"
                 android:textSize="12sp" />
 
             <TextView
-                android:clickable="true"
                 android:id="@+id/show_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_left"
+                android:clickable="true"
                 android:gravity="center"
                 android:maxEms="8"
                 android:paddingLeft="8dp"
                 android:paddingTop="8dp"
                 android:paddingRight="8dp"
+                android:textAlignment="viewStart"
                 android:textColor="@color/colorWhite"
                 android:textIsSelectable="true"
                 android:textSize="18sp" />

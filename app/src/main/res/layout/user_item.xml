@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp"
     android:background="@color/colorPrimary"
     android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/AboutUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/Age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:visibility="gone" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="50dp"
