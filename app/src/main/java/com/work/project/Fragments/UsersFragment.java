@@ -43,6 +43,7 @@ public class UsersFragment extends Fragment {
     private Set<String> likesIds;  // id пользователей, которые нас лайкнули. Используется только в "Search Users"
     private DatabaseReference reference;
     private String currentUserId;
+    List<Chatlist> chatlists = new ArrayList<>();
     ImageView ghost;
     private boolean fragmentIsVisible;
 
@@ -77,8 +78,10 @@ public class UsersFragment extends Fragment {
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        if(isSearchUsers())
+        if(isSearchUsers()) {
             startListeningForLikes();
+            startListeningForChatlist();
+        }
         startListeningForUsersUpdate();
         return view;
     }
@@ -132,6 +135,37 @@ public class UsersFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
+        });
+    }
+
+    private void startListeningForChatlist(){
+        DatabaseReference chatlistRef = reference.child("Chatlist").child(currentUserId);
+        chatlistRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Chatlist> newUsersList = new ArrayList<>();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chatlist chatlist = snapshot.getValue(Chatlist.class);
+                    newUsersList.add(chatlist);
+                }
+
+                chatlists = newUsersList;
+
+                DatabaseReference inSearch = reference.child("InSearch");
+                inSearch.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        updateUsers(dataSnapshot);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
     }
 
@@ -206,7 +240,7 @@ public class UsersFragment extends Fragment {
         if(likesIds.contains(userId))
             return false;
         // проверяем, переписывались ли мы с пользователем
-        for(Chatlist chatlist : ChatsFragment.usersList){
+        for(Chatlist chatlist : chatlists){
             if(chatlist.id.equals(userId))
                 return false;
         }
