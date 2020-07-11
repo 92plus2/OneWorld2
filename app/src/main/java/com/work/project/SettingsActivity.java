@@ -147,7 +147,7 @@ public class SettingsActivity extends AppCompatActivity {
                 super.onItemSelected(parent, view, position, id);
                 if(calledTimes == 1)
                     return;
-                currentUserRef.child("genderId").setValue(position);
+                currentUserRef.child("genderID").setValue(position);
             }
 
             @Override
