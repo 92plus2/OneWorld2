@@ -1,60 +1,104 @@
 package com.work.project.Notifications;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.work.project.MainActivity;
+import com.work.project.MessageActivity;
+
+import java.util.Map;
+
 public class Data {
-    private String user;
-    private int icon;
-    private String body;
-    private String title;
-    private String sented;
+    private String userId;
+    private String username;
+    private String message;
+    public static final int NEW_MESSAGE = 0, NEW_FRIEND_REQUEST = 1, FRIEND_REQUEST_ACCEPTED = 2;
+    private int notificationType;
 
-    public Data(String user, int icon, String body, String title, String sented) {
-        this.user = user;
-        this.icon = icon;
-        this.body = body;
-        this.title = title;
-        this.sented = sented;
+    public Data(String userId, String username, String message, int notificationType) {
+        this.userId = userId;
+        this.username = username;
+        this.message = message;
+        this.notificationType = notificationType;
     }
 
-    public Data() {
+    public Data(Map<String, String> data){
+        this(data.get("userId"), data.get("username"), data.get("message"), Integer.parseInt(data.get("notificationType")));
     }
 
-    public String getUser() {
-        return user;
+    public String getTitle(){
+        switch(notificationType){
+            case NEW_MESSAGE:
+                return "New Message";
+            case NEW_FRIEND_REQUEST:
+                return "Friend Request";
+            case FRIEND_REQUEST_ACCEPTED:
+                return "Friend Request Accepted";
+            default:
+                return null;
+        }
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public String getBody(){
+        switch (notificationType){
+            case NEW_MESSAGE:
+                return username + ": " + message;
+            case NEW_FRIEND_REQUEST:
+                return "You were liked by " + username;
+            case FRIEND_REQUEST_ACCEPTED:
+                return "Your friend request was accepted by " + username;
+            default:
+                return null;
+        }
     }
 
-    public int getIcon() {
-        return icon;
+    public Intent getIntent(Context context){
+        if(notificationType == NEW_MESSAGE || notificationType == FRIEND_REQUEST_ACCEPTED) {
+            // посылаем в диалог с пользователем
+            Intent intent = new Intent(context, MessageActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("userid", userId);
+            intent.putExtras(bundle);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            return intent;
+        }
+        else {
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            return intent;
+        }
     }
 
-    public void setIcon(int icon) {
-        this.icon = icon;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getBody() {
-        return body;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public String getUsername() {
+        return username;
     }
 
-    public String getTitle() {
-        return title;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getMessage() {
+        return message;
     }
 
-    public String getSented() {
-        return sented;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public void setSented(String sented) {
-        this.sented = sented;
+    public int getNotificationType() {
+        return notificationType;
+    }
+
+    public void setNotificationType(int notificationType) {
+        this.notificationType = notificationType;
     }
 }

@@ -283,23 +283,22 @@ public class MessageActivity extends AppCompatActivity {
         chats.push().setValue(hashMap);
 
         if (notify) {
-            sendMessageNotification(currentUser.getSearch(), currentUserId, otherUserId, message);
+            sendNotification(currentUser.getId(), currentUser.getSearch(), otherUserId, Data.NEW_MESSAGE, message);
         }
     }
 
-    private void sendMessageNotification(final String senderName, final String currentUserId, final String receiverId, final String message) {
-        sendNotification(currentUserId, receiverId, "New Message", senderName + ": " + message);
+    public static void sendNotification(String senderId, String senderName, String receiverId, int notificationType){
+        sendNotification(senderId, senderName, receiverId, notificationType, null);
     }
 
-    public static void sendNotification(final String currentUserId, final String receiverId, final String title, final String message){
+    private static void sendNotification(final String senderId, final String senderName, final String receiverId, final int notificationType, final String message){
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = tokens.child(receiverId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Token token = dataSnapshot.getValue(Token.class);
-                Data data = new Data(currentUserId, R.mipmap.ic_launcher, message, title,
-                        receiverId);
+                Data data = new Data(senderId, senderName, message, notificationType);
 
                 Sender sender = new Sender(data, token.getToken());
 
@@ -315,9 +314,7 @@ public class MessageActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<MyResponse> call, Throwable t) {
-
-                    }
+                    public void onFailure(Call<MyResponse> call, Throwable t) {}
                 });
             }
 

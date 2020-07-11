@@ -46,7 +46,6 @@ public class UsersFragment extends Fragment {
     private String currentUserId;
     List<Chatlist> chatlists = new ArrayList<>();
     ImageView ghost;
-    private boolean fragmentIsVisible;
     private Map<DatabaseReference, ValueEventListener> listeners = new HashMap<>();
 
     public static UsersFragment newInstance(boolean searchUsers){
@@ -96,19 +95,8 @@ public class UsersFragment extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String userId = ds.getKey();
                     newLikeIds.add(userId);
-                    if (!likesIds.contains(userId)) {
-                        if (fragmentIsVisible) {
-                            //Toast.makeText(getContext(), "You were liked by someone!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
                 }
                 likesIds = newLikeIds;
-                if (!isSearchUsers() && likesIds.isEmpty()) {
-                    ghost.setVisibility(View.VISIBLE);
-                }
-                else if(!isSearchUsers()){
-                    ghost.setVisibility(View.GONE);
-                }
                 deleteUsersWithLikes();
             }
 
@@ -130,6 +118,7 @@ public class UsersFragment extends Fragment {
                 userAdapter.notifyItemRemoved(i);
             }
         }
+        updateGhostVisibility();
     }
 
     private void startListeningForUsersUpdate(){
@@ -188,7 +177,6 @@ public class UsersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        fragmentIsVisible = true;
         if(isSearchUsers()) {
             reference.child("InSearch").child(currentUserId).setValue(0);
         }
@@ -197,7 +185,6 @@ public class UsersFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        fragmentIsVisible = false;
         if(!STAY_IN_SEARCH) {
             if (isSearchUsers()) {
                 reference.child("InSearch").child(currentUserId).removeValue();
@@ -205,10 +192,11 @@ public class UsersFragment extends Fragment {
         }
     }
 
-    private int toUpdate = 0;
+    // сколько ещё пользователей мы должны загрузить из базы данных
+    private int leftUsersToLoad = 0;
 
     private void updateUsers(DataSnapshot userIdsSnapshot) {
-        if (toUpdate > 0)
+        if (leftUsersToLoad > 0)
             return;
         List<String> newIds = new ArrayList<>();
 
@@ -227,23 +215,30 @@ public class UsersFragment extends Fragment {
             } else
                 newIds.remove(user.getId());
         }
-        toUpdate = newIds.size();
+        leftUsersToLoad = newIds.size();
 
-        DatabaseReference users = FirebaseDatabase.getInstance().getReference("Users");
+        if(newIds.isEmpty())
+            updateGhostVisibility();
+        else {
+            DatabaseReference users = FirebaseDatabase.getInstance().getReference("Users");
 
-        for (String newId : newIds) {
-            users.child(newId).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    User newUser = dataSnapshot.getValue(User.class);
-                    mUsers.add(newUser);
-                    userAdapter.notifyItemInserted(mUsers.size() - 1);
-                    toUpdate--;
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                }
-            });
+            for (String newId : newIds) {
+                users.child(newId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User newUser = dataSnapshot.getValue(User.class);
+                        mUsers.add(newUser);
+                        userAdapter.notifyItemInserted(mUsers.size() - 1);
+                        leftUsersToLoad--;
+                        if (leftUsersToLoad == 0)
+                            updateGhostVisibility();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+            }
         }
     }
 
@@ -260,6 +255,14 @@ public class UsersFragment extends Fragment {
                 return false;
         }
         return true;
+    }
+
+    // показываем приведение, если список пользователей пуст
+    private void updateGhostVisibility(){
+        if(mUsers.isEmpty())
+            ghost.setVisibility(View.VISIBLE);
+        else
+            ghost.setVisibility(View.GONE);
     }
 
     public static class MyRecyclerView extends RecyclerView {

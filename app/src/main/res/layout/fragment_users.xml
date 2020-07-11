@@ -17,7 +17,7 @@
         android:adjustViewBounds="true"
         android:src="@drawable/ghost"
         app:ghost_text="No users"
-        tools:visibility="gone" />
+        android:visibility="gone" />
 
     <view class="com.work.project.Fragments.UsersFragment$MyRecyclerView"
         android:id="@+id/recycler_view"

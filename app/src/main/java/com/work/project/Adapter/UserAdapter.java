@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
 import com.work.project.Model.User;
+import com.work.project.Notifications.Data;
 import com.work.project.R;
 import com.work.project.R.drawable;
 
@@ -162,8 +163,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                         reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).setValue(0);
                         reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).setValue(0);
                         // посылаем ему уведомление, что его лайкнули
-                        MessageActivity.sendNotification(fuser.getUid(), user.getId(),
-                                "Friend Request", "You were liked by " + fuserName);
+                        MessageActivity.sendNotification(fuser.getUid(), fuserName, user.getId(), Data.NEW_FRIEND_REQUEST);
                     }
                     else{  // мы принимаем заявку в друзья
                         // удаляем все лайки
@@ -172,8 +172,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                         reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).removeValue();
                         reference.child("YouWereLikedBy").child(fuser.getUid()).child(user.getId()).removeValue();
                         // посылаем уведомление пользователю
-                        MessageActivity.sendNotification(fuser.getUid(), user.getId(),
-                                "Friend Request Accepted", "Your friend request was accepted by " + fuserName);
+                        MessageActivity.sendNotification(fuser.getUid(), fuserName, user.getId(), Data.FRIEND_REQUEST_ACCEPTED);
                         // открываем диалог
                         Intent intent = new Intent(mContext, MessageActivity.class);
                         intent.putExtra("userid", user.getId());
