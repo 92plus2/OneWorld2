@@ -3,6 +3,8 @@ package com.work.project.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +26,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
+import com.work.project.Model.LanguageUtil;
 import com.work.project.Model.User;
 import com.work.project.Notifications.Data;
 import com.work.project.R;
-import com.work.project.R.drawable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,46 +105,41 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 holder.img_off.setVisibility(View.VISIBLE);
             }
         } else {
-            if(user.getGenderId() == 1){
-                holder.language.setText("He speaks ");
-                holder.country.setText("He is from ");
+            Resources res = mContext.getResources();
+
+            String languageText;
+            String languageName = LanguageUtil.getLongLanguageString(res, user.getLanguageID());
+            switch (user.getGenderID()){
+                case User.MALE:
+                    languageText = res.getString(R.string.he_knows_language, languageName);
+                    break;
+                case User.FEMALE:
+                    languageText = res.getString(R.string.she_knows_language, languageName);
+                    break;
+                default:
+                    languageText = res.getString(R.string.username_knows_language, user.getSearch(), languageName);
+                    break;
             }
-            if(user.getGenderId() == 0){
-                holder.language.setText(holder.username.getText() + " speaks " );
-                holder.country.setText(holder.username.getText() + " is from ");
+            holder.language.setText(languageText);
+
+            String countryText;
+            switch (user.getGenderID()){
+                case User.MALE:
+                    countryText = res.getString(R.string.he_is_from_country);
+                    break;
+                case User.FEMALE:
+                    countryText = res.getString(R.string.she_is_from_country);
+                    break;
+                default:
+                    countryText = res.getString(R.string.username_is_from_country, user.getSearch());
+                    break;
             }
-            if(user.getGenderId() == 2){
-                holder.language.setText("She speaks ");
-                holder.country.setText("She is from ");
-            }
-            if(user.getLanguage().equals("RU")){
-                holder.language.setText(holder.language.getText() + "Russian");
-                holder.lang_img.setImageResource(R.drawable.russian);
-            }
-            if(user.getLanguage().equals("EN")){
-                holder.language.setText(holder.language.getText() + "English");
-                holder.lang_img.setImageResource(drawable.english);
-            }
-            if(user.getLanguage().equals("ZH")){
-                holder.language.setText(holder.language.getText() + "Chinese");
-                holder.lang_img.setImageResource(drawable.chinese);
-            }
-            if(user.getLanguage().equals("DE")){
-                holder.language.setText(holder.language.getText() + "German");
-                holder.lang_img.setImageResource(drawable.german);
-            }
-            if(user.getLanguage().equals("ES")){
-                holder.language.setText(holder.language.getText() + "Spanish");
-                holder.lang_img.setImageResource(drawable.spanish);
-            }
-            if(user.getLanguage().equals("IT")){
-                holder.language.setText(holder.language.getText() + "Italian");
-                holder.lang_img.setImageResource(drawable.italian);
-            }
-            if(user.getLanguage().equals("FR")){
-                holder.language.setText(holder.language.getText() + "French");
-                holder.lang_img.setImageResource(drawable.french);
-            }
+            holder.country.setText(countryText);
+
+            Log.d("oneworld", "country id: " + user.getCountryID());
+            holder.lang_img.setImageResource(LanguageUtil.getLanguageDrawable(user.getLanguageID()));
+            holder.country_img.setImageResource(LanguageUtil.getLanguageDrawable(user.getCountryID()));
+
             holder.img_on.setVisibility(View.GONE);
             holder.img_off.setVisibility(View.GONE);
         }

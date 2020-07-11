@@ -5,9 +5,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,16 +35,13 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.work.project.Adapter.LanguageAdapter;
 import com.work.project.Model.LanguageItem;
+import com.work.project.Model.LanguageUtil;
 import com.work.project.Model.User;
-import com.work.project.R;
-import com.work.project.StartActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static android.app.Activity.RESULT_OK;
 
 
 public class SettingsActivity extends AppCompatActivity {
@@ -121,7 +116,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if(calledTimes == 1)
                     return;
                 LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
-                currentUserRef.child("CountryID").setValue(String.valueOf(position));
+                currentUserRef.child("countryID").setValue(clickedItem.getLanguageId());
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -135,9 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if(calledTimes == 1)
                     return;
                 LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
-                String clickedLanguageName = clickedItem.getLanguageName();
-                currentUserRef.child("languageID").setValue(String.valueOf(position));
-                currentUserRef.child("language").setValue(clickedLanguageName);
+                currentUserRef.child("languageID").setValue(clickedItem.getLanguageId());
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -158,9 +151,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
@@ -175,41 +166,44 @@ public class SettingsActivity extends AppCompatActivity {
                 } else {
                     Glide.with(SettingsActivity.this).load(user.getImageURL()).into(image_profile);
                 }
-              //  countryID =  Integer.parseInt(user.getCountryID());
-                languageID = Integer.parseInt(user.getLanguageID());
-                language = user.getLanguage();
-               // spinnerCountries.setSelection(countryID, false);
-                spinnerLanguages.setSelection(languageID, false);
-                int genderId = user.getGenderId();
-                //Log.d("oneworld", "gender id: " + genderId);
+                countryID = user.getCountryID();
+                languageID = user.getLanguageID();
+                language = LanguageUtil.getShortLanguageString(languageID);
+                spinnerCountries.setSelection(mCountryList.indexOf(new LanguageItem(countryID)), false);
+                spinnerLanguages.setSelection(mCountryList.indexOf(new LanguageItem(languageID)), false);
+                int genderId = user.getGenderID();
                 spinnerGender.setSelection(genderId, false);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         };
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         currentUserRef.addValueEventListener(currentUserListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        currentUserRef.removeEventListener(currentUserListener);
     }
 
     private void initList() {
         mCountryList = new ArrayList<>();
-        mCountryList.add(new LanguageItem("RU", R.drawable.russian));
-        mCountryList.add(new LanguageItem("EN", R.drawable.english));
-        mCountryList.add(new LanguageItem("DE", R.drawable.german));
-        mCountryList.add(new LanguageItem("ES", R.drawable.spanish));
-        mCountryList.add(new LanguageItem("FR", R.drawable.french));
-        mCountryList.add(new LanguageItem("IT", R.drawable.italian));
-        mCountryList.add(new LanguageItem("ZH", R.drawable.chinese));
+        mCountryList.add(new LanguageItem(LanguageUtil.RU));
+        mCountryList.add(new LanguageItem(LanguageUtil.EN));
+        mCountryList.add(new LanguageItem(LanguageUtil.DE));
+        mCountryList.add(new LanguageItem(LanguageUtil.ES));
+        mCountryList.add(new LanguageItem(LanguageUtil.FR));
+        mCountryList.add(new LanguageItem(LanguageUtil.IT));
+        mCountryList.add(new LanguageItem(LanguageUtil.ZH));
 
         mLanguageList = new ArrayList<>();
-        mLanguageList.add(new LanguageItem("RU", R.drawable.russian));
-        mLanguageList.add(new LanguageItem("EN", R.drawable.english));
-        mLanguageList.add(new LanguageItem("DE", R.drawable.german));
-        mLanguageList.add(new LanguageItem("ES", R.drawable.spanish));
-        mLanguageList.add(new LanguageItem("FR", R.drawable.french));
-        mLanguageList.add(new LanguageItem("IT", R.drawable.italian));
-        mLanguageList.add(new LanguageItem("ZH", R.drawable.chinese));
+        mLanguageList.addAll(mCountryList);
     }
 
     private void openImage() {
@@ -288,7 +282,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
-    
+
     private static class FixedItemSelectedListener implements AdapterView.OnItemSelectedListener {
         int calledTimes = 0;
 

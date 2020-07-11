@@ -1,15 +1,40 @@
 package com.work.project.Model;
+
+import java.util.Objects;
+
 public class LanguageItem {
-    private String mLanguageName;
-    private int mFlagImage;
-    public LanguageItem(String languageName, int flagImage) {
-        mLanguageName = languageName;
-        mFlagImage = flagImage;
+    private String languageName;
+    private int languageId;
+    private int flagImage;
+
+    public LanguageItem(int languageId) {
+        this.languageId = languageId;
+        languageName = LanguageUtil.getShortLanguageString(languageId);
+        flagImage = LanguageUtil.getLanguageDrawable(languageId);
     }
+
     public String getLanguageName() {
-        return mLanguageName;
+        return languageName;
     }
+
     public int getFlagImage() {
-        return mFlagImage;
+        return flagImage;
+    }
+
+    public int getLanguageId() {
+        return languageId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LanguageItem)) return false;
+        LanguageItem that = (LanguageItem) o;
+        return languageId == that.languageId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(languageId);
     }
 }

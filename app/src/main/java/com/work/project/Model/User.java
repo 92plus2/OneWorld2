@@ -12,22 +12,10 @@ public class User {
     private String imageURL;
     private String status;
     private String search;
-    private String countryID;
-    private String language;
-    private String languageID;
-    private int genderId;
-    public static final int GENDER_NOT_SPECIFIED = 0, MALE = 0, FEMALE = 2;
-
-    public User(String id, String username, String imageURL, String status, String search){//, String language, int languageID) {
-        this.id = id;
-        this.username = username;
-        this.imageURL = imageURL;
-        this.status = status;
-        this.search = search;
-        this.countryID = countryID;
-        this.language = language;
-        this.languageID = languageID;
-    }
+    private int countryID;
+    private int languageID;
+    private int genderID;
+    public static final int GENDER_NOT_SPECIFIED = 0, MALE = 1, FEMALE = 2;
 
     public User() {
 
@@ -73,36 +61,28 @@ public class User {
         this.search = search;
     }
 
-    public String getCountryID() {
+    public int getCountryID() {
         return countryID;
     }
 
-    public void setCountryID(String countryID) {
+    public void setCountryID(int countryID) {
         this.countryID = countryID;
     }
 
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public String getLanguageID() {
+    public int getLanguageID() {
         return languageID;
     }
 
-    public void setLanguageID(String languageID) {
+    public void setLanguageID(int languageID) {
         this.languageID = languageID;
     }
 
-    public int getGenderId() {
-        return genderId;
+    public int getGenderID() {
+        return genderID;
     }
 
-    public void setGenderId(int genderId) {
-        this.genderId = genderId;
+    public void setGenderID(int genderID) {
+        this.genderID = genderID;
     }
 
     public static DatabaseReference getChatBetween(String userId1, String userId2){
@@ -112,21 +92,6 @@ public class User {
         return FirebaseDatabase.getInstance().getReference("AllChats").child(encoded);
     }
 
-    /*public static void getAllChatsFor(String userId){
-        final DatabaseReference ourChats = FirebaseDatabase.getInstance().getReference("Chatlist")
-                .child(userId);
-        ourChats.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Chatlist chatlist = snapshot.getValue(Chatlist.class);
-                    String sender = chatlist.getId();
-                    sender
-                }
-            }
+    //     public static final int RU = 0, EN = 1, DE = 2, ES = 3, FR = 4, IT = 5, ZH = 6;
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
-    }*/
 }

@@ -1,6 +1,5 @@
 package com.work.project.Adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -95,7 +94,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         return new MessageViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder holder, int position) {
         final Chat chat = mChat.get(position);
@@ -114,9 +112,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         if (holder.isRightMessage()) {
             holder.txtSeen.setVisibility(View.VISIBLE);
             if (chat.isSeen()) {
-                holder.txtSeen.setText("Seen");
+                holder.txtSeen.setText(R.string.message_seen);
             } else {
-                holder.txtSeen.setText("Delivered");
+                holder.txtSeen.setText(R.string.message_delivered);
             }
         }
         else {
@@ -162,7 +160,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             View.OnClickListener translationListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(MessageActivity.TAG, "on message click!");
                     translate(holder);
                     setClickListenerRecursively(holder.messageLayout, null);
                 }

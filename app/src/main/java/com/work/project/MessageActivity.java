@@ -43,6 +43,7 @@ import com.google.firebase.storage.UploadTask;
 import com.work.project.Adapter.MessageAdapter;
 import com.work.project.Fragments.APIService;
 import com.work.project.Model.Chat;
+import com.work.project.Model.LanguageUtil;
 import com.work.project.Model.User;
 import com.work.project.Notifications.Client;
 import com.work.project.Notifications.Data;
@@ -171,7 +172,7 @@ public class MessageActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         currentUser = dataSnapshot.getValue(User.class);
-                        startReadingMessages(otherUser.getImageURL(), currentUser.getLanguage());
+                        startReadingMessages(otherUser.getImageURL(), LanguageUtil.getShortLanguageString(currentUser.getLanguageID()));
                     }
 
                     @Override
