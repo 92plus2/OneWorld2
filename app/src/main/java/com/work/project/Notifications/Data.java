@@ -3,7 +3,6 @@ package com.work.project.Notifications;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Bundle;
 
 import com.work.project.MainActivity;
 import com.work.project.MessageActivity;
@@ -59,14 +58,13 @@ public class Data {
         if(notificationType == NEW_MESSAGE || notificationType == FRIEND_REQUEST_ACCEPTED) {
             // посылаем в диалог с пользователем
             Intent intent = new Intent(context, MessageActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("userid", userId);
-            intent.putExtras(bundle);
+            intent.putExtra("userid", userId);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
         }
         else {
             Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra("fragment", MainActivity.FRIEND_REQUESTS);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             return intent;
         }

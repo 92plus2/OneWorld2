@@ -1,5 +1,6 @@
 package com.work.project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
     DatabaseReference userRef;
 
+    public static final String FRIEND_REQUESTS = "friendRequests";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +62,18 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+
+        Intent intent = getIntent();
+        if(intent.hasExtra("fragment")){
+            if(intent.getStringExtra("fragment").equals(FRIEND_REQUESTS)) {
+                viewPager.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewPager.setCurrentItem(1);
+                    }
+                });
+            }
+        }
     }
 
 

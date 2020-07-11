@@ -26,12 +26,12 @@ public class CountryUtil {
             case USA:
                 return res.getString(R.string.usa);
             default:
-                throw new IllegalArgumentException("Wrong countryId!");
+                throw new IllegalArgumentException("Wrong countryId: " + countryId);
         }
     }
 
-    public static int getCountryDrawable(int languageId){
-        switch(languageId){
+    public static int getCountryDrawable(int countryId){
+        switch(countryId){
             case RUSSIA:
                 return R.drawable.russia;
             case ENGLAND:
@@ -49,7 +49,7 @@ public class CountryUtil {
             case USA:
                 return R.drawable.usa;
             default:
-                throw new IllegalArgumentException("Wrong countryId!");
+                throw new IllegalArgumentException("Wrong countryId: " + countryId);
         }
     }
 

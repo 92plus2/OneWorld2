@@ -41,7 +41,8 @@ public class UsersFragment extends Fragment {
     private MyRecyclerView recyclerView;
     private UserAdapter userAdapter;
     private List<User> mUsers;
-    private Set<String> likesIds;  // id пользователей, которые нас лайкнули. Используется только в "Search Users"
+    private Set<String> peopleWhoLikedUs;  // id пользователей, которые нас лайкнули. Используется только в "Search Users"
+    private Set<String> ourLikes;  // id пользователей, которых мы лайкнули. Используется только в "Search Users"
     private DatabaseReference reference;
     private String currentUserId;
     List<Chatlist> chatlists = new ArrayList<>();
@@ -72,7 +73,8 @@ public class UsersFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mUsers = new ArrayList<>();
-        likesIds = new HashSet<>();
+        peopleWhoLikedUs = new HashSet<>();
+        ourLikes = new HashSet<>();
         ghost = view.findViewById(R.id.ghost);
         userAdapter = new UserAdapter(getContext(),  mUsers, isSearchUsers()? UserAdapter.SEARCH_USERS : UserAdapter.FRIEND_REQUESTS);
         recyclerView.setAdapter(userAdapter);
@@ -91,12 +93,11 @@ public class UsersFragment extends Fragment {
         ValueEventListener likesListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Set<String> newLikeIds = new HashSet<>();
+                peopleWhoLikedUs.clear();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String userId = ds.getKey();
-                    newLikeIds.add(userId);
+                    peopleWhoLikedUs.add(userId);
                 }
-                likesIds = newLikeIds;
                 deleteUsersWithLikes();
             }
 
@@ -107,13 +108,32 @@ public class UsersFragment extends Fragment {
         DatabaseReference likesRef = reference.child("Likes").child("YouWereLikedBy").child(currentUserId);
         likesRef.limitToLast(MAX_USERS).addValueEventListener(likesListener);
         listeners.put(likesRef, likesListener);
+
+        ValueEventListener ourLikesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ourLikes.clear();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String userId = ds.getKey();
+                    ourLikes.add(userId);
+                }
+                deleteUsersWithLikes();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+        DatabaseReference ourLikesRef = reference.child("Likes").child("YourLikes").child(currentUserId);
+        ourLikesRef.limitToLast(MAX_USERS).addValueEventListener(ourLikesListener);
+        listeners.put(ourLikesRef, ourLikesListener);
     }
 
     // если пользователь поставил нам лайк, то он не отображается во вкладке Search Users
     private void deleteUsersWithLikes(){
         for (int i = mUsers.size() - 1; i >= 0; i--) {
             User user = mUsers.get(i);
-            if (likesIds.contains(user.getId())) {
+            if (peopleWhoLikedUs.contains(user.getId()) || ourLikes.contains(user.getId())) {
                 mUsers.remove(i);
                 userAdapter.notifyItemRemoved(i);
             }
@@ -247,7 +267,7 @@ public class UsersFragment extends Fragment {
     private boolean shouldShowUser(String userId){
         if(userId.equals(currentUserId))
             return false;
-        if(likesIds.contains(userId))
+        if(peopleWhoLikedUs.contains(userId))
             return false;
         // проверяем, переписывались ли мы с пользователем
         for(Chatlist chatlist : chatlists){

@@ -138,7 +138,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             holder.country.setText(countryText);
 
             holder.lang_img.setImageResource(LanguageUtil.getLanguageDrawable(user.getLanguageID()));
-            holder.country_img.setImageResource(LanguageUtil.getLanguageDrawable(user.getCountryID()));
+            holder.country_img.setImageResource(CountryUtil.getCountryDrawable(user.getCountryID()));
 
             holder.img_online.setVisibility(View.GONE);
             holder.img_offline.setVisibility(View.GONE);

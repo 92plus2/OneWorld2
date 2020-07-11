@@ -24,7 +24,7 @@ public class LanguageUtil {
             case CHINIZE:
                 return "ZH";
             default:
-                throw new IllegalArgumentException("Wrong languageId!");
+                throw new IllegalArgumentException("Wrong languageId: " + languageId);
         }
     }
 
@@ -45,7 +45,7 @@ public class LanguageUtil {
             case CHINIZE:
                 return res.getString(R.string.chinese);
             default:
-                throw new IllegalArgumentException("Wrong languageId!");
+                throw new IllegalArgumentException("Wrong languageId: " + languageId);
         }
     }
 
@@ -66,7 +66,7 @@ public class LanguageUtil {
             case CHINIZE:
                 return R.drawable.china;
             default:
-                throw new IllegalArgumentException("Wrong languageId!");
+                throw new IllegalArgumentException("Wrong languageId: " + languageId);
         }
     }
 
