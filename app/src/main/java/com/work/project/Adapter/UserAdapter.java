@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
+import com.work.project.Model.CountryUtil;
 import com.work.project.Model.LanguageUtil;
 import com.work.project.Model.User;
 import com.work.project.Notifications.Data;
@@ -121,17 +122,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     break;
             }
             holder.language.setText(languageText);
-
+            String CountryName = CountryUtil.getLongCountryString(res, user.getCountryID());
             String countryText;
             switch (user.getGenderID()){
                 case User.MALE:
-                    countryText = res.getString(R.string.he_is_from_country);
+                    countryText = res.getString(R.string.he_is_from_country, CountryName);
                     break;
                 case User.FEMALE:
-                    countryText = res.getString(R.string.she_is_from_country);
+                    countryText = res.getString(R.string.she_is_from_country, CountryName);
                     break;
                 default:
-                    countryText = res.getString(R.string.username_is_from_country, user.getSearch());
+                    countryText = res.getString(R.string.username_is_from_country, user.getSearch(), CountryName);
                     break;
             }
             holder.country.setText(countryText);

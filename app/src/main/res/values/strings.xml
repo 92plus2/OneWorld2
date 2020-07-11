@@ -16,9 +16,9 @@
     <string name="she_knows_language">She speaks %s</string>
     <string name="username_knows_language">%1$s speaks %2$s</string>
 
-    <string name="he_is_from_country">He is from</string>
-    <string name="she_is_from_country">She is from</string>
-    <string name="username_is_from_country">%s is from</string>
+    <string name="he_is_from_country">He is from %s</string>
+    <string name="she_is_from_country">She is from %s</string>
+    <string name="username_is_from_country">%1$s is from %2$s</string>
 
     <string name="russian">Russian</string>
     <string name="english">English</string>
@@ -27,6 +27,14 @@
     <string name="french">French</string>
     <string name="italian">Italian</string>
     <string name="chinese">Chinese</string>
+
+    <string name="russia">Russia</string>
+    <string name="england">England</string>
+    <string name="germany">Germany</string>
+    <string name="spain">Spain</string>
+    <string name="france">France</string>
+    <string name="italy">Italy</string>
+    <string name="chine">Chine</string>
 
     <string name="friend_request">Friend Request</string>
     <string name="friend_request_accepted">Friend Request Accepted</string>
