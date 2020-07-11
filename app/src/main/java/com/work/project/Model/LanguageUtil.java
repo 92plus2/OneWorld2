@@ -5,68 +5,70 @@ import android.content.res.Resources;
 import com.work.project.R;
 
 public class LanguageUtil {
-    public static final int RU = 0, EN = 1, DE = 2, ES = 3, FR = 4, IT = 5, ZH = 6;
+    public static final int ENGLISH = 0, RUSSIAN = 1, GERMAN = 2, SPANISH = 3, FRENCH = 4, ITALIAN = 5, CHINIZE = 6;
 
     public static String getShortLanguageString(int languageId){  // также используется в Google Translate!
         switch(languageId){
-            case RU:
+            case RUSSIAN:
                 return "RU";
-            case EN:
+            case ENGLISH:
                 return "EN";
-            case DE:
+            case GERMAN:
                 return "DE";
-            case ES:
+            case SPANISH:
                 return "ES";
-            case FR:
+            case FRENCH:
                 return "FR";
-            case IT:
+            case ITALIAN:
                 return "IT";
-            case ZH:
+            case CHINIZE:
                 return "ZH";
             default:
-                return "Unknown language!";
+                throw new IllegalArgumentException("Wrong languageId!");
         }
     }
 
     public static String getLongLanguageString(Resources res, int languageId){
         switch(languageId){
-            case RU:
+            case RUSSIAN:
                 return res.getString(R.string.russian);
-            case EN:
+            case ENGLISH:
                 return res.getString(R.string.english);
-            case DE:
+            case GERMAN:
                 return res.getString(R.string.german);
-            case ES:
+            case SPANISH:
                 return res.getString(R.string.spanish);
-            case FR:
+            case FRENCH:
                 return res.getString(R.string.french);
-            case IT:
+            case ITALIAN:
                 return res.getString(R.string.italian);
-            case ZH:
+            case CHINIZE:
                 return res.getString(R.string.chinese);
             default:
-                return "Unknown language!";
+                throw new IllegalArgumentException("Wrong languageId!");
         }
     }
 
     public static int getLanguageDrawable(int languageId){
         switch(languageId){
-            case RU:
-                return R.drawable.russian;
-            case EN:
-                return R.drawable.english;
-            case DE:
-                return R.drawable.german;
-            case ES:
-                return R.drawable.spanish;
-            case FR:
-                return R.drawable.french;
-            case IT:
-                return R.drawable.italian;
-            case ZH:
-                return R.drawable.chinese;
+            case RUSSIAN:
+                return R.drawable.russia;
+            case ENGLISH:
+                return R.drawable.england;
+            case GERMAN:
+                return R.drawable.germany;
+            case SPANISH:
+                return R.drawable.spain;
+            case FRENCH:
+                return R.drawable.france;
+            case ITALIAN:
+                return R.drawable.italy;
+            case CHINIZE:
+                return R.drawable.china;
             default:
-                return 0;
+                throw new IllegalArgumentException("Wrong languageId!");
         }
     }
+
+    private LanguageUtil(){}
 }

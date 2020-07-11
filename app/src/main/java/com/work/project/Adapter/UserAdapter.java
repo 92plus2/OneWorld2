@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -99,11 +100,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         if (isChat()){
             if (user.getStatus().equals("online")){
-                holder.img_on.setVisibility(View.VISIBLE);
-                holder.img_off.setVisibility(View.GONE);
+                holder.img_online.setVisibility(View.VISIBLE);
+                holder.img_offline.setVisibility(View.GONE);
             } else {
-                holder.img_on.setVisibility(View.GONE);
-                holder.img_off.setVisibility(View.VISIBLE);
+                holder.img_online.setVisibility(View.GONE);
+                holder.img_offline.setVisibility(View.VISIBLE);
             }
         } else {
             Resources res = mContext.getResources();
@@ -122,17 +123,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     break;
             }
             holder.language.setText(languageText);
-            String CountryName = CountryUtil.getLongCountryString(res, user.getCountryID());
+            String countryName = CountryUtil.getLongCountryString(res, user.getCountryID());
             String countryText;
             switch (user.getGenderID()){
                 case User.MALE:
-                    countryText = res.getString(R.string.he_is_from_country, CountryName);
+                    countryText = res.getString(R.string.he_is_from_country, countryName);
                     break;
                 case User.FEMALE:
-                    countryText = res.getString(R.string.she_is_from_country, CountryName);
+                    countryText = res.getString(R.string.she_is_from_country, countryName);
                     break;
                 default:
-                    countryText = res.getString(R.string.username_is_from_country, user.getSearch(), CountryName);
+                    countryText = res.getString(R.string.username_is_from_country, user.getSearch(), countryName);
                     break;
             }
             holder.country.setText(countryText);
@@ -140,8 +141,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             holder.lang_img.setImageResource(LanguageUtil.getLanguageDrawable(user.getLanguageID()));
             holder.country_img.setImageResource(LanguageUtil.getLanguageDrawable(user.getCountryID()));
 
-            holder.img_on.setVisibility(View.GONE);
-            holder.img_off.setVisibility(View.GONE);
+            holder.img_online.setVisibility(View.GONE);
+            holder.img_offline.setVisibility(View.GONE);
         }
         if(isChat())
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -193,20 +194,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         private final ImageButton ok;
         public TextView username;
         public ImageView profile_image;
-        private ImageView img_on;
-        private ImageView img_off;
+        private ImageView img_online;
+        private ImageView img_offline;
         private TextView last_msg;
         public TextView language;
         public TextView country;
         public ImageView lang_img;
         public ImageView country_img;
+        public ScrollView aboutTextScrollView;
+
         @SuppressLint("ResourceAsColor")
         public UserViewHolder(View itemView) {
             super(itemView);
             username = itemView.findViewById(R.id.username);
             profile_image = itemView.findViewById(R.id.profile_image);
-            img_on = itemView.findViewById(R.id.img_on);
-            img_off = itemView.findViewById(R.id.img_off);
+            img_online = itemView.findViewById(R.id.img_online);
+            img_offline = itemView.findViewById(R.id.img_offline);
             last_msg = itemView.findViewById(R.id.last_msg);
             ok = itemView.findViewById(R.id.ok);
             language = itemView.findViewById(R.id.Language);

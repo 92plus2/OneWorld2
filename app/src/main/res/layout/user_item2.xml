@@ -7,16 +7,6 @@
     android:background="@color/colorPrimary"
     android:padding="10dp">
 
-    <ImageButton
-        android:id="@+id/ok"
-        android:layout_width="109dp"
-        android:layout_height="106dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:background="@android:drawable/btn_star"
-        android:scaleType="centerCrop" />
-
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
         android:layout_width="132dp"
@@ -61,20 +51,21 @@
         tools:visibility="visible" />
 
     <TextView
+        android:layout_below="@id/Language"
+        android:layout_above="@id/ok"
         android:id="@+id/AboutUser"
-        android:layout_width="244dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/ok"
-        android:layout_centerInParent="false"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="150dp"
-        android:paddingTop="59dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="30dp"
         android:text="jdsvvjkjsdkvhgdjfdhjghjdkhgjkdfhghjdhfgjhdfjghdfhgjdfhjghdfhgjdfhgjfhdjghdfhgjkfdhjghfdh"
         android:textColor="@color/colorWhite"
         android:textSize="20sp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_on"
+        android:id="@+id/img_online"
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_below="@id/username"
@@ -87,7 +78,7 @@
         app:civ_border_width="10dp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_off"
+        android:id="@+id/img_offline"
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_below="@id/username"
@@ -100,6 +91,7 @@
         app:civ_border_width="10dp" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/last_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -119,8 +111,7 @@
         android:layout_alignEnd="@id/Country"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="-23dp"
-        android:layout_marginEnd="0dp"
-        app:srcCompat="@drawable/russian" />
+        android:layout_marginEnd="0dp" />
 
     <ImageView
         android:id="@+id/LangImg"
@@ -130,7 +121,15 @@
         android:layout_alignEnd="@id/Language"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="-23dp"
-        android:layout_marginEnd="0dp"
-        app:srcCompat="@drawable/english" />
+        android:layout_marginEnd="0dp" />
 
+    <ImageButton
+        android:id="@+id/ok"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:background="@android:drawable/btn_star"
+        android:scaleType="centerCrop" />
 </RelativeLayout>

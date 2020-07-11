@@ -48,7 +48,7 @@
         android:layout_height="15dp"
         app:civ_border_width="10dp"
         app:civ_border_color="#05df29"
-        android:id="@+id/img_on"
+        android:id="@+id/img_online"
         android:visibility="gone"
         android:src="@mipmap/ic_launcher"
         android:layout_below="@id/username"
@@ -61,7 +61,7 @@
         android:layout_height="15dp"
         app:civ_border_width="10dp"
         app:civ_border_color="#bfbfbf"
-        android:id="@+id/img_off"
+        android:id="@+id/img_offline"
         android:visibility="gone"
         android:src="@mipmap/ic_launcher"
         android:layout_below="@id/username"
@@ -97,7 +97,7 @@
         android:layout_alignParentEnd="false"
         android:layout_marginTop="-23dp"
         android:layout_marginEnd="-33dp"
-        app:srcCompat="@drawable/english" />
+        app:srcCompat="@drawable/england" />
     <ImageView
         android:id="@+id/CountryImg"
         android:layout_width="22dp"
@@ -108,6 +108,6 @@
         android:layout_alignParentEnd="false"
         android:layout_marginTop="-23dp"
         android:layout_marginEnd="-33dp"
-        app:srcCompat="@drawable/english" />
+        app:srcCompat="@drawable/england" />
 
 </RelativeLayout>

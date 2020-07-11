@@ -34,7 +34,8 @@
     <string name="spain">Spain</string>
     <string name="france">France</string>
     <string name="italy">Italy</string>
-    <string name="chine">Chine</string>
+    <string name="china">China</string>
+    <string name="usa">USA</string>
 
     <string name="friend_request">Friend Request</string>
     <string name="friend_request_accepted">Friend Request Accepted</string>

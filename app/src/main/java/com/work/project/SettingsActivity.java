@@ -3,6 +3,7 @@ package com.work.project;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +35,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.work.project.Adapter.LanguageAdapter;
+import com.work.project.Model.CountryUtil;
 import com.work.project.Model.LanguageItem;
 import com.work.project.Model.LanguageUtil;
 import com.work.project.Model.User;
@@ -56,11 +58,6 @@ public class SettingsActivity extends AppCompatActivity {
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
-
-    int countryID = 0;
-    int languageID = 0;
-    String language;
-    public static final int RU = 0, EN = 1, DE = 2, ES = 3, FR = 4, IT = 5, ZH = 6;
 
     private ArrayList<LanguageItem> mCountryList;
     private ArrayList<LanguageItem> mLanguageList;
@@ -166,11 +163,14 @@ public class SettingsActivity extends AppCompatActivity {
                 } else {
                     Glide.with(SettingsActivity.this).load(user.getImageURL()).into(image_profile);
                 }
-                countryID = user.getCountryID();
-                languageID = user.getLanguageID();
-                language = LanguageUtil.getShortLanguageString(languageID);
-                spinnerCountries.setSelection(mCountryList.indexOf(new LanguageItem(countryID)), false);
-                spinnerLanguages.setSelection(mCountryList.indexOf(new LanguageItem(languageID)), false);
+                int countryID = user.getCountryID();
+                int countryPosition = mCountryList.indexOf(new LanguageItem(getResources(), countryID, true));
+                spinnerCountries.setSelection(countryPosition, false);
+
+                int languageID = user.getLanguageID();
+                int languagePosition = mLanguageList.indexOf(new LanguageItem(getResources(), languageID, false));
+                spinnerLanguages.setSelection(languagePosition, false);
+
                 int genderId = user.getGenderID();
                 spinnerGender.setSelection(genderId, false);
             }
@@ -193,17 +193,26 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void initList() {
-        mCountryList = new ArrayList<>();
-        mCountryList.add(new LanguageItem(LanguageUtil.RU));
-        mCountryList.add(new LanguageItem(LanguageUtil.EN));
-        mCountryList.add(new LanguageItem(LanguageUtil.DE));
-        mCountryList.add(new LanguageItem(LanguageUtil.ES));
-        mCountryList.add(new LanguageItem(LanguageUtil.FR));
-        mCountryList.add(new LanguageItem(LanguageUtil.IT));
-        mCountryList.add(new LanguageItem(LanguageUtil.ZH));
+        Resources res = getResources();
 
         mLanguageList = new ArrayList<>();
-        mLanguageList.addAll(mCountryList);
+        mLanguageList.add(new LanguageItem(res, LanguageUtil.ENGLISH, false));
+        mLanguageList.add(new LanguageItem(res, LanguageUtil.RUSSIAN, false));
+        mLanguageList.add(new LanguageItem(res, LanguageUtil.GERMAN, false));
+        mLanguageList.add(new LanguageItem(res, LanguageUtil.SPANISH, false));
+        mLanguageList.add(new LanguageItem(res, LanguageUtil.FRENCH, false));
+        mLanguageList.add(new LanguageItem(res, LanguageUtil.ITALIAN, false));
+        mLanguageList.add(new LanguageItem(res, LanguageUtil.CHINIZE, false));
+
+        mCountryList = new ArrayList<>();
+        mCountryList.add(new LanguageItem(res, CountryUtil.USA, true));
+        mCountryList.add(new LanguageItem(res, CountryUtil.ENGLAND, true));
+        mCountryList.add(new LanguageItem(res, CountryUtil.RUSSIA, true));
+        mCountryList.add(new LanguageItem(res, CountryUtil.GERMANY, true));
+        mCountryList.add(new LanguageItem(res, CountryUtil.SPAIN, true));
+        mCountryList.add(new LanguageItem(res, CountryUtil.FRANCE, true));
+        mCountryList.add(new LanguageItem(res, CountryUtil.ITALY, true));
+        mCountryList.add(new LanguageItem(res, CountryUtil.CHINA, true));
     }
 
     private void openImage() {

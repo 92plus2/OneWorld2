@@ -5,68 +5,53 @@ import android.content.res.Resources;
 import com.work.project.R;
 
 public class CountryUtil {
-    public static final int RU = 0, EN = 1, DE = 2, ES = 3, FR = 4, IT = 5, ZH = 6;
+    public static final int ENGLAND = 0, RUSSIA = 1, GERMANY = 2, SPAIN = 3, FRANCE = 4, ITALY = 5, CHINA = 6, USA = 7;
 
-    public static String getShortLanguageString(int countryId){  // также используется в Google Translate!
+    public static String getLongCountryString(Resources res, int countryId){
         switch(countryId){
-            case RU:
-                return "RU";
-            case EN:
-                return "EN";
-            case DE:
-                return "DE";
-            case ES:
-                return "ES";
-            case FR:
-                return "FR";
-            case IT:
-                return "IT";
-            case ZH:
-                return "ZH";
-            default:
-                return "Unknown country!";
-        }
-    }
-
-    public static String getLongCountryString(Resources res, int languageId){
-        switch(languageId){
-            case RU:
+            case RUSSIA:
                 return res.getString(R.string.russia);
-            case EN:
+            case ENGLAND:
                 return res.getString(R.string.england);
-            case DE:
+            case GERMANY:
                 return res.getString(R.string.germany);
-            case ES:
+            case SPAIN:
                 return res.getString(R.string.spain);
-            case FR:
+            case FRANCE:
                 return res.getString(R.string.france);
-            case IT:
+            case ITALY:
                 return res.getString(R.string.italy);
-            case ZH:
-                return res.getString(R.string.chine);
+            case CHINA:
+                return res.getString(R.string.china);
+            case USA:
+                return res.getString(R.string.usa);
             default:
-                return "Unknown country!";
+                throw new IllegalArgumentException("Wrong countryId!");
         }
     }
 
-    public static int getLanguageDrawable(int languageId){
+    public static int getCountryDrawable(int languageId){
         switch(languageId){
-            case RU:
-                return R.drawable.russian;
-            case EN:
-                return R.drawable.english;
-            case DE:
-                return R.drawable.german;
-            case ES:
-                return R.drawable.spanish;
-            case FR:
-                return R.drawable.french;
-            case IT:
-                return R.drawable.italian;
-            case ZH:
-                return R.drawable.chinese;
+            case RUSSIA:
+                return R.drawable.russia;
+            case ENGLAND:
+                return R.drawable.england;
+            case GERMANY:
+                return R.drawable.germany;
+            case SPAIN:
+                return R.drawable.spain;
+            case FRANCE:
+                return R.drawable.france;
+            case ITALY:
+                return R.drawable.italy;
+            case CHINA:
+                return R.drawable.china;
+            case USA:
+                return R.drawable.usa;
             default:
-                return 0;
+                throw new IllegalArgumentException("Wrong countryId!");
         }
     }
+
+    private CountryUtil(){}
 }

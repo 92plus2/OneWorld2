@@ -1,5 +1,7 @@
 package com.work.project.Model;
 
+import android.content.res.Resources;
+
 import java.util.Objects;
 
 public class LanguageItem {
@@ -7,10 +9,16 @@ public class LanguageItem {
     private int languageId;
     private int flagImage;
 
-    public LanguageItem(int languageId) {
+    public LanguageItem(Resources res, int languageId, boolean isCountry) {
         this.languageId = languageId;
-        languageName = LanguageUtil.getShortLanguageString(languageId);
-        flagImage = LanguageUtil.getLanguageDrawable(languageId);
+        if(!isCountry) {
+            languageName = LanguageUtil.getLongLanguageString(res, languageId);
+            flagImage = LanguageUtil.getLanguageDrawable(languageId);
+        }
+        else{
+            languageName = CountryUtil.getLongCountryString(res, languageId);
+            flagImage = CountryUtil.getCountryDrawable(languageId);
+        }
     }
 
     public String getLanguageName() {
