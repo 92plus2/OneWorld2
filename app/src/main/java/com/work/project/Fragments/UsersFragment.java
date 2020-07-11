@@ -36,7 +36,7 @@ import java.util.Set;
 
 
 public class UsersFragment extends Fragment {
-    final static int MAX_USERS = 10;
+    final static int MAX_USERS = 100;
     final static boolean STAY_IN_SEARCH = true;  // оставаться в поиске. Пока что так, потому что мало пользователей
     private MyRecyclerView recyclerView;
     private UserAdapter userAdapter;
@@ -105,6 +105,9 @@ public class UsersFragment extends Fragment {
                 likesIds = newLikeIds;
                 if (!isSearchUsers() && likesIds.isEmpty()) {
                     ghost.setVisibility(View.VISIBLE);
+                }
+                else if(!isSearchUsers()){
+                    ghost.setVisibility(View.GONE);
                 }
                 deleteUsersWithLikes();
             }
@@ -237,7 +240,6 @@ public class UsersFragment extends Fragment {
                     userAdapter.notifyItemInserted(mUsers.size() - 1);
                     toUpdate--;
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
