@@ -5,6 +5,8 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.work.project.Model.User;
 import com.work.project.R;
 import com.work.project.SettingsActivity;
@@ -57,6 +60,8 @@ public class ProfileFragment extends Fragment {
     private StorageTask uploadTask;
 
     private ValueEventListener currentUserListener;
+
+    private MaterialEditText bio;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,6 +93,9 @@ public class ProfileFragment extends Fragment {
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+
+        bio = view.findViewById(R.id.bio);
+
         currentUserListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -97,6 +105,10 @@ public class ProfileFragment extends Fragment {
                     image_profile.setImageResource(R.mipmap.ic_launcher);
                 } else {
                     Glide.with(getContext()).load(user.getImageURL()).into(image_profile);
+                }
+                String text = user.getBio();
+                if (text != null) {
+                    bio.setText(text);
                 }
             }
 
@@ -190,5 +202,11 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         currentUserRef.removeEventListener(currentUserListener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        currentUserRef.child("bio").setValue(bio.getText().toString());
     }
 }

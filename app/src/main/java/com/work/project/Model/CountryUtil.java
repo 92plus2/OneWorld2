@@ -5,14 +5,14 @@ import android.content.res.Resources;
 import com.work.project.R;
 
 public class CountryUtil {
-    public static final int ENGLAND = 0, RUSSIA = 1, GERMANY = 2, SPAIN = 3, FRANCE = 4, ITALY = 5, CHINA = 6, USA = 7;
+    public static final int UK = 0, RUSSIA = 1, GERMANY = 2, SPAIN = 3, FRANCE = 4, ITALY = 5, CHINA = 6, USA = 7;
 
     public static String getLongCountryString(Resources res, int countryId){
         switch(countryId){
             case RUSSIA:
                 return res.getString(R.string.russia);
-            case ENGLAND:
-                return res.getString(R.string.england);
+            case UK:
+                return res.getString(R.string.uk);
             case GERMANY:
                 return res.getString(R.string.germany);
             case SPAIN:
@@ -34,8 +34,8 @@ public class CountryUtil {
         switch(countryId){
             case RUSSIA:
                 return R.drawable.russia;
-            case ENGLAND:
-                return R.drawable.england;
+            case UK:
+                return R.drawable.uk;
             case GERMANY:
                 return R.drawable.germany;
             case SPAIN:

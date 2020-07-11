@@ -54,7 +54,7 @@ public class LanguageUtil {
             case RUSSIAN:
                 return R.drawable.russia;
             case ENGLISH:
-                return R.drawable.england;
+                return R.drawable.uk;
             case GERMAN:
                 return R.drawable.germany;
             case SPANISH:

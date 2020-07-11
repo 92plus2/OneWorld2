@@ -1,10 +1,13 @@
 package com.work.project;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +46,7 @@ import com.work.project.Model.LanguageUtil;
 import com.work.project.Model.User;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -60,6 +65,9 @@ public class SettingsActivity extends AppCompatActivity {
     private Uri imageUri;
     private StorageTask uploadTask;
     Spinner spinnerCountries, spinnerLanguages, spinnerGender;
+
+    private TextView mDisplayDate;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +110,43 @@ public class SettingsActivity extends AppCompatActivity {
         FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
 
+        mDisplayDate = (TextView)findViewById(R.id.select_date);
+        mDisplayDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        SettingsActivity.this,
+                        android.R.style.Theme_Holo_Light_DarkActionBar,
+                        mDateSetListener, year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                month++;
+                String date = "";
+                if (month < 10) {
+                    date += "0";
+                }
+                date += month + "/";
+                if (day < 10) {
+                    date += "0";
+                }
+                date += day + "/" + year;
+                currentUserRef.child("dateOfBirth").setValue(date);
+                mDisplayDate.setText(date);
+            }
+        };
+
+
         currentUserListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -122,6 +167,11 @@ public class SettingsActivity extends AppCompatActivity {
 
                 int genderId = user.getGenderID();
                 spinnerGender.setSelection(genderId, false);
+
+                String date = user.getDateOfBirth();
+                if (date != null) {
+                    mDisplayDate.setText(user.getDateOfBirth());
+                }
             }
 
             @Override
@@ -200,7 +250,7 @@ public class SettingsActivity extends AppCompatActivity {
     public static ArrayList<LanguageItem> createCountryList(Resources res) {
         ArrayList<LanguageItem> countryList = new ArrayList<>();
         countryList.add(new LanguageItem(res, CountryUtil.USA, true));
-        countryList.add(new LanguageItem(res, CountryUtil.ENGLAND, true));
+        countryList.add(new LanguageItem(res, CountryUtil.UK, true));
         countryList.add(new LanguageItem(res, CountryUtil.RUSSIA, true));
         countryList.add(new LanguageItem(res, CountryUtil.GERMANY, true));
         countryList.add(new LanguageItem(res, CountryUtil.SPAIN, true));

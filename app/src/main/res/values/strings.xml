@@ -29,7 +29,7 @@
     <string name="chinese">Chinese</string>
 
     <string name="russia">Russia</string>
-    <string name="england">United Kingdom</string>
+    <string name="uk">UK</string>
     <string name="germany">Germany</string>
     <string name="spain">Spain</string>
     <string name="france">France</string>
@@ -73,7 +73,8 @@
     <string name="log_out">Log out</string>
     <string name="click_to_translate">click to translate</string>
     <string name="write_about_yourself">Write about yourself</string>
-
+    <string name="date_of_birth">Date of birth</string>
+    <string name="select_date">Select date</string>
 
     <string-array name="gender">
         <item>Not selected</item>

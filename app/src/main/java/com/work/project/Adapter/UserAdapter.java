@@ -50,6 +50,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public static int CHATS = 0, SEARCH_USERS = 1, FRIEND_REQUESTS = 2;
     private int pageType;
 
+
     public UserAdapter(Context mContext, List<User> mUsers, int pageType){
         this.mUsers = mUsers;
         this.mContext = mContext;
