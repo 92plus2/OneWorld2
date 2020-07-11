@@ -44,8 +44,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
         android:layout_marginEnd="33dp"
-       android:layout_alignLeft="@id/username"
-
+        android:layout_centerHorizontal="true"
+        android:paddingRight="28dp"
         android:paddingTop="10dp"
         android:text="He is from Russia"
         android:textColor="@color/colorWhite"
@@ -56,10 +56,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
-        android:layout_alignLeft="@id/username"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:paddingTop="10dp"
         android:text="He speaks English"
+        android:paddingRight="28dp"
         android:textColor="@color/colorWhite"
         tools:visibility="visible" />
 
@@ -124,7 +125,7 @@
         android:layout_alignRight="@id/Country"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="-23dp"
-        android:layout_marginRight="-33dp"
+        android:layout_marginRight="0dp"
         app:srcCompat="@drawable/russian" />
 
     <ImageView
@@ -135,7 +136,7 @@
         android:layout_alignRight="@id/Language"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="-23dp"
-        android:layout_marginRight="-33dp"
+        android:layout_marginRight="0dp"
         app:srcCompat="@drawable/english" />
 
 </RelativeLayout>
