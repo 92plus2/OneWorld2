@@ -2,6 +2,7 @@ package com.work.project;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -52,21 +53,13 @@ public class SettingsActivity extends AppCompatActivity {
     TextView username;
 
     DatabaseReference currentUserRef;
-    FirebaseUser fuser;
+    private ValueEventListener currentUserListener;
 
     StorageReference storageReference;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
-
-    private ArrayList<LanguageItem> mCountryList;
-    private ArrayList<LanguageItem> mLanguageList;
-    private LanguageAdapter mCountryAdapter;
-    private LanguageAdapter mLanguageAdapter;
-    private Spinner spinnerCountries;
-    private Spinner spinnerLanguages;
-    private Spinner spinnerGender;
-    private ValueEventListener currentUserListener;
+    Spinner spinnerCountries, spinnerLanguages, spinnerGender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,13 +89,52 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-
-        //adding languages to list
-        initList();
+        // ===========================================================================================
         spinnerCountries = findViewById(R.id.spinner_countries);
         spinnerLanguages = findViewById(R.id.spinner_languages);
-        mCountryAdapter = new LanguageAdapter(SettingsActivity.this, mCountryList);
-        mLanguageAdapter = new LanguageAdapter(SettingsActivity.this, mLanguageList);
+        spinnerGender = findViewById(R.id.spinner_gender);
+        final ArrayList<LanguageItem> countryList = SettingsActivity.createCountryList(getResources());
+        final ArrayList<LanguageItem> languageList = SettingsActivity.createLanguageList(getResources());
+
+        SettingsActivity.initializeSpinners(this, spinnerCountries, spinnerLanguages, spinnerGender, countryList, languageList);
+        // ==========================================================================================
+
+        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+
+        currentUserListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                username.setText(user.getUsername());
+                if (user.getImageURL().equals("default")) {
+                    image_profile.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    Glide.with(SettingsActivity.this).load(user.getImageURL()).into(image_profile);
+                }
+                int countryID = user.getCountryID();
+                int countryPosition = countryList.indexOf(new LanguageItem(getResources(), countryID, true));
+                spinnerCountries.setSelection(countryPosition, false);
+
+                int languageID = user.getLanguageID();
+                int languagePosition = languageList.indexOf(new LanguageItem(getResources(), languageID, false));
+                spinnerLanguages.setSelection(languagePosition, false);
+
+                int genderId = user.getGenderID();
+                spinnerGender.setSelection(genderId, false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        };
+    }
+
+    public static void initializeSpinners(Context context, Spinner spinnerCountries, Spinner spinnerLanguages, Spinner spinnerGender, ArrayList<LanguageItem> countryList, ArrayList<LanguageItem> languageList) {
+        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+        final DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+
+        LanguageAdapter mCountryAdapter = new LanguageAdapter(context, countryList);
+        LanguageAdapter mLanguageAdapter = new LanguageAdapter(context, languageList);
         spinnerCountries.setAdapter(mCountryAdapter);
         spinnerLanguages.setAdapter(mLanguageAdapter);
 
@@ -134,8 +166,8 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        spinnerGender = findViewById(R.id.spinner_gender);
-        ArrayAdapter<CharSequence> mGenderAdapter = ArrayAdapter.createFromResource(SettingsActivity.this, R.array.gender, R.layout.spinner_gender_item);
+
+        ArrayAdapter<CharSequence> mGenderAdapter = ArrayAdapter.createFromResource(context, R.array.gender, R.layout.spinner_gender_item);
         mGenderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGender.setAdapter(mGenderAdapter);
         spinnerGender.setOnItemSelectedListener(new FixedItemSelectedListener() {
@@ -150,34 +182,6 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
-
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
-        currentUserListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getUsername());
-                if (user.getImageURL().equals("default")) {
-                    image_profile.setImageResource(R.mipmap.ic_launcher);
-                } else {
-                    Glide.with(SettingsActivity.this).load(user.getImageURL()).into(image_profile);
-                }
-                int countryID = user.getCountryID();
-                int countryPosition = mCountryList.indexOf(new LanguageItem(getResources(), countryID, true));
-                spinnerCountries.setSelection(countryPosition, false);
-
-                int languageID = user.getLanguageID();
-                int languagePosition = mLanguageList.indexOf(new LanguageItem(getResources(), languageID, false));
-                spinnerLanguages.setSelection(languagePosition, false);
-
-                int genderId = user.getGenderID();
-                spinnerGender.setSelection(genderId, false);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
-        };
     }
 
     @Override
@@ -192,27 +196,30 @@ public class SettingsActivity extends AppCompatActivity {
         currentUserRef.removeEventListener(currentUserListener);
     }
 
-    private void initList() {
-        Resources res = getResources();
 
-        mLanguageList = new ArrayList<>();
-        mLanguageList.add(new LanguageItem(res, LanguageUtil.ENGLISH, false));
-        mLanguageList.add(new LanguageItem(res, LanguageUtil.RUSSIAN, false));
-        mLanguageList.add(new LanguageItem(res, LanguageUtil.GERMAN, false));
-        mLanguageList.add(new LanguageItem(res, LanguageUtil.SPANISH, false));
-        mLanguageList.add(new LanguageItem(res, LanguageUtil.FRENCH, false));
-        mLanguageList.add(new LanguageItem(res, LanguageUtil.ITALIAN, false));
-        mLanguageList.add(new LanguageItem(res, LanguageUtil.CHINIZE, false));
+    public static ArrayList<LanguageItem> createCountryList(Resources res) {
+        ArrayList<LanguageItem> countryList = new ArrayList<>();
+        countryList.add(new LanguageItem(res, CountryUtil.USA, true));
+        countryList.add(new LanguageItem(res, CountryUtil.ENGLAND, true));
+        countryList.add(new LanguageItem(res, CountryUtil.RUSSIA, true));
+        countryList.add(new LanguageItem(res, CountryUtil.GERMANY, true));
+        countryList.add(new LanguageItem(res, CountryUtil.SPAIN, true));
+        countryList.add(new LanguageItem(res, CountryUtil.FRANCE, true));
+        countryList.add(new LanguageItem(res, CountryUtil.ITALY, true));
+        countryList.add(new LanguageItem(res, CountryUtil.CHINA, true));
+        return countryList;
+    }
 
-        mCountryList = new ArrayList<>();
-        mCountryList.add(new LanguageItem(res, CountryUtil.USA, true));
-        mCountryList.add(new LanguageItem(res, CountryUtil.ENGLAND, true));
-        mCountryList.add(new LanguageItem(res, CountryUtil.RUSSIA, true));
-        mCountryList.add(new LanguageItem(res, CountryUtil.GERMANY, true));
-        mCountryList.add(new LanguageItem(res, CountryUtil.SPAIN, true));
-        mCountryList.add(new LanguageItem(res, CountryUtil.FRANCE, true));
-        mCountryList.add(new LanguageItem(res, CountryUtil.ITALY, true));
-        mCountryList.add(new LanguageItem(res, CountryUtil.CHINA, true));
+    public static ArrayList<LanguageItem> createLanguageList(Resources res){
+        ArrayList<LanguageItem> languageList = new ArrayList<>();
+        languageList.add(new LanguageItem(res, LanguageUtil.ENGLISH, false));
+        languageList.add(new LanguageItem(res, LanguageUtil.RUSSIAN, false));
+        languageList.add(new LanguageItem(res, LanguageUtil.GERMAN, false));
+        languageList.add(new LanguageItem(res, LanguageUtil.SPANISH, false));
+        languageList.add(new LanguageItem(res, LanguageUtil.FRENCH, false));
+        languageList.add(new LanguageItem(res, LanguageUtil.ITALIAN, false));
+        languageList.add(new LanguageItem(res, LanguageUtil.CHINIZE, false));
+        return languageList;
     }
 
     private void openImage() {

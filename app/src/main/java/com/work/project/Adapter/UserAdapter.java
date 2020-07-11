@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -201,7 +200,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public TextView country;
         public ImageView lang_img;
         public ImageView country_img;
-        public ScrollView aboutTextScrollView;
 
         @SuppressLint("ResourceAsColor")
         public UserViewHolder(View itemView) {
