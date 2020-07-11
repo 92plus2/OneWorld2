@@ -47,6 +47,7 @@ import com.work.project.Model.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -121,8 +122,9 @@ public class SettingsActivity extends AppCompatActivity {
 
                 DatePickerDialog dialog = new DatePickerDialog(
                         SettingsActivity.this,
-                        android.R.style.Theme_Holo_Light_DarkActionBar,
+                        android.R.style.Theme_Black,
                         mDateSetListener, year, month, day);
+                dialog.getDatePicker().setMaxDate(new Date().getTime());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }

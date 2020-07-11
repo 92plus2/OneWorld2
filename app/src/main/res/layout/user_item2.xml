@@ -60,7 +60,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="30dp"
-        android:text="Users biography"
+        android:text="@string/no_biography"
         android:textColor="@color/colorWhite"
         android:textSize="20sp" />
 
