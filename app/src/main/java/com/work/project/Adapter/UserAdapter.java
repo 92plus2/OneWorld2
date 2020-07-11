@@ -26,6 +26,7 @@ import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
 import com.work.project.Model.User;
 import com.work.project.R;
+import com.work.project.R.drawable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +102,46 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 holder.img_off.setVisibility(View.VISIBLE);
             }
         } else {
+            if(user.getGenderId() == 1){
+                holder.language.setText("He speaks ");
+                holder.country.setText("He is from ");
+            }
+            if(user.getGenderId() == 0){
+                holder.language.setText(holder.username.getText() + " speaks " );
+                holder.country.setText(holder.username.getText() + " is from ");
+            }
+            if(user.getGenderId() == 2){
+                holder.language.setText("She speaks ");
+                holder.country.setText("She is from ");
+            }
+            if(user.getLanguage().equals("RU")){
+                holder.language.setText(holder.language.getText() + "Russian");
+                holder.lang_img.setImageResource(R.drawable.russian);
+            }
+            if(user.getLanguage().equals("EN")){
+                holder.language.setText(holder.language.getText() + "English");
+                holder.lang_img.setImageResource(drawable.english);
+            }
+            if(user.getLanguage().equals("ZH")){
+                holder.language.setText(holder.language.getText() + "Chinese");
+                holder.lang_img.setImageResource(drawable.chinese);
+            }
+            if(user.getLanguage().equals("DE")){
+                holder.language.setText(holder.language.getText() + "German");
+                holder.lang_img.setImageResource(drawable.german);
+            }
+            if(user.getLanguage().equals("ES")){
+                holder.language.setText(holder.language.getText() + "Spanish");
+                holder.lang_img.setImageResource(drawable.spanish);
+            }
+            if(user.getLanguage().equals("IT")){
+                holder.language.setText(holder.language.getText() + "Italian");
+                holder.lang_img.setImageResource(drawable.italian);
+            }
+            if(user.getLanguage().equals("FR")){
+                holder.language.setText(holder.language.getText() + "French");
+                holder.lang_img.setImageResource(drawable.french);
+            }
             holder.img_on.setVisibility(View.GONE);
             holder.img_off.setVisibility(View.GONE);
         }
@@ -159,6 +200,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         private ImageView img_on;
         private ImageView img_off;
         private TextView last_msg;
+        public TextView language;
+        public TextView country;
+        public ImageView lang_img;
+        public ImageView country_img;
         @SuppressLint("ResourceAsColor")
         public UserViewHolder(View itemView) {
             super(itemView);
@@ -168,6 +213,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             img_off = itemView.findViewById(R.id.img_off);
             last_msg = itemView.findViewById(R.id.last_msg);
             ok = itemView.findViewById(R.id.ok);
+            language = itemView.findViewById(R.id.Language);
+            country = itemView.findViewById(R.id.Country);
+            lang_img = itemView.findViewById(R.id.LangImg);
+            country_img = itemView.findViewById(R.id.CountryImg);
         }
     }
 
