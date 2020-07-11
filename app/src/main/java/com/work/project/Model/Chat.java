@@ -1,5 +1,9 @@
 package com.work.project.Model;
 
+import android.net.Uri;
+
+import com.work.project.MessageActivity;
+
 import java.util.Objects;
 
 public class Chat {  // на самом деле сообщение ffs
@@ -33,6 +37,16 @@ public class Chat {  // на самом деле сообщение ffs
     public String getPhoto() {
         return photo;
     }
+
+    public Uri getPhotoCached(){
+        if(MessageActivity.localImageFiles.containsKey(getPhoto())){
+            Uri fileUri = MessageActivity.localImageFiles.get(getPhoto());
+            return fileUri;
+        }
+        else
+            return Uri.parse(getPhoto());
+    }
+
     public void setPhoto(String photo) {
         this.photo = photo;
     }

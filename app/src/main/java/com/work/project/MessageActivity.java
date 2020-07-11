@@ -66,6 +66,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 public class MessageActivity extends AppCompatActivity {
+    public static Map<String, Uri> localImageFiles = new HashMap<>();  // если мы загрузили картинку на сервер, но она есть у нас в файле локально
     CircleImageView profile_image;
     TextView username;
 
@@ -235,6 +236,8 @@ public class MessageActivity extends AppCompatActivity {
                         assert downloadUri != null;
                         String mUri = downloadUri.toString();
                         pd.dismiss();
+
+                        localImageFiles.put(mUri, imageUri);
                         sendMessage("Photo", mUri);
                     } else {
                         Toast.makeText(MessageActivity.this, R.string.failed_to_upload_image, Toast.LENGTH_SHORT).show();

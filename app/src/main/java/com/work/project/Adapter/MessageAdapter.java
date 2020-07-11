@@ -1,6 +1,7 @@
 package com.work.project.Adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -126,7 +127,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.messageText.setVisibility(View.GONE);
             int height = (int) convertDpToPixel(200, holder.time.getContext());
             setHeight(holder.messagePhoto, height);
-            Glide.with(mContext).load(chat.getPhoto()).into(holder.messagePhoto);
+
+            Glide.with(mContext).load(chat.getPhotoCached()).into(holder.messagePhoto);
+
             if (holder.isLeftMessage()) {
                 holder.clickToTranslate.setVisibility(View.GONE);
             }
@@ -134,7 +137,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.messagePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showBigPhoto(holder.messageText.getContext(), chat.getPhoto());
+                    showBigPhoto(holder.messageText.getContext(), chat.getPhotoCached());
                 }
             });
         }
@@ -171,6 +174,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     private static void setClickListenerRecursively(View view, View.OnClickListener listener){
+        if(view instanceof ImageView)
+            return;
         if(view instanceof TextView) {
             view.setClickable(true);
             view.setFocusable(false);
@@ -224,7 +229,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         return mChat.size();
     }
 
-    public void showBigPhoto(Context context, String url){
+    public void showBigPhoto(Context context, Uri uri){
         MessageActivity activity = (MessageActivity) context;
         activity.bigPhotoLayout.setVisibility(View.VISIBLE);
         activity.bigPhotoLayout.setAlpha(0.0f);
@@ -233,7 +238,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 .alpha(1.0f)
                 .setListener(null);
 
-        Glide.with(context).load(url).into(activity.bigPhotoView);
+        Glide.with(context).load(uri).into(activity.bigPhotoView);
     }
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder{

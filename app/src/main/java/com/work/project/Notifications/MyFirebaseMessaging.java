@@ -9,26 +9,18 @@ import android.content.res.Resources;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.work.project.MessageActivity;
 import com.work.project.R;
-
-import java.util.Map;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
     private static int notificationID = 1;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d(MessageActivity.TAG, "message received!");
-        for(Map.Entry<String, String> kv : remoteMessage.getData().entrySet()){
-            Log.d(MessageActivity.TAG, "k, v: " + kv.getKey() + " " + kv.getValue());
-        }
         super.onMessageReceived(remoteMessage);
 
         Data data = new Data(remoteMessage.getData());
