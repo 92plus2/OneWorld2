@@ -52,16 +52,10 @@ public class MainActivity extends AppCompatActivity {
         final ViewPager viewPager = findViewById(R.id.view_pager);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
-        viewPagerAdapter.addFragment(UsersFragment.newInstance(true), "Search Users");
-        viewPagerAdapter.addFragment(UsersFragment.newInstance(false), "Friend Requests");
-        int unread = 0;
-        if (unread == 0) {
-            viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
-        } else {
-            viewPagerAdapter.addFragment(new ChatsFragment(), "(" + unread + ") Chats");
-        }
-
-        viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
+        viewPagerAdapter.addFragment(UsersFragment.newInstance(true), getString(R.string.search_users));
+        viewPagerAdapter.addFragment(UsersFragment.newInstance(false), getString(R.string.friend_requests));
+        viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.chats));
+        viewPagerAdapter.addFragment(new ProfileFragment(), getString(R.string.profile));
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);

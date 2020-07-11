@@ -14,8 +14,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
-        android:background="#00FFFFFF"
-        android:foreground="@android:drawable/btn_star"
+        android:background="@android:drawable/btn_star"
         android:scaleType="centerCrop" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -31,9 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/profile_image"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:paddingTop="0dp"
-        android:text="Username, 19"
         android:textColor="#fff"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -45,9 +43,8 @@
         android:layout_below="@id/username"
         android:layout_marginEnd="33dp"
         android:layout_centerHorizontal="true"
-        android:paddingRight="28dp"
+        android:paddingEnd="28dp"
         android:paddingTop="10dp"
-        android:text="He is from Russia"
         android:textColor="@color/colorWhite"
         tools:visibility="visible" />
 
@@ -59,8 +56,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:paddingTop="10dp"
-        android:text="He speaks English"
-        android:paddingRight="28dp"
+        android:paddingEnd="28dp"
         android:textColor="@color/colorWhite"
         tools:visibility="visible" />
 
@@ -82,10 +78,9 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_below="@id/username"
-        android:layout_marginLeft="-15dp"
+        android:layout_marginStart="-15dp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/profile_image"
-        android:layout_toRightOf="@id/profile_image"
         android:src="@mipmap/ic_launcher"
         android:visibility="gone"
         app:civ_border_color="#05df29"
@@ -96,10 +91,9 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_below="@id/username"
-        android:layout_marginLeft="-15dp"
+        android:layout_marginStart="-15dp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/profile_image"
-        android:layout_toRightOf="@id/profile_image"
         android:src="@mipmap/ic_launcher"
         android:visibility="gone"
         app:civ_border_color="#bfbfbf"
@@ -110,9 +104,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/profile_image"
+        android:layout_toEndOf="@id/profile_image"
         android:maxLines="1"
         android:paddingTop="5dp"
         android:textColor="@color/colorPrimaryDark" />
@@ -122,10 +116,10 @@
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_below="@id/Country"
-        android:layout_alignRight="@id/Country"
+        android:layout_alignEnd="@id/Country"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="-23dp"
-        android:layout_marginRight="0dp"
+        android:layout_marginEnd="0dp"
         app:srcCompat="@drawable/russian" />
 
     <ImageView
@@ -133,10 +127,10 @@
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_below="@id/Language"
-        android:layout_alignRight="@id/Language"
+        android:layout_alignEnd="@id/Language"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="-23dp"
-        android:layout_marginRight="0dp"
+        android:layout_marginEnd="0dp"
         app:srcCompat="@drawable/english" />
 
 </RelativeLayout>

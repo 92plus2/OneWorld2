@@ -91,7 +91,4 @@ public class User {
         String encoded = String.format("Chat %s with %s", ids[0], ids[1]);
         return FirebaseDatabase.getInstance().getReference("AllChats").child(encoded);
     }
-
-    //     public static final int RU = 0, EN = 1, DE = 2, ES = 3, FR = 4, IT = 5, ZH = 6;
-
 }

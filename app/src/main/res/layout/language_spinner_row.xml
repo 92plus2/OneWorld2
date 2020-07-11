@@ -13,12 +13,11 @@
         android:id="@+id/text_view_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/image_view_flag"
-        android:layout_marginLeft="10dp"
+        android:layout_toEndOf="@+id/image_view_flag"
+        android:layout_marginStart="10dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="5dp"
         android:gravity="center"
-        android:text="Russian"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 </RelativeLayout>

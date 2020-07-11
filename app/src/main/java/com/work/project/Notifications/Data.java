@@ -2,10 +2,12 @@ package com.work.project.Notifications;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.work.project.MainActivity;
 import com.work.project.MessageActivity;
+import com.work.project.R;
 
 import java.util.Map;
 
@@ -27,27 +29,27 @@ public class Data {
         this(data.get("userId"), data.get("username"), data.get("message"), Integer.parseInt(data.get("notificationType")));
     }
 
-    public String getTitle(){
+    public String getTitle(Resources res){
         switch(notificationType){
             case NEW_MESSAGE:
-                return "New Message";
+                return res.getString(R.string.new_message);
             case NEW_FRIEND_REQUEST:
-                return "Friend Request";
+                return res.getString(R.string.friend_request);
             case FRIEND_REQUEST_ACCEPTED:
-                return "Friend Request Accepted";
+                return res.getString(R.string.friend_request_accepted);
             default:
                 return null;
         }
     }
 
-    public String getBody(){
+    public String getBody(Resources res){
         switch (notificationType){
             case NEW_MESSAGE:
-                return username + ": " + message;
+                return res.getString(R.string.username_and_message_format, username, message);
             case NEW_FRIEND_REQUEST:
-                return "You were liked by " + username;
+                return res.getString(R.string.you_were_liked_by_username, username);
             case FRIEND_REQUEST_ACCEPTED:
-                return "Your friend request was accepted by " + username;
+                return res.getString(R.string.your_friend_request_was_accepted_by_username, username);
             default:
                 return null;
         }

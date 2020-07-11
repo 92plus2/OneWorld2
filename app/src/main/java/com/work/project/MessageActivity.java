@@ -148,7 +148,7 @@ public class MessageActivity extends AppCompatActivity {
                 if (!msg.equals("")){
                     sendMessage(msg, null);
                 } else {
-                    Toast.makeText(MessageActivity.this, "You can't send empty message", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MessageActivity.this, R.string.you_cannot_send_an_empty_message, Toast.LENGTH_SHORT).show();
                 }
                 text_send.setText("");
             }
@@ -212,7 +212,7 @@ public class MessageActivity extends AppCompatActivity {
 
     private void uploadImage(){
         final ProgressDialog pd = new ProgressDialog(this);
-        pd.setMessage("Uploading");
+        pd.setMessage(getString(R.string.uploading_image));
         pd.show();
 
         if (imageUri != null){
@@ -237,7 +237,7 @@ public class MessageActivity extends AppCompatActivity {
                         pd.dismiss();
                         sendMessage("Photo", mUri);
                     } else {
-                        //Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MessageActivity.this, R.string.failed_to_upload_image, Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }
                 }
@@ -249,7 +249,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_image_selected, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -262,7 +262,7 @@ public class MessageActivity extends AppCompatActivity {
             imageUri = data.getData();
 
             if (uploadTask != null && uploadTask.isInProgress()){
-                Toast.makeText(this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.upload_in_progress, Toast.LENGTH_SHORT).show();
             } else {
                 uploadImage();
             }

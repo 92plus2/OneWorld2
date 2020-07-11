@@ -11,7 +11,6 @@
         android:id="@+id/AboutUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:visibility="gone"
         tools:visibility="gone" />
 
@@ -19,14 +18,12 @@
         android:id="@+id/Country"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:visibility="gone"
         tools:visibility="gone" />
     <TextView
         android:id="@+id/Language"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:visibility="gone"
         tools:visibility="gone" />
 
@@ -39,12 +36,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="username"
         android:textColor="#fff"
         android:id="@+id/username"
-        android:layout_toRightOf="@id/profile_image"
         android:layout_toEndOf="@id/profile_image"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_centerVertical="true"
         android:textSize="18sp"/>
 
@@ -58,8 +53,7 @@
         android:src="@mipmap/ic_launcher"
         android:layout_below="@id/username"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="-15dp"
-        android:layout_toRightOf="@id/profile_image"
+        android:layout_marginStart="-15dp"
         android:layout_toEndOf="@id/profile_image"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -72,20 +66,19 @@
         android:src="@mipmap/ic_launcher"
         android:layout_below="@id/username"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="-15dp"
-        android:layout_toRightOf="@id/profile_image"
+        android:layout_marginStart="-15dp"
         android:layout_toEndOf="@id/profile_image"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
-        android:layout_toRightOf="@id/profile_image"
+        android:layout_toEndOf="@id/profile_image"
         android:layout_marginTop="5dp"
         android:paddingTop="5dp"
         android:id="@+id/last_msg"
         android:textColor="@color/colorPrimaryDark"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:maxLines="1"/>
 
     <ImageButton
@@ -100,10 +93,10 @@
         android:visibility="gone"
         android:layout_height="22dp"
         android:layout_below="@id/Language"
-        android:layout_alignRight="@id/Language"
+        android:layout_alignEnd="@id/Language"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="-23dp"
-        android:layout_marginRight="-33dp"
+        android:layout_marginEnd="-33dp"
         app:srcCompat="@drawable/english" />
     <ImageView
         android:id="@+id/CountryImg"
@@ -111,10 +104,10 @@
         android:visibility="gone"
         android:layout_height="22dp"
         android:layout_below="@id/Language"
-        android:layout_alignRight="@id/Language"
+        android:layout_alignEnd="@id/Language"
         android:layout_alignParentEnd="false"
         android:layout_marginTop="-23dp"
-        android:layout_marginRight="-33dp"
+        android:layout_marginEnd="-33dp"
         app:srcCompat="@drawable/english" />
 
 </RelativeLayout>

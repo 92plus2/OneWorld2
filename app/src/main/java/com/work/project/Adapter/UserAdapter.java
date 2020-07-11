@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +40,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private RecyclerView recyclerView;
     private List<User> mUsers;
     private Map<User, Long> lastMessageTimes;
-    private Map<DatabaseReference, ValueEventListener> listeners;
+    private Map<RecyclerView.ViewHolder, Pair<DatabaseReference, ValueEventListener>> listeners;
 
     FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
     private String fuserName;
@@ -136,7 +136,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             }
             holder.country.setText(countryText);
 
-            Log.d("oneworld", "country id: " + user.getCountryID());
             holder.lang_img.setImageResource(LanguageUtil.getLanguageDrawable(user.getLanguageID()));
             holder.country_img.setImageResource(LanguageUtil.getLanguageDrawable(user.getCountryID()));
 
@@ -242,11 +241,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     if(theLastMessage.length() > 30){
                         theLastMessage = theLastMessage.substring(0, 30) + "...";
                     }
-                    holder.last_msg.setText(theLastMessage + " (" + lasttime + ")");
+                    holder.last_msg.setText(mContext.getResources().getString(R.string.message_and_time_format, theLastMessage, lasttime));
                 }
                 else {
                     holder.last_msg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-                    holder.last_msg.setText("No Messages");
+                    holder.last_msg.setText(R.string.no_messages);
                 }
 
                 // Мы хотим, чтобы пользователи были отсортированы
@@ -270,8 +269,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         };
-        listeners.put(chatReference, chatListener);
+        listeners.put(holder, new Pair<>(chatReference, chatListener));
         chatReference.limitToLast(1).addValueEventListener(chatListener);
+    }
+
+
+    @Override
+    public void onViewRecycled(@NonNull UserViewHolder holder) {
+        super.onViewRecycled(holder);
+        if(listeners.containsKey(holder)){
+            Pair<DatabaseReference, ValueEventListener> pair = listeners.remove(holder);
+            pair.first.removeEventListener(pair.second);
+        }
     }
 
     private boolean allUsersHaveTimes(){
@@ -292,8 +301,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        for(Map.Entry<DatabaseReference, ValueEventListener> kv : listeners.entrySet()){
-            kv.getKey().removeEventListener(kv.getValue());
+        for(Pair<DatabaseReference, ValueEventListener> pair : listeners.values()){
+            pair.first.removeEventListener(pair.second);
         }
     }
 }

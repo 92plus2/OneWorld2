@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -33,10 +34,11 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         Data data = new Data(remoteMessage.getData());
         int icon = R.mipmap.ic_launcher;
 
+        Resources res = getApplicationContext().getResources();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            sendOreoNotification(data.getTitle(), data.getBody(), data.getIntent(this), icon);
+            sendOreoNotification(data.getTitle(res), data.getBody(res), data.getIntent(this), icon);
         } else {
-            sendNotification(data.getTitle(), data.getBody(), data.getIntent(this), icon);
+            sendNotification(data.getTitle(res), data.getBody(res), data.getIntent(this), icon);
         }
     }
 

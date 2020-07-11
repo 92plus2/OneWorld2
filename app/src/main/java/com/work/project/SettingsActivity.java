@@ -221,7 +221,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void uploadImage(){
         final ProgressDialog pd = new ProgressDialog(SettingsActivity.this);
-        pd.setMessage("Uploading");
+        pd.setMessage(getString(R.string.uploading_image));
         pd.show();
 
         if (imageUri != null){
@@ -251,7 +251,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                         pd.dismiss();
                     } else {
-                        Toast.makeText(SettingsActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SettingsActivity.this, R.string.failed_to_upload_image, Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }
                 }
@@ -263,7 +263,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(SettingsActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SettingsActivity.this, R.string.no_image_selected, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -276,7 +276,7 @@ public class SettingsActivity extends AppCompatActivity {
             imageUri = data.getData();
 
             if (uploadTask != null && uploadTask.isInProgress()){
-                Toast.makeText(SettingsActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsActivity.this, R.string.upload_in_progress, Toast.LENGTH_SHORT).show();
             } else {
                 uploadImage();
             }

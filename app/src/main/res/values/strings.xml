@@ -1,8 +1,16 @@
 <resources>
-    <string name="app_name">ChatApp</string>
+    <string name="app_name">OneWorld</string>
 
     <string name="message_seen">Seen</string>
     <string name="message_delivered">Delivered</string>
+    <string name="no_messages">No Messages</string>
+    <string name="new_message">New Message</string>
+    <string name="message_and_time_format">%1$s (%2$s)</string>
+    <string name="username_and_message_format">%1$s: %2$s</string>
+
+    <string name="failed_to_upload_image">Failed to upload image!</string>
+    <string name="no_image_selected">No image selected</string>
+    <string name="upload_in_progress">Upload in progress</string>
 
     <string name="he_knows_language">He speaks %s</string>
     <string name="she_knows_language">She speaks %s</string>
@@ -19,6 +27,43 @@
     <string name="french">French</string>
     <string name="italian">Italian</string>
     <string name="chinese">Chinese</string>
+
+    <string name="friend_request">Friend Request</string>
+    <string name="friend_request_accepted">Friend Request Accepted</string>
+    <string name="you_were_liked_by_username">You were liked by %s</string>
+    <string name="your_friend_request_was_accepted_by_username">Your friend request was accepted by %s</string>
+
+    <string name="all_fields_are_required">All fields are required</string>
+    <string name="authentication_failed">Authentication failed!</string>
+
+    <string name="search_users">Search Users</string>
+    <string name="friend_requests">Friend Requests</string>
+    <string name="chats">Chats</string>
+    <string name="profile">Profile</string>
+
+    <string name="you_cannot_send_an_empty_message">You cannot send an empty message</string>
+    <string name="password_must_be_at_least_6_chars">Password must be at least 6 characters</string>
+    <string name="you_cannot_register_with_this_email_or_password">You cannot register with this email or password</string>
+    <string name="please_check_your_email">Please check your email</string>
+    <string name="uploading_image">Uploading</string>
+    <string name="login">Login</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="type_a_message">Type a message…</string>
+    <string name="create_a_new_account">Create a new account</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="register">register</string>
+    <string name="your_email">Your Email</string>
+    <string name="reset_password_button">Reset</string>
+    <string name="by_clicking_reset_you_will_receive_an_email_to_reset_you_password">By clicking RESET, you will receive an email to reset you password</string>
+    <string name="profile_is_loading">Profile loading</string>
+    <string name="country">Country</string>
+    <string name="language">Language</string>
+    <string name="gender">Gender</string>
+    <string name="log_out">Log out</string>
+    <string name="click_to_translate">click to translate</string>
+    <string name="write_about_yourself">Write about yourself</string>
 
 
     <string-array name="gender">

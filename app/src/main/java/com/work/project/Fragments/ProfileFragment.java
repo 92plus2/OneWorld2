@@ -9,10 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,14 +32,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-import com.work.project.Adapter.LanguageAdapter;
-import com.work.project.Model.LanguageItem;
 import com.work.project.Model.User;
 import com.work.project.R;
 import com.work.project.SettingsActivity;
-import com.work.project.StartActivity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -131,7 +124,7 @@ public class ProfileFragment extends Fragment {
 
     private void uploadImage(){
         final ProgressDialog pd = new ProgressDialog(getContext());
-        pd.setMessage("Uploading");
+        pd.setMessage(getString(R.string.uploading_image));
         pd.show();
 
         if (imageUri != null){
@@ -161,7 +154,7 @@ public class ProfileFragment extends Fragment {
 
                         pd.dismiss();
                     } else {
-                        Toast.makeText(getContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.failed_to_upload_image, Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }
                 }
@@ -173,7 +166,7 @@ public class ProfileFragment extends Fragment {
                 }
             });
         } else {
-            Toast.makeText(getContext(), "No image selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.no_image_selected, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -186,7 +179,7 @@ public class ProfileFragment extends Fragment {
             imageUri = data.getData();
 
             if (uploadTask != null && uploadTask.isInProgress()){
-                Toast.makeText(getContext(), "Upload in progress", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.upload_in_progress, Toast.LENGTH_SHORT).show();
             } else {
                 uploadImage();
             }
