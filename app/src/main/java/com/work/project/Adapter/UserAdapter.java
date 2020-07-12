@@ -113,42 +113,28 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         } else {
             Resources res = mContext.getResources();
 
-            String languageText;
             String languageName = LanguageUtil.getLongLanguageString(res, user.getLanguageID());
-            switch (user.getGenderID()){
-                case User.MALE:
-                    languageText = res.getString(R.string.he_knows_language, languageName);
-                    break;
-                case User.FEMALE:
-                    languageText = res.getString(R.string.she_knows_language, languageName);
-                    break;
-                default:
-                    languageText = res.getString(R.string.username_knows_language, user.getUsername(), languageName);
-                    break;
-            }
+            String languageText = formatSentence(R.array.username_knows_language, user, languageName);
             holder.language.setText(languageText);
             holder.langImg.setImageResource(LanguageUtil.getLanguageDrawable(user.getLanguageID()));
 
             String countryName = CountryUtil.getLongCountryString(res, user.getCountryID());
-            String countryText;
-            switch (user.getGenderID()){
-                case User.MALE:
-                    countryText = res.getString(R.string.he_is_from_country, countryName);
-                    break;
-                case User.FEMALE:
-                    countryText = res.getString(R.string.she_is_from_country, countryName);
-                    break;
-                default:
-                    countryText = res.getString(R.string.username_is_from_country, user.getUsername(), countryName);
-                    break;
-            }
+            String countryText = formatSentence(R.array.username_is_from_country, user, countryName);
             holder.country.setText(countryText);
             holder.countryImg.setImageResource(CountryUtil.getCountryDrawable(user.getCountryID()));
+
+            int age = user.getAge();
+            if(age != -1) {
+                String ageText = formatSentence(R.array.username_is_n_years_old, user, age);
+                holder.age.setText(ageText);
+            }
+            else
+                holder.age.setVisibility(View.GONE);
 
             holder.biographyScrollView.setOnTouchListener((view, event) -> {
                 // Чтобы можно было скроллить биографию, т. к. RecyclerView перехватывает touchEvent
                 if(holder.biography.getHeight() > holder.biographyScrollView.getHeight()) {
-                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                    recyclerView.requestDisallowInterceptTouchEvent(true);
                     return false;
                 }
                 else
@@ -169,8 +155,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
                         String language = LanguageUtil.getShortLanguageString(languageId);
 
-                        MessageAdapter.translate(user.getBiography(), language, mContext, translatedText -> {
-                            holder.biography.setText(user.getBiography() + "\n(" + translatedText + ")");
+                        MessageAdapter.translate(user.getBiography(), language, mContext, new MessageAdapter.TranslateCallback() {
+                            @Override
+                            public void onTranslationSuccess(String translatedText) {
+                                holder.biography.setText(user.getBiography() + "\n(" + translatedText + ")");
+                            }
+
+                            @Override
+                            public void onTranslationSameLanguage() {
+                                // оставляем биографию как есть
+                            }
                         });
                     }
 
@@ -203,6 +197,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
     }
 
+    private String formatSentence(int arrayId, User user, Object info){
+        Resources res = mContext.getResources();
+        String format = res.getStringArray(arrayId)[user.getGenderID()];
+        return String.format(format, user.getUsername(), info);
+    }
+
     @Override
     public int getItemCount() {
         return mUsers.size();
@@ -225,6 +225,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public TextView biography;
         public TextView language;
         public TextView country;
+        public TextView age;
         public ImageView langImg;
         public ImageView countryImg;
         public ScrollView biographyScrollView;
@@ -241,6 +242,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             likeButton = itemView.findViewById(R.id.like_button);
             language = itemView.findViewById(R.id.language);
             country = itemView.findViewById(R.id.country);
+            age = itemView.findViewById(R.id.age);
             langImg = itemView.findViewById(R.id.lang_img);
             countryImg = itemView.findViewById(R.id.country_img);
             biographyScrollView = itemView.findViewById(R.id.biography_scrollview);

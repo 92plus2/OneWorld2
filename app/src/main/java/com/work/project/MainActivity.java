@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         final ViewPager viewPager = findViewById(R.id.view_pager);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
-        viewPagerAdapter.addFragment(UsersFragment.newInstance(true), getString(R.string.search_users));
+        viewPagerAdapter.addFragment(UsersFragment.newInstance(true), getString(R.string.find_friends));
         viewPagerAdapter.addFragment(UsersFragment.newInstance(false), getString(R.string.friend_requests));
         viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.chats));
         viewPagerAdapter.addFragment(new ProfileFragment(), getString(R.string.profile));

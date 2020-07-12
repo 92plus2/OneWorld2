@@ -5,7 +5,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+
+import static java.util.Calendar.DATE;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.YEAR;
 
 public class User {
 
@@ -81,6 +86,26 @@ public class User {
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    // (c) https://stackoverflow.com/a/10215152/6120487
+    public int getAge(){
+        if(getDateOfBirth() == null)
+            return -1;
+        Calendar first = getCalendar(getDateOfBirth());
+        Calendar second = getCalendar(new Date());
+        int diff = second.get(YEAR) - first.get(YEAR);
+        if (first.get(MONTH) > second.get(MONTH) ||
+                (first.get(MONTH) == second.get(MONTH) && first.get(DATE) > second.get(DATE))) {
+            diff--;
+        }
+        return diff;
+    }
+
+    public static Calendar getCalendar(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
     }
 
     public String getBiography() {

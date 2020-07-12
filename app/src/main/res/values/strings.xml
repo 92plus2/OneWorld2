@@ -12,13 +12,23 @@
     <string name="no_image_selected">No image selected</string>
     <string name="upload_in_progress">Upload in progress</string>
 
-    <string name="he_knows_language">He speaks %s</string>
-    <string name="she_knows_language">She speaks %s</string>
-    <string name="username_knows_language">%1$s speaks %2$s</string>
+    <string-array name="username_knows_language">
+        <item name="username_knows_language">%1$s speaks %2$s</item>
+        <item name="he_knows_language">He speaks %2$s</item>
+        <item name="she_knows_language">She speaks %2$s</item>
+    </string-array>
 
-    <string name="he_is_from_country">He is from %s</string>
-    <string name="she_is_from_country">She is from %s</string>
-    <string name="username_is_from_country">%1$s is from %2$s</string>
+    <string-array name="username_is_from_country">
+        <item name="username_is_from_country">%1$s is from %2$s</item>
+        <item name="he_is_from_country">He is from %2$s</item>
+        <item name="she_is_from_country">She is from %2$s</item>
+    </string-array>
+
+    <string-array name="username_is_n_years_old">
+        <item name="username_is_n_years_old">%1$s is %2$d years old</item>
+        <item name="he_is_n_years_old">He is %2$d years old</item>
+        <item name="she_is_n_years_old">She is %2$d years old</item>
+    </string-array>
 
     <string name="russian">Russian</string>
     <string name="english">English</string>
@@ -45,7 +55,7 @@
     <string name="all_fields_are_required">All fields are required</string>
     <string name="authentication_failed">Authentication failed!</string>
 
-    <string name="search_users">Search Users</string>
+    <string name="find_friends">Find Friends</string>
     <string name="friend_requests">Friend Requests</string>
     <string name="chats">Chats</string>
     <string name="profile">Profile</string>

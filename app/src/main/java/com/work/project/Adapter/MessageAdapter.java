@@ -128,12 +128,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         // добавляем callback для перевода
         if(holder.isLeftMessage()){
-            View.OnClickListener translationListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    translate(holder);
-                    setClickListenerRecursively(holder.messageLayout, null);
-                }
+            View.OnClickListener translationListener = v -> {
+                translate(holder);
+                setClickListenerRecursively(holder.messageLayout, null);
             };
             setClickListenerRecursively(holder.messageLayout, translationListener);
         }
@@ -234,10 +231,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private void translate(final MessageViewHolder holder) {
         String translationText = holder.messageText.getText().toString();
         String language = destLanguage.toLowerCase();
-        translate(translationText, language, mContext, translatedText -> {
-            holder.clickToTranslate.setSingleLine(false);
-            holder.clickToTranslate.setTextSize(18);
-            holder.clickToTranslate.setText("(" + translatedText + ")");
+        translate(translationText, language, mContext, new TranslateCallback() {
+            @Override
+            public void onTranslationSuccess(String translatedText) {
+                holder.clickToTranslate.setSingleLine(false);
+                holder.clickToTranslate.setTextSize(18);
+                holder.clickToTranslate.setText("(" + translatedText + ")");
+            }
+
+            @Override
+            public void onTranslationSameLanguage() {
+                holder.clickToTranslate.setVisibility(View.GONE);
+            }
         });
     }
 
@@ -252,7 +257,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     JSONArray transObject = jsonObject.getJSONArray("translations");
                     JSONObject transObject2 = transObject.getJSONObject(0);
                     String translatedText = transObject2.getString("translatedText");
-                    callback.onTranslationSuccess(translatedText);
+
+                    if(!translatedText.equals(text))
+                        callback.onTranslationSuccess(translatedText);
+                    else
+                        callback.onTranslationSameLanguage();
                 }
                 catch (JSONException e) {
                     Toast.makeText(context, R.string.translation_error, Toast.LENGTH_SHORT).show();
@@ -263,6 +272,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     public interface TranslateCallback {
         void onTranslationSuccess(String translatedText);
+        void onTranslationSameLanguage();
     }
 
     public static class Http {
