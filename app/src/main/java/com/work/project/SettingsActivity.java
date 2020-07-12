@@ -1,5 +1,6 @@
 package com.work.project;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -187,10 +188,10 @@ public class SettingsActivity extends AppCompatActivity {
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
                 int month = calendar.get(Calendar.MONTH);
                 int year = calendar.get(Calendar.YEAR);
-
+                
                 DatePickerDialog dialog = new DatePickerDialog(
                         SettingsActivity.this,
-                        android.R.style.Theme_Black,
+                        AlertDialog.THEME_HOLO_DARK,
                         mDateSetListener, year, month, day);
                 dialog.getDatePicker().setMaxDate(new Date().getTime());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
