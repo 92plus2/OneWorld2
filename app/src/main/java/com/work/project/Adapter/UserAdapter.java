@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -140,15 +141,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 holder.biography.setText(user.getBiography());
 
                 // загружаем язык нашего пользователя и переводим
-                DatabaseReference curUserRef = User.getCurrentUserReference().child("languageId");
+                DatabaseReference curUserRef = User.getCurrentUserReference().child("languageID");
                 curUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         int languageId = 0;
                         if(dataSnapshot.exists())
-                             languageId = (Integer) dataSnapshot.getValue();
+                             languageId = ((Long) dataSnapshot.getValue()).intValue();
 
                         String language = LanguageUtil.getShortLanguageString(languageId);
+                        Log.d(MessageActivity.TAG, "language:" + language);
 
                         MessageAdapter.translate(user.getBiography(), language, mContext, new MessageAdapter.TranslateCallback() {
                             @Override
