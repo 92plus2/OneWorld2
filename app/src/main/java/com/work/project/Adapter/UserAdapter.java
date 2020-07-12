@@ -75,9 +75,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if(isChat())
-            view = LayoutInflater.from(mContext).inflate(R.layout.user_item, parent, false);
+            view = LayoutInflater.from(mContext).inflate(R.layout.chat_user_item, parent, false);
         else
-            view = LayoutInflater.from(mContext).inflate(R.layout.user_item2, parent, false);
+            view = LayoutInflater.from(mContext).inflate(R.layout.user_card, parent, false);
         return new UserViewHolder(view);
     }
 
@@ -91,13 +91,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             Glide.with(mContext).load(user.getImageURL()).into(holder.profile_image);
         }
 
-        if (isChat()){
+        if (isChat()) {
             observeLastMessage(user, holder);
-        } else {
-            holder.last_msg.setVisibility(View.GONE);
-        }
-
-        if (isChat()){
             if (user.getStatus().equals("online")){
                 holder.img_online.setVisibility(View.VISIBLE);
                 holder.img_offline.setVisibility(View.GONE);
@@ -105,6 +100,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 holder.img_online.setVisibility(View.GONE);
                 holder.img_offline.setVisibility(View.VISIBLE);
             }
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, MessageActivity.class);
+                    intent.putExtra("userid", user.getId());
+                    mContext.startActivity(intent);
+                }
+            });
         } else {
             Resources res = mContext.getResources();
 
@@ -141,19 +144,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             holder.country_img.setImageResource(CountryUtil.getCountryDrawable(user.getCountryID()));
             if(user.getBio() != null)
                 holder.bio.setText(user.getBio());
-            holder.img_online.setVisibility(View.GONE);
-            holder.img_offline.setVisibility(View.GONE);
-        }
-        if(isChat())
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, MessageActivity.class);
-                    intent.putExtra("userid", user.getId());
-                    mContext.startActivity(intent);
-                }
-            });
-        else{
+
             holder.ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -191,13 +182,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
-        private final ImageButton ok;
+        // chat_user_item and user_card
         public TextView username;
         public ImageView profile_image;
+        // chat_user_item
+        private TextView last_msg;
         private ImageView img_online;
         private ImageView img_offline;
+        // user_card
+        private final ImageButton ok;
         public TextView bio;
-        private TextView last_msg;
         public TextView language;
         public TextView country;
         public ImageView lang_img;
@@ -255,6 +249,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
                 // Мы хотим, чтобы пользователи были отсортированы
                 int oldPosition = mUsers.indexOf(user);
+                if(oldPosition == -1){
+                    chatReference.removeEventListener(this);
+                    return;
+                }
                 mUsers.remove(user);
                 int position;
                 for(position = mUsers.size() - 1; position >= 0; position--){

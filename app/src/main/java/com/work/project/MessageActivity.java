@@ -67,6 +67,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 public class MessageActivity extends AppCompatActivity {
     public static Map<String, Uri> localImageFiles = new HashMap<>();  // если мы загрузили картинку на сервер, но она есть у нас в файле локально
+    public static String globalUserChatId = null;  // id пользователя, с которым мы переписываемся.
+
     CircleImageView profile_image;
     TextView username;
 
@@ -435,6 +437,7 @@ public class MessageActivity extends AppCompatActivity {
             chats.limitToLast(MAX_MESSAGES).addValueEventListener(chatsListener);
             hasChatsListener = true;
         }
+        globalUserChatId = otherUserId;
     }
 
     @Override
@@ -444,6 +447,7 @@ public class MessageActivity extends AppCompatActivity {
         currentUser("none");
         chats.removeEventListener(chatsListener);
         hasChatsListener = false;
+        globalUserChatId = null;
     }
 
     public void hideBigPhoto(View view){

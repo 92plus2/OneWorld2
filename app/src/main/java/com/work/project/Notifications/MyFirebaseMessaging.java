@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.work.project.MessageActivity;
 import com.work.project.R;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
@@ -24,6 +25,12 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
 
         Data data = new Data(remoteMessage.getData());
+
+        // если мы в чате с пользователем - не посылаем уведомление
+        if(data.getNotificationType() == Data.NEW_MESSAGE && data.getUserId().equals(MessageActivity.globalUserChatId)){
+            return;
+        }
+
         int icon = R.mipmap.ic_launcher;
 
         Resources res = getApplicationContext().getResources();
