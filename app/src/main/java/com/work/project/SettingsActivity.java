@@ -3,7 +3,6 @@ package com.work.project;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -54,7 +53,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class SettingsActivity extends AppCompatActivity {
-
+    // SettingsActivity также используется и в регистрации пользователя
+    public final static String FROM_REGISTRATION = "fromRegistration";
     CircleImageView image_profile;
     TextView username;
 
@@ -65,7 +65,9 @@ public class SettingsActivity extends AppCompatActivity {
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
+
     Spinner spinnerCountries, spinnerLanguages, spinnerGender;
+    private ArrayList<LanguageItem> countryList, languageList;
 
     private TextView mDisplayDate;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -74,6 +76,9 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
 
         image_profile = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
@@ -87,31 +92,88 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        Button btn_logout = findViewById(R.id.btn_logout);
+        Button logOut = findViewById(R.id.btn_logout);
+        // если мы пришли из регистрации, заменяем кнопку Log out на Next
+        if(getIntent().hasExtra(FROM_REGISTRATION)){
+            logOut.setText(R.string.finish_registration);
+            logOut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            });
+        }
+        else {
+            logOut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(SettingsActivity.this, StartActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            });
+        }
 
-        btn_logout.setOnClickListener(new View.OnClickListener(){
+        countryList = createCountryList(getResources());
+        languageList = createLanguageList(getResources());
+
+        spinnerCountries = findViewById(R.id.spinner_countries);
+        LanguageAdapter mCountryAdapter = new LanguageAdapter(this, countryList);
+        spinnerCountries.setAdapter(mCountryAdapter);
+
+
+        spinnerCountries.setOnItemSelectedListener(new FixedItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(SettingsActivity.this, StartActivity.class);
-                startActivity(intent);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                super.onItemSelected(parent, view, position, id);
+                if(calledTimes == 1)
+                    return;
+                LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
+                currentUserRef.child("countryID").setValue(clickedItem.getLanguageId());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
-        // ===========================================================================================
-        spinnerCountries = findViewById(R.id.spinner_countries);
         spinnerLanguages = findViewById(R.id.spinner_languages);
+        LanguageAdapter mLanguageAdapter = new LanguageAdapter(this, languageList);
+        spinnerLanguages.setAdapter(mLanguageAdapter);
+        spinnerLanguages.setOnItemSelectedListener(new FixedItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                super.onItemSelected(parent, view, position, id);
+                if(calledTimes == 1)
+                    return;
+                LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
+                currentUserRef.child("languageID").setValue(clickedItem.getLanguageId());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         spinnerGender = findViewById(R.id.spinner_gender);
-        final ArrayList<LanguageItem> countryList = SettingsActivity.createCountryList(getResources());
-        final ArrayList<LanguageItem> languageList = SettingsActivity.createLanguageList(getResources());
+        ArrayAdapter<CharSequence> mGenderAdapter = ArrayAdapter.createFromResource(this, R.array.gender, R.layout.spinner_gender_item);
+        mGenderAdapter.setDropDownViewResource(R.layout.spinner_gender_item);
+        spinnerGender.setAdapter(mGenderAdapter);
+        spinnerGender.setOnItemSelectedListener(new FixedItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                super.onItemSelected(parent, view, position, id);
+                if(calledTimes == 1)
+                    return;
+                currentUserRef.child("genderID").setValue(position);
+            }
 
-        SettingsActivity.initializeSpinners(this, spinnerCountries, spinnerLanguages, spinnerGender, countryList, languageList);
-        // ==========================================================================================
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
-        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
-
-        mDisplayDate = (TextView)findViewById(R.id.select_date);
+        mDisplayDate = findViewById(R.id.select_date);
         mDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,61 +241,6 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         };
-    }
-
-    public static void initializeSpinners(Context context, Spinner spinnerCountries, Spinner spinnerLanguages, Spinner spinnerGender, ArrayList<LanguageItem> countryList, ArrayList<LanguageItem> languageList) {
-        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
-        final DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
-
-        LanguageAdapter mCountryAdapter = new LanguageAdapter(context, countryList);
-        LanguageAdapter mLanguageAdapter = new LanguageAdapter(context, languageList);
-        spinnerCountries.setAdapter(mCountryAdapter);
-        spinnerLanguages.setAdapter(mLanguageAdapter);
-
-        spinnerCountries.setOnItemSelectedListener(new FixedItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                super.onItemSelected(parent, view, position, id);
-                if(calledTimes == 1)
-                    return;
-                LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
-                currentUserRef.child("countryID").setValue(clickedItem.getLanguageId());
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        spinnerLanguages.setOnItemSelectedListener(new FixedItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                super.onItemSelected(parent, view, position, id);
-                if(calledTimes == 1)
-                    return;
-                LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
-                currentUserRef.child("languageID").setValue(clickedItem.getLanguageId());
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-
-        ArrayAdapter<CharSequence> mGenderAdapter = ArrayAdapter.createFromResource(context, R.array.gender, R.layout.spinner_gender_item);
-        mGenderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerGender.setAdapter(mGenderAdapter);
-        spinnerGender.setOnItemSelectedListener(new FixedItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                super.onItemSelected(parent, view, position, id);
-                if(calledTimes == 1)
-                    return;
-                currentUserRef.child("genderID").setValue(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
     }
 
     @Override

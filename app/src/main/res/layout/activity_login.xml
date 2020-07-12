@@ -18,6 +18,7 @@
         android:textStyle="bold"/>
 
     <com.rengwuxian.materialedittext.MaterialEditText
+        android:textCursorDrawable="@null"
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,6 +36,7 @@
         app:met_textColorHint="#ffffff" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
+        android:textCursorDrawable="@null"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/password"

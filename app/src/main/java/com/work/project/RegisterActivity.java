@@ -61,43 +61,44 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void register(final String username, final String email, final String password){
+        Toast.makeText(this, R.string.please_wait, Toast.LENGTH_SHORT).show();
 
-        auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            FirebaseUser firebaseUser = auth.getCurrentUser();
-                            assert firebaseUser != null;
-                            String userid = firebaseUser.getUid();
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
+                    assert firebaseUser != null;
+                    String userid = firebaseUser.getUid();
 
-                            reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+                    reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
 
-                            HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("id", userid);
-                            hashMap.put("username", username);
-                            hashMap.put("imageURL", "default");
-                            hashMap.put("status", "offline");
-                            hashMap.put("search", username.toLowerCase());
-                            hashMap.put("password", password);
-                            hashMap.put("email", email);
-                            hashMap.put("languageID", 0);
-                            
-                            reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()){
-                                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }
-                            });
-                        } else {
-                            Toast.makeText(RegisterActivity.this, R.string.you_cannot_register_with_this_email_or_password, Toast.LENGTH_SHORT).show();
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("id", userid);
+                    hashMap.put("username", username);
+                    hashMap.put("imageURL", "default");
+                    hashMap.put("status", "offline");
+                    hashMap.put("search", username.toLowerCase());
+                    hashMap.put("password", password);
+                    hashMap.put("email", email);
+                    hashMap.put("languageID", 0);
+
+                    reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                Intent intent = new Intent(RegisterActivity.this, SettingsActivity.class);
+                                intent.putExtra(SettingsActivity.FROM_REGISTRATION, true);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    Toast.makeText(RegisterActivity.this, R.string.you_cannot_register_with_this_email_or_password, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

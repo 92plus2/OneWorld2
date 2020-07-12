@@ -76,6 +76,8 @@
     <string name="date_of_birth">Date of birth</string>
     <string name="select_date">Select date</string>
     <string name="no_biography">No biography</string>
+    <string name="please_wait">Please wait...</string>
+    <string name="finish_registration">Finish registration</string>
 
     <string-array name="gender">
         <item>Not selected</item>

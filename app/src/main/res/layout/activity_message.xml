@@ -61,6 +61,7 @@
             android:background="@android:drawable/ic_menu_gallery" />
 
         <EditText
+            android:textCursorDrawable="@null"
             android:id="@+id/text_send"
             android:layout_width="316dp"
             android:layout_height="35dp"

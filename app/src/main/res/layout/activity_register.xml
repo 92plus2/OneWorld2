@@ -23,6 +23,7 @@
             android:textStyle="bold"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:textCursorDrawable="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/username"
@@ -39,6 +40,7 @@
             android:hint="@string/username"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:textCursorDrawable="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/email"
@@ -56,6 +58,7 @@
             android:hint="@string/email"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:textCursorDrawable="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/password"
