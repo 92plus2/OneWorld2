@@ -7,6 +7,7 @@
     <string name="new_message">New Message</string>
     <string name="message_and_time_format">%1$s (%2$s)</string>
     <string name="username_and_message_format">%1$s: %2$s</string>
+    <string name="username_and_age_format">%1$s, %2$d years</string>
 
     <string name="failed_to_upload_image">Failed to upload image!</string>
     <string name="no_image_selected">No image selected</string>
@@ -22,12 +23,6 @@
         <item name="username_is_from_country">%1$s is from %2$s</item>
         <item name="he_is_from_country">He is from %2$s</item>
         <item name="she_is_from_country">She is from %2$s</item>
-    </string-array>
-
-    <string-array name="username_is_n_years_old">
-        <item name="username_is_n_years_old">%1$s is %2$d years old</item>
-        <item name="he_is_n_years_old">He is %2$d years old</item>
-        <item name="she_is_n_years_old">She is %2$d years old</item>
     </string-array>
 
     <string name="russian">Russian</string>

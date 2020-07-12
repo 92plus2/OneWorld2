@@ -89,6 +89,7 @@ public class User {
     }
 
     // (c) https://stackoverflow.com/a/10215152/6120487
+    // возращает -1, если возраст не указан
     public int getAge(){
         if(getDateOfBirth() == null)
             return -1;

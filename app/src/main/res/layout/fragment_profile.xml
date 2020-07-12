@@ -57,7 +57,7 @@
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:textCursorDrawable="@null"
-        android:id="@+id/bio"
+        android:id="@+id/biography"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_info_card"

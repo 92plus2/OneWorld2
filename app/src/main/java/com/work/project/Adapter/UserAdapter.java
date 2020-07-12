@@ -86,7 +86,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         final User user = mUsers.get(position);
-        holder.username.setText(user.getUsername());
         if (user.getImageURL().equals("default")){
             holder.profileImage.setImageResource(R.mipmap.ic_launcher);
         } else {
@@ -94,6 +93,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
 
         if (isChat()) {
+            holder.username.setText(user.getUsername());
             observeLastMessage(user, holder);
             if (user.getStatus().equals("online")){
                 holder.imgOnline.setVisibility(View.VISIBLE);
@@ -102,16 +102,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 holder.imgOnline.setVisibility(View.GONE);
                 holder.imgOffline.setVisibility(View.VISIBLE);
             }
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, MessageActivity.class);
-                    intent.putExtra("userid", user.getId());
-                    mContext.startActivity(intent);
-                }
+            holder.itemView.setOnClickListener(view -> {
+                Intent intent = new Intent(mContext, MessageActivity.class);
+                intent.putExtra("userid", user.getId());
+                mContext.startActivity(intent);
             });
         } else {
             Resources res = mContext.getResources();
+
+            int age = user.getAge();
+            if(age == -1)
+                holder.username.setText(user.getUsername());
+            else
+                holder.username.setText(res.getString(R.string.username_and_age_format, user.getUsername(), age));
 
             String languageName = LanguageUtil.getLongLanguageString(res, user.getLanguageID());
             String languageText = formatSentence(R.array.username_knows_language, user, languageName);
@@ -122,14 +125,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             String countryText = formatSentence(R.array.username_is_from_country, user, countryName);
             holder.country.setText(countryText);
             holder.countryImg.setImageResource(CountryUtil.getCountryDrawable(user.getCountryID()));
-
-            int age = user.getAge();
-            if(age != -1) {
-                String ageText = formatSentence(R.array.username_is_n_years_old, user, age);
-                holder.age.setText(ageText);
-            }
-            else
-                holder.age.setVisibility(View.GONE);
 
             holder.biographyScrollView.setOnTouchListener((view, event) -> {
                 // Чтобы можно было скроллить биографию, т. к. RecyclerView перехватывает touchEvent
@@ -225,7 +220,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public TextView biography;
         public TextView language;
         public TextView country;
-        public TextView age;
         public ImageView langImg;
         public ImageView countryImg;
         public ScrollView biographyScrollView;
@@ -242,7 +236,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             likeButton = itemView.findViewById(R.id.like_button);
             language = itemView.findViewById(R.id.language);
             country = itemView.findViewById(R.id.country);
-            age = itemView.findViewById(R.id.age);
             langImg = itemView.findViewById(R.id.lang_img);
             countryImg = itemView.findViewById(R.id.country_img);
             biographyScrollView = itemView.findViewById(R.id.biography_scrollview);

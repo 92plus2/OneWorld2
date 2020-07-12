@@ -55,7 +55,7 @@ public class ProfileFragment extends Fragment {
 
     private ValueEventListener currentUserListener;
 
-    private MaterialEditText bio;
+    private MaterialEditText biography;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,7 +87,7 @@ public class ProfileFragment extends Fragment {
 
         currentUserRef = User.getCurrentUserReference();
 
-        bio = view.findViewById(R.id.bio);
+        biography = view.findViewById(R.id.biography);
 
         currentUserListener = new ValueEventListener() {
             @Override
@@ -101,7 +101,7 @@ public class ProfileFragment extends Fragment {
                 }
                 String text = user.getBiography();
                 if (text != null) {
-                    bio.setText(text);
+                    biography.setText(text);
                 }
             }
 
@@ -200,6 +200,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        currentUserRef.child("bio").setValue(bio.getText().toString());
+        currentUserRef.child("biography").setValue(biography.getText().toString());
     }
 }
