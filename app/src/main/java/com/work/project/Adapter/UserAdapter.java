@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,7 +59,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         this.pageType = pageType;
 
         // получаем имя пользователя
-        FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        User.getCurrentUserReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -81,24 +82,25 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return new UserViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         final User user = mUsers.get(position);
         holder.username.setText(user.getUsername());
         if (user.getImageURL().equals("default")){
-            holder.profile_image.setImageResource(R.mipmap.ic_launcher);
+            holder.profileImage.setImageResource(R.mipmap.ic_launcher);
         } else {
-            Glide.with(mContext).load(user.getImageURL()).into(holder.profile_image);
+            Glide.with(mContext).load(user.getImageURL()).into(holder.profileImage);
         }
 
         if (isChat()) {
             observeLastMessage(user, holder);
             if (user.getStatus().equals("online")){
-                holder.img_online.setVisibility(View.VISIBLE);
-                holder.img_offline.setVisibility(View.GONE);
+                holder.imgOnline.setVisibility(View.VISIBLE);
+                holder.imgOffline.setVisibility(View.GONE);
             } else {
-                holder.img_online.setVisibility(View.GONE);
-                holder.img_offline.setVisibility(View.VISIBLE);
+                holder.imgOnline.setVisibility(View.GONE);
+                holder.imgOffline.setVisibility(View.VISIBLE);
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -125,6 +127,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     break;
             }
             holder.language.setText(languageText);
+            holder.langImg.setImageResource(LanguageUtil.getLanguageDrawable(user.getLanguageID()));
+
             String countryName = CountryUtil.getLongCountryString(res, user.getCountryID());
             String countryText;
             switch (user.getGenderID()){
@@ -139,34 +143,61 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     break;
             }
             holder.country.setText(countryText);
+            holder.countryImg.setImageResource(CountryUtil.getCountryDrawable(user.getCountryID()));
 
-            holder.lang_img.setImageResource(LanguageUtil.getLanguageDrawable(user.getLanguageID()));
-            holder.country_img.setImageResource(CountryUtil.getCountryDrawable(user.getCountryID()));
-            if(user.getBio() != null)
-                holder.bio.setText(user.getBio());
+            holder.biographyScrollView.setOnTouchListener((view, event) -> {
+                // Чтобы можно было скроллить биографию, т. к. RecyclerView перехватывает touchEvent
+                if(holder.biography.getHeight() > holder.biographyScrollView.getHeight()) {
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+                else
+                    return false;
+            });
 
-            holder.ok.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(pageType == SEARCH_USERS) {  // мы лайкаем человека
-                        reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).setValue(0);
-                        reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).setValue(0);
-                        // посылаем ему уведомление, что его лайкнули
-                        MessageActivity.sendNotification(fuser.getUid(), fuserName, user.getId(), Data.NEW_FRIEND_REQUEST);
+            if(user.getBiography() != null && !user.getBiography().isEmpty()) {
+                holder.biography.setText(user.getBiography());
+
+                // загружаем язык нашего пользователя и переводим
+                DatabaseReference curUserRef = User.getCurrentUserReference().child("languageId");
+                curUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int languageId = 0;
+                        if(dataSnapshot.exists())
+                             languageId = (Integer) dataSnapshot.getValue();
+
+                        String language = LanguageUtil.getShortLanguageString(languageId);
+
+                        MessageAdapter.translate(user.getBiography(), language, mContext, translatedText -> {
+                            holder.biography.setText(user.getBiography() + "\n(" + translatedText + ")");
+                        });
                     }
-                    else{  // мы принимаем заявку в друзья
-                        // удаляем все лайки
-                        reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).removeValue();
-                        reference.child("YourLikes").child(user.getId()).child(fuser.getUid()).removeValue();
-                        reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).removeValue();
-                        reference.child("YouWereLikedBy").child(fuser.getUid()).child(user.getId()).removeValue();
-                        // посылаем уведомление пользователю
-                        MessageActivity.sendNotification(fuser.getUid(), fuserName, user.getId(), Data.FRIEND_REQUEST_ACCEPTED);
-                        // открываем диалог
-                        Intent intent = new Intent(mContext, MessageActivity.class);
-                        intent.putExtra("userid", user.getId());
-                        mContext.startActivity(intent);
-                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+            }
+
+            holder.likeButton.setOnClickListener(view -> {
+                if(pageType == SEARCH_USERS) {  // мы лайкаем человека
+                    reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).setValue(0);
+                    reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).setValue(0);
+                    // посылаем ему уведомление, что его лайкнули
+                    MessageActivity.sendNotification(fuser.getUid(), fuserName, user.getId(), Data.NEW_FRIEND_REQUEST);
+                }
+                else{  // мы принимаем заявку в друзья
+                    // удаляем все лайки
+                    reference.child("YourLikes").child(fuser.getUid()).child(user.getId()).removeValue();
+                    reference.child("YourLikes").child(user.getId()).child(fuser.getUid()).removeValue();
+                    reference.child("YouWereLikedBy").child(user.getId()).child(fuser.getUid()).removeValue();
+                    reference.child("YouWereLikedBy").child(fuser.getUid()).child(user.getId()).removeValue();
+                    // посылаем уведомление пользователю
+                    MessageActivity.sendNotification(fuser.getUid(), fuserName, user.getId(), Data.FRIEND_REQUEST_ACCEPTED);
+                    // открываем диалог
+                    Intent intent = new Intent(mContext, MessageActivity.class);
+                    intent.putExtra("userid", user.getId());
+                    mContext.startActivity(intent);
                 }
             });
         }
@@ -184,33 +215,35 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public static class UserViewHolder extends RecyclerView.ViewHolder {
         // chat_user_item and user_card
         public TextView username;
-        public ImageView profile_image;
+        public ImageView profileImage;
         // chat_user_item
-        private TextView last_msg;
-        private ImageView img_online;
-        private ImageView img_offline;
+        private TextView lastMsg;
+        private ImageView imgOnline;
+        private ImageView imgOffline;
         // user_card
-        private final ImageButton ok;
-        public TextView bio;
+        private final ImageButton likeButton;
+        public TextView biography;
         public TextView language;
         public TextView country;
-        public ImageView lang_img;
-        public ImageView country_img;
+        public ImageView langImg;
+        public ImageView countryImg;
+        public ScrollView biographyScrollView;
 
         @SuppressLint("ResourceAsColor")
         public UserViewHolder(View itemView) {
             super(itemView);
             username = itemView.findViewById(R.id.username);
-            profile_image = itemView.findViewById(R.id.profile_image);
-            img_online = itemView.findViewById(R.id.img_online);
-            img_offline = itemView.findViewById(R.id.img_offline);
-            bio = itemView.findViewById(R.id.aboutUser);
-            last_msg = itemView.findViewById(R.id.last_msg);
-            ok = itemView.findViewById(R.id.ok);
-            language = itemView.findViewById(R.id.Language);
-            country = itemView.findViewById(R.id.Country);
-            lang_img = itemView.findViewById(R.id.LangImg);
-            country_img = itemView.findViewById(R.id.CountryImg);
+            profileImage = itemView.findViewById(R.id.profile_image);
+            imgOnline = itemView.findViewById(R.id.img_online);
+            imgOffline = itemView.findViewById(R.id.img_offline);
+            biography = itemView.findViewById(R.id.user_biography);
+            lastMsg = itemView.findViewById(R.id.last_msg);
+            likeButton = itemView.findViewById(R.id.like_button);
+            language = itemView.findViewById(R.id.language);
+            country = itemView.findViewById(R.id.country);
+            langImg = itemView.findViewById(R.id.lang_img);
+            countryImg = itemView.findViewById(R.id.country_img);
+            biographyScrollView = itemView.findViewById(R.id.biography_scrollview);
         }
     }
 
@@ -236,15 +269,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 }
 
                 if(theLastMessage != null) {
-                    holder.last_msg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+                    holder.lastMsg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
                     if(theLastMessage.length() > 30){
                         theLastMessage = theLastMessage.substring(0, 30) + "...";
                     }
-                    holder.last_msg.setText(mContext.getResources().getString(R.string.message_and_time_format, theLastMessage, lasttime));
+                    holder.lastMsg.setText(mContext.getResources().getString(R.string.message_and_time_format, theLastMessage, lasttime));
                 }
                 else {
-                    holder.last_msg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-                    holder.last_msg.setText(R.string.no_messages);
+                    holder.lastMsg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+                    holder.lastMsg.setText(R.string.no_messages);
                 }
 
                 // Мы хотим, чтобы пользователи были отсортированы

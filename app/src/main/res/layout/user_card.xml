@@ -9,7 +9,8 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
         android:layout_width="132dp"
-        android:layout_height="180dp"
+        android:layout_height="132dp"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:src="@mipmap/ic_launcher" />
 
@@ -19,72 +20,86 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/profile_image"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="10dp"
-        android:paddingTop="0dp"
+        android:layout_marginTop="10dp"
         android:textColor="#fff"
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/Country"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/username"
-        android:layout_marginEnd="33dp"
-        android:layout_centerHorizontal="true"
-        android:paddingEnd="28dp"
-        android:paddingTop="10dp"
-        android:textColor="@color/colorWhite"
-        tools:visibility="visible" />
-
-    <TextView
-        android:id="@+id/Language"
+    <TableLayout
+        android:id="@+id/language_and_country_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="28dp"
-        android:textColor="@color/colorWhite"
-        tools:visibility="visible" />
+        android:layout_marginTop="30dp">
 
-    <TextView
-        android:layout_below="@id/Language"
-        android:layout_above="@id/ok"
-        android:id="@+id/aboutUser"
+        <TableRow
+            android:id="@+id/country_text_and_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:gravity="center"
+                android:textColor="@color/colorWhite"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/country_img"
+                android:layout_width="22dp"
+                android:layout_height="22dp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/language_text_and_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:gravity="center"
+                android:textColor="@color/colorWhite"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/lang_img"
+                android:layout_width="22dp"
+                android:layout_height="22dp" />
+        </TableRow>
+    </TableLayout>
+
+    <ScrollView
+        android:id="@+id/biography_scrollview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/like_button"
+        android:layout_below="@id/language_and_country_info"
+        android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="40dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
         android:layout_marginTop="30dp"
-        android:text="@string/no_biography"
-        android:textColor="@color/colorWhite"
-        android:textSize="20sp" />
-
-    <ImageView
-        android:id="@+id/CountryImg"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
-        android:layout_below="@id/Country"
-        android:layout_alignEnd="@id/Country"
-        android:layout_alignParentEnd="false"
-        android:layout_marginTop="-23dp"
-        android:layout_marginEnd="0dp" />
-
-    <ImageView
-        android:id="@+id/LangImg"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
-        android:layout_below="@id/Language"
-        android:layout_alignEnd="@id/Language"
-        android:layout_alignParentEnd="false"
-        android:layout_marginTop="-23dp"
-        android:layout_marginEnd="0dp" />
+        android:layout_marginBottom="10dp"
+        >
+        <TextView
+            android:id="@+id/user_biography"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|start"
+            android:text="@string/no_biography"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
+    </ScrollView>
 
     <ImageButton
-        android:id="@+id/ok"
+        android:id="@+id/like_button"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_alignParentBottom="true"

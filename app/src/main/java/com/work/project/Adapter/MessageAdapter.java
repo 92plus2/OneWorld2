@@ -3,13 +3,13 @@ package com.work.project.Adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,38 +48,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         this.mContext = mContext;
         this.avatarUrl = avatarUrl;
         this.destLanguage = destLanguage;
-    }
-
-    public static class Http {
-        private static final String BASE_URL = "https://translation.googleapis.com/language/translate/v2?";
-        private static final String KEY = "AIzaSyDKDoumFm_ZpPmSIHwNfMJBPsIOeinMAH8";
-
-
-        private static AsyncHttpClient client = new AsyncHttpClient();
-
-
-        public static void post(String transText, String destLang, AsyncHttpResponseHandler responseHandler) {
-            client.get(getAbsoluteUrl(transText, destLang), responseHandler);
-        }
-
-        private static String makeKeyChunk(String key) {
-            return "key=" + KEY;
-        }
-
-        private static String makeTransChunk(String transText) {
-            String encodedText = URLEncoder.encode(transText);
-            return "&q=" + encodedText;
-        }
-
-        private static String langDest(String langDest) {
-            return "&target=" + langDest;
-        }
-
-        private static String getAbsoluteUrl(String transText, String destLang) {
-            String apiUrl = BASE_URL + makeKeyChunk(KEY) + makeTransChunk(transText) + langDest(destLang);
-            //Log.d(MessageActivity.TAG, "url: " + apiUrl);
-            return apiUrl;
-        }
     }
 
     @NonNull
@@ -191,28 +159,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
     }
 
-    private void translate(final MessageViewHolder holder) {
-        String language = destLanguage.toLowerCase();
-        String translationString = holder.messageText.getText().toString();
-        Http.post(translationString, language, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    JSONObject serverResp = new JSONObject(response.toString());
-                    JSONObject jsonObject = serverResp.getJSONObject("data");
-                    JSONArray transObject = jsonObject.getJSONArray("translations");
-                    JSONObject transObject2 = transObject.getJSONObject(0);
-                    String translatedText = transObject2.getString("translatedText");
-                    holder.clickToTranslate.setSingleLine(false);
-                    holder.clickToTranslate.setTextSize(18);
-                    holder.clickToTranslate.setText("(" + translatedText + ")");
-                } catch (JSONException e) {
-                    Log.d(MessageActivity.TAG, "error on translate: ", e);
-                }
-            }
-        });
-    }
-
 
     private void setHeight(View view, int height){
         ViewGroup.LayoutParams params = view.getLayoutParams();
@@ -283,5 +229,71 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             return MSG_TYPE_RIGHT;
         else
             return MSG_TYPE_LEFT;
+    }
+
+    private void translate(final MessageViewHolder holder) {
+        String translationText = holder.messageText.getText().toString();
+        String language = destLanguage.toLowerCase();
+        translate(translationText, language, mContext, translatedText -> {
+            holder.clickToTranslate.setSingleLine(false);
+            holder.clickToTranslate.setTextSize(18);
+            holder.clickToTranslate.setText("(" + translatedText + ")");
+        });
+    }
+
+    public static void translate(String text, String language, Context context, TranslateCallback callback){
+        language = language.toLowerCase();
+        Http.post(text, language, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONObject serverResp = new JSONObject(response.toString());
+                    JSONObject jsonObject = serverResp.getJSONObject("data");
+                    JSONArray transObject = jsonObject.getJSONArray("translations");
+                    JSONObject transObject2 = transObject.getJSONObject(0);
+                    String translatedText = transObject2.getString("translatedText");
+                    callback.onTranslationSuccess(translatedText);
+                }
+                catch (JSONException e) {
+                    Toast.makeText(context, R.string.translation_error, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public interface TranslateCallback {
+        void onTranslationSuccess(String translatedText);
+    }
+
+    public static class Http {
+        private static final String BASE_URL = "https://translation.googleapis.com/language/translate/v2?";
+        private static final String KEY = "AIzaSyDKDoumFm_ZpPmSIHwNfMJBPsIOeinMAH8";
+
+
+        private static AsyncHttpClient client = new AsyncHttpClient();
+
+
+        public static void post(String transText, String destLang, AsyncHttpResponseHandler responseHandler) {
+            client.get(getAbsoluteUrl(transText, destLang), responseHandler);
+        }
+
+        private static String makeKeyChunk(String key) {
+            return "key=" + KEY;
+        }
+
+        private static String makeTransChunk(String transText) {
+            String encodedText = URLEncoder.encode(transText);
+            return "&q=" + encodedText;
+        }
+
+        private static String langDest(String langDest) {
+            return "&target=" + langDest;
+        }
+
+        private static String getAbsoluteUrl(String transText, String destLang) {
+            String apiUrl = BASE_URL + makeKeyChunk(KEY) + makeTransChunk(transText) + langDest(destLang);
+            //Log.d(MessageActivity.TAG, "url: " + apiUrl);
+            return apiUrl;
+        }
     }
 }

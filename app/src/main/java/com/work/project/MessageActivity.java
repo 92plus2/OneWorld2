@@ -157,8 +157,8 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserId);
-        otherUserRef = FirebaseDatabase.getInstance().getReference("Users").child(otherUserId);
+        currentUserRef = User.getReferenceById(currentUserId);
+        otherUserRef = User.getReferenceById(otherUserId);
 
         otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -420,7 +420,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void status(String status){
-        DatabaseReference curUserRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserId);
+        DatabaseReference curUserRef = User.getCurrentUserReference();
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status", status);

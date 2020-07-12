@@ -5,8 +5,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +21,9 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -52,7 +47,6 @@ public class ProfileFragment extends Fragment {
     TextView username;
 
     DatabaseReference currentUserRef;
-    FirebaseUser fuser;
 
     StorageReference storageReference;
     private static final int IMAGE_REQUEST = 1;
@@ -91,8 +85,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserRef = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+        currentUserRef = User.getCurrentUserReference();
 
         bio = view.findViewById(R.id.bio);
 
@@ -106,7 +99,7 @@ public class ProfileFragment extends Fragment {
                 } else {
                     Glide.with(getContext()).load(user.getImageURL()).into(image_profile);
                 }
-                String text = user.getBio();
+                String text = user.getBiography();
                 if (text != null) {
                     bio.setText(text);
                 }
