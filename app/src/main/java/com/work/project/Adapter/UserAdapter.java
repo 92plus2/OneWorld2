@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
 import com.work.project.Model.CountryUtil;
@@ -32,9 +36,16 @@ import com.work.project.Model.User;
 import com.work.project.Notifications.Data;
 import com.work.project.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cz.msebera.android.httpclient.Header;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private Context mContext;
@@ -49,7 +60,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     public static int CHATS = 0, SEARCH_USERS = 1, FRIEND_REQUESTS = 2;
     private int pageType;
-
 
     public UserAdapter(Context mContext, List<User> mUsers, int pageType){
         this.mUsers = mUsers;
@@ -140,7 +150,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
             holder.lang_img.setImageResource(LanguageUtil.getLanguageDrawable(user.getLanguageID()));
             holder.country_img.setImageResource(CountryUtil.getCountryDrawable(user.getCountryID()));
-
+            if(user.getBio() != null)
+                holder.bio.setText(user.getBio());
             holder.img_online.setVisibility(View.GONE);
             holder.img_offline.setVisibility(View.GONE);
         }
@@ -196,6 +207,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public ImageView profile_image;
         private ImageView img_online;
         private ImageView img_offline;
+        public TextView bio;
         private TextView last_msg;
         public TextView language;
         public TextView country;
@@ -209,6 +221,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             profile_image = itemView.findViewById(R.id.profile_image);
             img_online = itemView.findViewById(R.id.img_online);
             img_offline = itemView.findViewById(R.id.img_offline);
+            bio = itemView.findViewById(R.id.aboutUser);
             last_msg = itemView.findViewById(R.id.last_msg);
             ok = itemView.findViewById(R.id.ok);
             language = itemView.findViewById(R.id.Language);
@@ -301,6 +314,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         this.recyclerView = recyclerView;
         recyclerView.setItemAnimator(null);
     }
+
 
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
