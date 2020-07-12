@@ -44,6 +44,7 @@ import com.work.project.Model.LanguageItem;
 import com.work.project.Model.LanguageUtil;
 import com.work.project.Model.User;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -69,7 +70,8 @@ public class SettingsActivity extends AppCompatActivity {
     Spinner spinnerCountries, spinnerLanguages, spinnerGender;
     private ArrayList<LanguageItem> countryList, languageList;
 
-    private TextView mDisplayDate;
+    private TextView dateText;
+    private Date displayedDate = null;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     @Override
@@ -173,11 +175,14 @@ public class SettingsActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        mDisplayDate = findViewById(R.id.select_date);
-        mDisplayDate.setOnClickListener(new View.OnClickListener() {
+        dateText = findViewById(R.id.select_date);
+        dateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
+                if(displayedDate != null)
+                    calendar.setTime(displayedDate);
+
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
                 int month = calendar.get(Calendar.MONTH);
                 int year = calendar.get(Calendar.YEAR);
@@ -195,18 +200,11 @@ public class SettingsActivity extends AppCompatActivity {
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int day) {
-                month++;
-                String date = "";
-                if (month < 10) {
-                    date += "0";
-                }
-                date += month + "/";
-                if (day < 10) {
-                    date += "0";
-                }
-                date += day + "/" + year;
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, day);
+                Date date = calendar.getTime();
+                setDisplayedDate(date);
                 currentUserRef.child("dateOfBirth").setValue(date);
-                mDisplayDate.setText(date);
             }
         };
 
@@ -216,11 +214,11 @@ public class SettingsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
-                if (user.getImageURL().equals("default")) {
+                if (user.getImageURL().equals("default"))
                     image_profile.setImageResource(R.mipmap.ic_launcher);
-                } else {
+                else
                     Glide.with(SettingsActivity.this).load(user.getImageURL()).into(image_profile);
-                }
+
                 int countryID = user.getCountryID();
                 int countryPosition = countryList.indexOf(new LanguageItem(getResources(), countryID, true));
                 spinnerCountries.setSelection(countryPosition, false);
@@ -232,15 +230,24 @@ public class SettingsActivity extends AppCompatActivity {
                 int genderId = user.getGenderID();
                 spinnerGender.setSelection(genderId, false);
 
-                String date = user.getDateOfBirth();
-                if (date != null) {
-                    mDisplayDate.setText(user.getDateOfBirth());
-                }
+                setDisplayedDate(user.getDateOfBirth());
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         };
+    }
+
+    private void setDisplayedDate(Date date){
+        displayedDate = date;
+        dateText.setText(formatDate(date));
+    }
+
+    private String formatDate(Date date){
+        if(date == null)
+            return getString(R.string.no_date_selected);
+        DateFormat format = DateFormat.getDateInstance();
+        return format.format(date);
     }
 
     @Override

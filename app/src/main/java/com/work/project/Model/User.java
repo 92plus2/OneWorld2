@@ -4,6 +4,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
+import java.util.Date;
 
 public class User {
 
@@ -12,7 +13,7 @@ public class User {
     private String imageURL;
     private String status;
     private String search;
-    private String dateOfBirth;
+    private Date dateOfBirth;
     private String bio;
     private int countryID;
     private int languageID;
@@ -61,11 +62,11 @@ public class User {
         this.search = search;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

@@ -113,7 +113,7 @@
                 android:id="@+id/select_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/select_date"
+                android:text="@string/no_date_selected"
                 android:textColor="#ffffff"
                 android:textSize="20sp" />
         </TableRow>
