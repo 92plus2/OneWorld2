@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +24,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
 import com.work.project.Model.CountryUtil;
@@ -36,16 +32,9 @@ import com.work.project.Model.User;
 import com.work.project.Notifications.Data;
 import com.work.project.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cz.msebera.android.httpclient.Header;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private Context mContext;
@@ -73,7 +62,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                fuserName = user.getSearch();
+                fuserName = user.getUsername();
             }
 
             @Override
@@ -129,7 +118,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     languageText = res.getString(R.string.she_knows_language, languageName);
                     break;
                 default:
-                    languageText = res.getString(R.string.username_knows_language, user.getSearch(), languageName);
+                    languageText = res.getString(R.string.username_knows_language, user.getUsername(), languageName);
                     break;
             }
             holder.language.setText(languageText);
@@ -143,7 +132,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     countryText = res.getString(R.string.she_is_from_country, countryName);
                     break;
                 default:
-                    countryText = res.getString(R.string.username_is_from_country, user.getSearch(), countryName);
+                    countryText = res.getString(R.string.username_is_from_country, user.getUsername(), countryName);
                     break;
             }
             holder.country.setText(countryText);

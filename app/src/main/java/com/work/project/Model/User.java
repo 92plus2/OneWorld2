@@ -12,12 +12,13 @@ public class User {
     private String username;
     private String imageURL;
     private String status;
-    private String search;
     private Date dateOfBirth;
     private String bio;
     private int countryID;
     private int languageID;
     private int genderID;
+    // кидаем пользователя в SettingsActivity
+    private boolean shouldFinishRegistration = false;
     public static final int GENDER_NOT_SPECIFIED = 0, MALE = 1, FEMALE = 2;
 
 
@@ -52,14 +53,6 @@ public class User {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getSearch() {
-        return search;
-    }
-
-    public void setSearch(String search) {
-        this.search = search;
     }
 
     public Date getDateOfBirth() {
@@ -102,6 +95,13 @@ public class User {
         this.genderID = genderID;
     }
 
+    public boolean isShouldFinishRegistration() {
+        return shouldFinishRegistration;
+    }
+
+    public void setShouldFinishRegistration(boolean shouldFinishRegistration) {
+        this.shouldFinishRegistration = shouldFinishRegistration;
+    }
 
     public static DatabaseReference getChatBetween(String userId1, String userId2){
         String[] ids = {userId1, userId2};

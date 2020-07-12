@@ -287,7 +287,7 @@ public class MessageActivity extends AppCompatActivity {
         chats.push().setValue(hashMap);
 
         if (notify) {
-            sendNotification(currentUser.getId(), currentUser.getSearch(), otherUserId, Data.NEW_MESSAGE, message);
+            sendNotification(currentUser.getId(), currentUser.getUsername(), otherUserId, Data.NEW_MESSAGE, message);
         }
     }
 
