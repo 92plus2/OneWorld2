@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:gravity="bottom"
             android:padding="8dp"
-            android:textColor="#fff"
+            android:textColor="@color/colorWhite"
             android:textSize="14sp" />
 
         <TextView
@@ -37,7 +37,7 @@
             android:maxEms="10"
             android:padding="8dp"
             android:textAlignment="viewStart"
-            android:textColor="#fff"
+            android:textColor="@color/colorWhite"
             android:textIsSelectable="true"
             android:textSize="18sp" />
 

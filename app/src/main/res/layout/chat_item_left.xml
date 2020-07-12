@@ -70,7 +70,7 @@
             android:layout_toEndOf="@id/messageLayout"
             android:gravity="bottom"
             android:padding="8dp"
-            android:textColor="#fff"
+            android:textColor="@color/colorWhite"
             android:textSize="14sp" />
         <TextView
             android:singleLine="true"

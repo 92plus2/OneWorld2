@@ -36,7 +36,7 @@
                 android:layout_below="@id/profile_image"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:textColor="#fff"
+                android:textColor="@color/colorWhite"
                 android:textStyle="bold"
                 android:id="@+id/username"
                 android:textSize="18sp"
@@ -64,14 +64,14 @@
         android:layout_alignParentStart="false"
         android:layout_alignParentTop="false"
         android:hint="@string/write_about_yourself"
-        android:textColor="#ffffff"
+        android:textColor="@color/colorWhite"
         android:textColorHighlight="@color/colorWhite"
-        android:textColorHint="#FFFFFF"
+        android:textColorHint="@color/colorWhite"
         android:textColorLink="@color/colorWhite"
         app:met_baseColor="@color/colorWhite"
         app:met_floatingLabel="normal"
         app:met_textColor="@color/colorWhite"
-        app:met_textColorHint="#ffffff"
+        app:met_textColorHint="@color/colorWhite"
         app:met_underlineColor="@color/colorWhite" />
 
 

@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
-        android:textColor="#fff"
+        android:textColor="@color/colorWhite"
         android:textSize="25sp"
         android:textStyle="bold" />
 
@@ -23,7 +23,7 @@
         android:layout_marginTop="60dp"
         android:background="@color/colorPrimaryDark"
         android:text="@string/login"
-        android:textColor="#fff" />
+        android:textColor="@color/colorWhite" />
 
     <Button
         android:id="@+id/register"
@@ -32,6 +32,6 @@
         android:layout_marginTop="10dp"
         android:background="@color/colorPrimaryDark"
         android:text="@string/register"
-        android:textColor="#fff" />
+        android:textColor="@color/colorWhite" />
 
 </LinearLayout>

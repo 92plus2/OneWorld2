@@ -26,7 +26,7 @@
         android:background="@color/colorPrimaryDark"
         android:duplicateParentState="false"
         app:tabGravity="fill"
-        app:tabIndicatorColor="#fff"
-        app:tabSelectedTextColor="#fff"
-        app:tabTextColor="#fff" />
+        app:tabIndicatorColor="@color/colorWhite"
+        app:tabSelectedTextColor="@color/colorWhite"
+        app:tabTextColor="@color/colorWhite" />
 </RelativeLayout>
