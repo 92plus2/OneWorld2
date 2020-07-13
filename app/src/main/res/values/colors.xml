@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- светлая тема. Здесь черный это белый, и наоборот ;) -->
 <resources>
-    <color name="colorPrimaryDark">#1F2022</color>
-    <color name="colorPrimary">#101012</color>
-    <color name="colorAccent">#020202</color>
-    <color name="colorblack">#000000</color>
-    <color name="colorWhite">#fff</color>
-    <color name="colorWhite50">#50ffffff</color>
+    <color name="colorPrimaryDark">#A1A1A1</color>
+    <color name="colorPrimary">#DCDBDB</color>
+    <color name="colorAccent">#E8E6E6</color>
+    <color name="colorBlack">#E8E6E6</color>
+    <color name="colorWhite">#000000</color>
+    <color name="colorWhite50">#50000000</color>
     <color name="colorIcon">#0085EA</color>
 </resources>

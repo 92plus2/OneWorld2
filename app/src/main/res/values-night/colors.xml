@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- черная тема -->
+<resources>
+    <color name="colorPrimaryDark">#1F2022</color>
+    <color name="colorPrimary">#101012</color>
+    <color name="colorAccent">#020202</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorWhite">#fff</color>
+    <color name="colorWhite50">#50ffffff</color>
+    <color name="colorIcon">#0085EA</color>
+</resources>
