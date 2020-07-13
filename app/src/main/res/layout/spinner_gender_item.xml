@@ -3,6 +3,8 @@
 <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:paddingVertical="10dp"
     android:id="@android:id/text1"
+    android:background="@color/colorPrimary"
+    android:textColor="@color/colorWhite"
     android:textAlignment="textStart"
     android:textSize="20sp"
     android:singleLine="true"

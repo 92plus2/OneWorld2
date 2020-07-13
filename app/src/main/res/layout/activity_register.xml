@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".RegisterActivity">
 
     <LinearLayout
@@ -16,6 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
             android:text="@string/create_a_new_account"
             android:textSize="20sp"
             android:textStyle="bold"/>
@@ -28,6 +30,13 @@
             android:layout_marginTop="10dp"
             app:met_floatingLabel="normal"
             android:textColor="@color/colorWhite"
+            app:met_textColorHint="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:textColorHighlight="@color/colorWhite"
+            app:met_baseColor="@color/colorWhite"
+            app:met_underlineColor="@color/colorWhite"
+            app:met_textColor="@color/colorWhite"
+            android:textColorLink="@color/colorWhite"
             android:hint="@string/username"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
@@ -38,6 +47,14 @@
             android:inputType="textEmailAddress"
             android:layout_marginTop="10dp"
             app:met_floatingLabel="normal"
+            android:textColorHint="@color/colorWhite"
+            android:textColorHighlight="@color/colorWhite"
+            app:met_textColor="@color/colorWhite"
+            android:textColorLink="@color/colorWhite"
+            app:met_baseColor="@color/colorWhite"
+            app:met_underlineColor="@color/colorWhite"
+            app:met_textColorHint="@color/colorWhite"
+            android:textColor="@color/colorWhite"
             android:hint="@string/email"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
@@ -46,9 +63,16 @@
             android:layout_height="wrap_content"
             android:id="@+id/password"
             android:inputType="textPassword"
-
+            android:textColorHint="@color/colorWhite"
+            android:textColorHighlight="@color/colorWhite"
+            app:met_textColor="@color/colorWhite"
+            android:textColorLink="@color/colorWhite"
+            app:met_baseColor="@color/colorWhite"
+            app:met_underlineColor="@color/colorWhite"
             android:layout_marginTop="10dp"
             app:met_floatingLabel="normal"
+            android:textColor="@color/colorWhite"
+            app:met_textColorHint="@color/colorWhite"
             android:hint="@string/password"/>
 
         <Button
@@ -56,8 +80,9 @@
             android:layout_height="wrap_content"
             android:text="@string/register"
             android:id="@+id/btn_register"
-
-            android:layout_marginTop="10dp" />
+            android:background="@color/colorPrimaryDark"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/colorWhite"/>
 
 
     </LinearLayout>

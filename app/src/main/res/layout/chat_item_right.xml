@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:padding="8dp"
+    android:background="@color/colorPrimary"
     android:layout_height="wrap_content">
 
     <RelativeLayout
@@ -23,6 +24,7 @@
             android:layout_height="wrap_content"
             android:gravity="bottom"
             android:padding="8dp"
+            android:textColor="@color/colorWhite"
             android:textSize="14sp" />
 
         <TextView
@@ -35,6 +37,7 @@
             android:maxEms="10"
             android:padding="8dp"
             android:textAlignment="viewStart"
+            android:textColor="@color/colorWhite"
             android:textIsSelectable="true"
             android:textSize="18sp" />
 
@@ -43,7 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/photoLayout"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/colorWhite" />
 
         <RelativeLayout
 
