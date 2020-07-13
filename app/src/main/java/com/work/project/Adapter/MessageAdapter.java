@@ -258,10 +258,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     JSONObject transObject2 = transObject.getJSONObject(0);
                     String translatedText = transObject2.getString("translatedText");
 
-                    if(!translatedText.equals(text))
+
                         callback.onTranslationSuccess(translatedText);
-                    else
-                        callback.onTranslationSameLanguage();
                 }
                 catch (JSONException e) {
                     Toast.makeText(context, R.string.translation_error, Toast.LENGTH_SHORT).show();

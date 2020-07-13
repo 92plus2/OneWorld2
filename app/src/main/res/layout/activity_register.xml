@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#ffffff"
+            android:textColor="@color/colorWhite"
             android:text="@string/create_a_new_account"
             android:textSize="20sp"
             android:textStyle="bold"/>
@@ -29,9 +29,9 @@
             android:id="@+id/username"
             android:layout_marginTop="10dp"
             app:met_floatingLabel="normal"
-            android:textColor="#ffffff"
-            app:met_textColorHint="#ffffff"
-            android:textColorHint="#FFFFFF"
+            android:textColor="@color/colorWhite"
+            app:met_textColorHint="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
             android:textColorHighlight="@color/colorWhite"
             app:met_baseColor="@color/colorWhite"
             app:met_underlineColor="@color/colorWhite"
@@ -47,14 +47,14 @@
             android:inputType="textEmailAddress"
             android:layout_marginTop="10dp"
             app:met_floatingLabel="normal"
-            android:textColorHint="#FFFFFF"
+            android:textColorHint="@color/colorWhite"
             android:textColorHighlight="@color/colorWhite"
             app:met_textColor="@color/colorWhite"
             android:textColorLink="@color/colorWhite"
             app:met_baseColor="@color/colorWhite"
             app:met_underlineColor="@color/colorWhite"
-            app:met_textColorHint="#ffffff"
-            android:textColor="#ffffff"
+            app:met_textColorHint="@color/colorWhite"
+            android:textColor="@color/colorWhite"
             android:hint="@string/email"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/password"
             android:inputType="textPassword"
-            android:textColorHint="#FFFFFF"
+            android:textColorHint="@color/colorWhite"
             android:textColorHighlight="@color/colorWhite"
             app:met_textColor="@color/colorWhite"
             android:textColorLink="@color/colorWhite"
@@ -71,8 +71,8 @@
             app:met_underlineColor="@color/colorWhite"
             android:layout_marginTop="10dp"
             app:met_floatingLabel="normal"
-            android:textColor="#ffffff"
-            app:met_textColorHint="#ffffff"
+            android:textColor="@color/colorWhite"
+            app:met_textColorHint="@color/colorWhite"
             android:hint="@string/password"/>
 
         <Button
@@ -82,7 +82,7 @@
             android:id="@+id/btn_register"
             android:background="@color/colorPrimaryDark"
             android:layout_marginTop="10dp"
-            android:textColor="#fff"/>
+            android:textColor="@color/colorWhite"/>
 
 
     </LinearLayout>

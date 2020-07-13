@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/username"
                 android:textSize="18sp"
-                android:textColor="#fff"
+                android:textColor="@color/colorWhite"
                 android:textStyle="bold"
                 android:layout_marginStart="25dp" />
 
@@ -71,8 +71,8 @@
             android:background="@android:color/transparent"
             android:hint="@string/type_a_message"
             android:inputType="textCapSentences|textMultiLine"
-            android:textColor="#ffffff"
-            android:textColorHint="#ffffff" />
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite" />
 
         <ImageButton
             android:id="@+id/btn_send"
