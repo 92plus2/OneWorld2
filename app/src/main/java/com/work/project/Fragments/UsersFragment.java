@@ -28,6 +28,7 @@ import com.work.project.Model.User;
 import com.work.project.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -240,6 +241,8 @@ public class UsersFragment extends Fragment {
         if(newIds.isEmpty())
             updateGhostVisibility();
         else {
+            Collections.shuffle(newIds);  // чтобы был случайный порядок
+
             DatabaseReference users = FirebaseDatabase.getInstance().getReference("Users");
 
             for (String newId : newIds) {
