@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     android:padding="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -21,7 +20,6 @@
         android:layout_below="@id/profile_image"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:textColor="@color/colorWhite"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -45,7 +43,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:gravity="center"
-                android:textColor="@color/colorWhite"
                 tools:visibility="visible" />
 
             <ImageView
@@ -67,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:gravity="center"
-                android:textColor="@color/colorWhite"
                 tools:visibility="visible" />
 
             <ImageView
@@ -99,7 +95,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|start"
                 android:text="@string/no_biography"
-                android:textColor="@color/colorWhite"
                 android:textSize="20sp" />
         </ScrollView>
     </LinearLayout>

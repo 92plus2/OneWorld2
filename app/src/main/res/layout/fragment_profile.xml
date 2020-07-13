@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="8dp"
-    android:background="@color/colorPrimary"
     tools:context=".Fragments.ProfileFragment">
 
     <androidx.cardview.widget.CardView
@@ -18,7 +17,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:padding="8dp"
-            android:background="@color/colorPrimary"
             android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -36,7 +34,6 @@
                 android:layout_below="@id/profile_image"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:textColor="@color/colorWhite"
                 android:textStyle="bold"
                 android:id="@+id/username"
                 android:textSize="18sp"
@@ -64,15 +61,8 @@
         android:layout_alignParentStart="false"
         android:layout_alignParentTop="false"
         android:hint="@string/write_about_yourself"
-        android:textColor="@color/colorWhite"
-        android:textColorHighlight="@color/colorWhite"
-        android:textColorHint="@color/colorWhite"
-        android:textColorLink="@color/colorWhite"
-        app:met_baseColor="@color/colorWhite"
-        app:met_floatingLabel="normal"
-        app:met_textColor="@color/colorWhite"
-        app:met_textColorHint="@color/colorWhite"
-        app:met_underlineColor="@color/colorWhite" />
+
+        app:met_floatingLabel="normal" />
 
 
 </RelativeLayout>

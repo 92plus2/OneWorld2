@@ -12,7 +12,6 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </androidx.viewpager.widget.ViewPager>
@@ -23,10 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:alwaysDrawnWithCache="false"
-        android:background="@color/colorPrimaryDark"
         android:duplicateParentState="false"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/colorWhite"
-        app:tabSelectedTextColor="@color/colorWhite"
-        app:tabTextColor="@color/colorWhite" />
+        app:tabGravity="fill" />
 </RelativeLayout>

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     tools:context=".MessageActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -16,7 +15,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
             android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/MenuStyle">
 
@@ -30,7 +28,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/username"
                 android:textSize="18sp"
-                android:textColor="@color/colorWhite"
                 android:textStyle="bold"
                 android:layout_marginStart="25dp" />
 
@@ -49,7 +46,6 @@
         android:layout_width="match_parent"
         android:padding="5dp"
         android:id="@+id/bottom"
-        android:background="@color/colorPrimaryDark"
         android:layout_alignParentBottom="true"
         android:layout_height="wrap_content">
 
@@ -70,9 +66,7 @@
             android:layout_toEndOf="@id/btn_img"
             android:background="@android:color/transparent"
             android:hint="@string/type_a_message"
-            android:inputType="textCapSentences|textMultiLine"
-            android:textColor="@color/colorWhite"
-            android:textColorHint="@color/colorWhite" />
+            android:inputType="textCapSentences|textMultiLine"/>
 
         <ImageButton
             android:id="@+id/btn_send"
@@ -87,7 +81,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/big_photo_layout"
-        android:background="#A9000000"
         android:visibility="gone"
         android:onClick="hideBigPhoto"
         >

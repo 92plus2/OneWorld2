@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorPrimary"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
@@ -12,7 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/login"
-        android:textColor="@color/colorWhite"
 
         android:textSize="20sp"
         android:textStyle="bold"/>
@@ -25,15 +23,8 @@
         android:layout_marginTop="10dp"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
-        android:textColor="@color/colorWhite"
-        android:textColorHint="@color/colorWhite"
-        app:met_baseColor="@color/colorWhite"
-        app:met_underlineColor="@color/colorWhite"
-        android:textColorHighlight="@color/colorWhite"
-        app:met_textColor="@color/colorWhite"
-        android:textColorLink="@color/colorWhite"
         app:met_floatingLabel="normal"
-        app:met_textColorHint="@color/colorWhite" />
+        />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:textCursorDrawable="@null"
@@ -43,14 +34,6 @@
         android:inputType="textPassword"
         android:layout_marginTop="10dp"
         app:met_floatingLabel="normal"
-        android:textColor="@color/colorWhite"
-        android:textColorHint="@color/colorWhite"
-        app:met_baseColor="@color/colorWhite"
-        app:met_underlineColor="@color/colorWhite"
-        android:textColorHighlight="@color/colorWhite"
-        app:met_textColor="@color/colorWhite"
-        app:met_textColorHint="@color/colorWhite"
-        android:textColorLink="@color/colorWhite"
         android:hint="@string/password"/>
 
     <Button
@@ -58,16 +41,11 @@
         android:layout_height="wrap_content"
         android:text="@string/login"
         android:id="@+id/btn_login"
-        android:background="@color/colorPrimaryDark"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/colorWhite"/>
-
+        android:layout_marginTop="10dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/colorWhite50"
-
         android:text="@string/forgot_your_password"
         android:layout_marginTop="10dp"
         android:layout_gravity="end"
