@@ -267,7 +267,7 @@ public class UsersFragment extends Fragment {
     private boolean shouldShowUser(String userId){
         if(userId.equals(currentUserId))
             return false;
-        if(peopleWhoLikedUs.contains(userId))
+        if(peopleWhoLikedUs.contains(userId) || ourLikes.contains(userId))
             return false;
         // проверяем, переписывались ли мы с пользователем
         for(Chatlist chatlist : chatlists){
