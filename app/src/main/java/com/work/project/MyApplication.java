@@ -25,7 +25,7 @@ public class MyApplication extends Application {
 
     public boolean isNightMode(){
         SharedPreferences preferences = getSharedPreferences();
-        return preferences.getBoolean(NIGHT_MODE_KEY, false);
+        return preferences.getBoolean(NIGHT_MODE_KEY, true);
     }
 
     private void applyNightMode(boolean nightMode){
