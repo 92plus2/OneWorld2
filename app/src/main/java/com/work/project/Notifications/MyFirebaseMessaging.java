@@ -30,17 +30,26 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
             return;
         }
 
+        int id = notificationID++;
+
         Resources res = getApplicationContext().getResources();
+        String title = data.getTitle(res);
+        String body = data.getBody(res);
+        Intent intent = data.getIntent(this);
+        int icon = data.getIcon();
+
+        sendNotification(id, title, body, intent, icon);
+    }
+
+    private void sendNotification(int id, String title, String body, Intent intent, int icon) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            sendOreoNotification(data.getTitle(res), data.getBody(res), data.getIntent(this), data.getIcon());
+            sendOreoNotification(id, title, body, intent, icon);
         } else {
-            sendNotification(data.getTitle(res), data.getBody(res), data.getIntent(this), data.getIcon());
+            sendOldNotification(id, title, body, intent, icon);
         }
     }
 
-    private void sendOreoNotification(String title, String body, Intent intent, int icon){
-        int id = notificationID++;
-
+    private void sendOreoNotification(int id, String title, String body, Intent intent, int icon){
         PendingIntent pendingIntent;
         if(intent != null)
             pendingIntent = PendingIntent.getActivity(this, id, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -57,9 +66,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
     }
 
-    private void sendNotification(String title, String body, Intent intent, int icon) {
-        int id = notificationID++;
-
+    private void sendOldNotification(int id, String title, String body, Intent intent, int icon) {
         PendingIntent pendingIntent;
         if(intent != null)
             pendingIntent = PendingIntent.getActivity(this, id, intent, PendingIntent.FLAG_ONE_SHOT);

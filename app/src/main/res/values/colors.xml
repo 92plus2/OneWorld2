@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- светлая тема. Здесь черный это белый, и наоборот ;) -->
 <resources>
-    <color name="colorPrimaryDark">#C1BDBD</color>
-    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#BDBCBC</color>
+    <color name="colorPrimary">#FAFAFA</color>
     <color name="colorAccent">#E8E6E6</color>
     <color name="colorBlack">#E8E6E6</color>
     <color name="colorWhite">#3C3C3C</color>
