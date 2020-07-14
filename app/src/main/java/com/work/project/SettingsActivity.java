@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageSwitcher;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +73,8 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView dateText;
     private Date displayedDate = null;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
+
+    private ImageSwitcher dayNightSwitcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,6 +210,14 @@ public class SettingsActivity extends AppCompatActivity {
             }
         };
 
+        dayNightSwitcher = findViewById(R.id.day_night_switcher);
+        MyApplication application = (MyApplication) getApplication();
+        dayNightSwitcher.setDisplayedChild(application.isNightMode()? 0 : 1);
+        dayNightSwitcher.setOnClickListener(view -> {
+            boolean newNightMode = !application.isNightMode();
+            application.setNightMode(newNightMode);
+            dayNightSwitcher.setDisplayedChild(newNightMode? 0 : 1);
+        });
 
         currentUserListener = new ValueEventListener() {
             @Override

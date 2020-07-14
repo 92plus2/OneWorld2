@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -389,34 +388,25 @@ public class MessageActivity extends AppCompatActivity {
             }
         }
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // добавляем в список новые сообщения
-                for (Chat newMessage : newMessages) {
-                    mChat.add(newMessage);
-                    chatMap.put(newMessage, mChat.size() - 1);
-                    messageAdapter.notifyItemInserted(mChat.size() - 1);
-                }
-
-                // если надо, помечаем сообщения как прочитанное
-                for(Chat message : seenMessages){
-                    //Log.d(TAG, "seen message: " + message.getMessage());
-                    message.setSeen(true);
-                    messageAdapter.notifyItemChanged(chatMap.get(message));
-                }
-
-                // скроллим в конец
-                recyclerView.scrollToPosition(mChat.size() - 1);
-                isLoadingMessages = false;
+        runOnUiThread(() -> {
+            // добавляем в список новые сообщения
+            for (Chat newMessage : newMessages) {
+                mChat.add(newMessage);
+                chatMap.put(newMessage, mChat.size() - 1);
+                messageAdapter.notifyItemInserted(mChat.size() - 1);
             }
-        });
-    }
 
-    private void currentUser(String userid){
-        SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
-        editor.putString("currentuser", userid);
-        editor.apply();
+            // если надо, помечаем сообщения как прочитанное
+            for(Chat message : seenMessages){
+                //Log.d(TAG, "seen message: " + message.getMessage());
+                message.setSeen(true);
+                messageAdapter.notifyItemChanged(chatMap.get(message));
+            }
+
+            // скроллим в конец
+            recyclerView.scrollToPosition(mChat.size() - 1);
+            isLoadingMessages = false;
+        });
     }
 
     private void status(String status){
@@ -432,7 +422,6 @@ public class MessageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         status("online");
-        currentUser(currentUserId);
         if(chats != null && !hasChatsListener) {
             chats.limitToLast(MAX_MESSAGES).addValueEventListener(chatsListener);
             hasChatsListener = true;
@@ -444,7 +433,6 @@ public class MessageActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         status("offline");
-        currentUser("none");
         chats.removeEventListener(chatsListener);
         hasChatsListener = false;
         globalUserChatId = null;
