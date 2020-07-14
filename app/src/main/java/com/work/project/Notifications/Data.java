@@ -12,20 +12,23 @@ import java.util.Map;
 
 public class Data {
     private String userId;
+    private String receiverId;
     private String username;
     private String message;
     public static final int NEW_MESSAGE = 0, NEW_FRIEND_REQUEST = 1, FRIEND_REQUEST_ACCEPTED = 2;
     private int notificationType;
 
-    public Data(String userId, String username, String message, int notificationType) {
+    public Data(String userId, String receiverId, String username, String message, int notificationType) {
         this.userId = userId;
+        this.receiverId = receiverId;
         this.username = username;
         this.message = message;
         this.notificationType = notificationType;
     }
 
     public Data(Map<String, String> data){
-        this(data.get("userId"), data.get("username"), data.get("message"), Integer.parseInt(data.get("notificationType")));
+        this(data.get("userId"), data.get("receiverId"), data.get("username"), data.get("message"),
+                Integer.parseInt(data.get("notificationType")));
     }
 
     public String getTitle(Resources res){
@@ -83,6 +86,14 @@ public class Data {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getReceiverId() {
+        return receiverId;
+    }
+
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
     }
 
     public String getUsername() {

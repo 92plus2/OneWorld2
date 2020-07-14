@@ -304,7 +304,7 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Token token = dataSnapshot.getValue(Token.class);
-                Data data = new Data(senderId, senderName, message, notificationType);
+                Data data = new Data(senderId, receiverId, senderName, message, notificationType);
 
                 Sender sender = new Sender(data, token.getToken());
 

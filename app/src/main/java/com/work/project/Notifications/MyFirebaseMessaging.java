@@ -15,6 +15,7 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.work.project.MessageActivity;
+import com.work.project.Model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,10 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
 
         Data data = new Data(remoteMessage.getData());
+
+        // сообщение пришло не нам
+        if(!data.getReceiverId().equals(User.getCurrentUserId()))
+            return;
 
         // если мы в чате с пользователем - не посылаем уведомление
         if(data.getNotificationType() == Data.NEW_MESSAGE && data.getUserId().equals(MessageActivity.globalUserChatId)){

@@ -11,8 +11,8 @@ public class MyApplication extends Application {
     private final static String NIGHT_MODE_KEY = "isNightMode";
 
     public void onCreate() {
-        super.onCreate();
         applyNightMode(isNightMode());
+        super.onCreate();
     }
 
     public void setNightMode(boolean nightMode){

@@ -23,15 +23,11 @@
 # This rule will properly ProGuard all the model classes in 
 # the package com.yourcompany.models. Modify to fit the structure
 # of your app.
--keepclassmembers class com.work.project.Model.* {
+
+-keepnames class com.work.project.Model.** {
 *;
 }
--keepnames class com.work.project.Model.* {
-*;
-}
--keepclassmembers class com.work.project.Notifications.* {
-*;
-}
--keepnames class com.work.project.Notifications.* {
+
+-keepnames class com.work.project.Notifications.** {
 *;
 }
