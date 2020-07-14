@@ -84,7 +84,7 @@
     <string name="please_wait">Please wait…</string>
     <string name="finish_registration">Finish registration</string>
     <string name="translation_error">Translation error!</string>
-    <string name="night_mode">Night mode</string>
+    <string name="app_theme">App Theme</string>
 
     <string-array name="gender">
         <item>Not selected</item>
