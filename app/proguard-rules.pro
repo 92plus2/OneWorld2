@@ -26,4 +26,12 @@
 -keepclassmembers class com.work.project.Model.* {
 *;
 }
--keep class com.work.project.Notifications.*
+-keepnames class com.work.project.Model.* {
+*;
+}
+-keepclassmembers class com.work.project.Notifications.* {
+*;
+}
+-keepnames class com.work.project.Notifications.* {
+*;
+}
