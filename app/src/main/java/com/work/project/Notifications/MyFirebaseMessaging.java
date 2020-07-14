@@ -15,7 +15,6 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.work.project.MessageActivity;
-import com.work.project.R;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
     private static int notificationID = 1;
@@ -31,13 +30,11 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
             return;
         }
 
-        int icon = R.mipmap.ic_launcher;
-
         Resources res = getApplicationContext().getResources();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            sendOreoNotification(data.getTitle(res), data.getBody(res), data.getIntent(this), icon);
+            sendOreoNotification(data.getTitle(res), data.getBody(res), data.getIntent(this), data.getIcon());
         } else {
-            sendNotification(data.getTitle(res), data.getBody(res), data.getIntent(this), icon);
+            sendNotification(data.getTitle(res), data.getBody(res), data.getIntent(this), data.getIcon());
         }
     }
 
