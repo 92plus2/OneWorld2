@@ -188,10 +188,12 @@ public class SettingsActivity extends AppCompatActivity {
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
                 int month = calendar.get(Calendar.MONTH);
                 int year = calendar.get(Calendar.YEAR);
-                
+
+                MyApplication application = (MyApplication) getApplication();
+                int theme = application.isNightMode()? AlertDialog.THEME_HOLO_DARK : AlertDialog.THEME_HOLO_LIGHT;
                 DatePickerDialog dialog = new DatePickerDialog(
                         SettingsActivity.this,
-                        AlertDialog.THEME_HOLO_DARK,
+                        theme,
                         mDateSetListener, year, month, day);
                 dialog.getDatePicker().setMaxDate(new Date().getTime());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
