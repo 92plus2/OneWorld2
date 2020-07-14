@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.work.project.Fragments.ChatsFragment;
@@ -49,14 +50,23 @@ public class MainActivity extends AppCompatActivity {
         final ViewPager viewPager = findViewById(R.id.view_pager);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
-        viewPagerAdapter.addFragment(UsersFragment.newInstance(true), getString(R.string.find_friends));
-        viewPagerAdapter.addFragment(UsersFragment.newInstance(false), getString(R.string.friend_requests));
-        viewPagerAdapter.addFragment(new ChatsFragment(), getString(R.string.chats));
-        viewPagerAdapter.addFragment(new ProfileFragment(), getString(R.string.profile));
+        viewPagerAdapter.addFragment(UsersFragment.newInstance(true), null);
+        viewPagerAdapter.addFragment(UsersFragment.newInstance(false), null);
+        viewPagerAdapter.addFragment(new ChatsFragment(), null);
+        viewPagerAdapter.addFragment(new ProfileFragment(), null);
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-
+        for(int i = 0; i < tabLayout.getTabCount(); i++){
+            if(i == 0)
+                tabLayout.getTabAt(i).setIcon(R.drawable.ic_baseline_star_24);
+            if(i == 1)
+                tabLayout.getTabAt(i).setIcon(R.drawable.ic_baseline_notifications_24);
+            if(i == 2)
+                tabLayout.getTabAt(i).setIcon(R.drawable.ic_baseline_chat_bubble_24);
+            if(i == 3)
+                tabLayout.getTabAt(i).setIcon(R.drawable.ic_baseline_account_circle_24);
+        }
         Intent intent = getIntent();
         if(intent.hasExtra("fragment")){
             if(intent.getStringExtra("fragment").equals(FRIEND_REQUESTS)) {
