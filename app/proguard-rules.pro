@@ -24,10 +24,12 @@
 # the package com.yourcompany.models. Modify to fit the structure
 # of your app.
 
--keepnames class com.work.project.Model.** {
-*;
+-keepattributes Signature
+
+-keep class com.work.project.Model.** {
+    *;
 }
 
--keepnames class com.work.project.Notifications.** {
-*;
+-keep class com.work.project.Notifications.** {
+    *;
 }
