@@ -1,4 +1,4 @@
-package com.work.project.Model;
+package com.work.project.Util;
 
 import android.content.res.Resources;
 

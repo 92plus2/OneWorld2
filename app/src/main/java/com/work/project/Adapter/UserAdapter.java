@@ -28,11 +28,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
-import com.work.project.Model.CountryUtil;
-import com.work.project.Model.LanguageUtil;
 import com.work.project.Model.User;
 import com.work.project.Notifications.Data;
 import com.work.project.R;
+import com.work.project.Util.CountryUtil;
+import com.work.project.Util.LanguageUtil;
+import com.work.project.Util.Translator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -152,7 +153,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                         String language = LanguageUtil.getShortLanguageString(languageId);
                         Log.d(MessageActivity.TAG, "language:" + language);
 
-                        MessageAdapter.translate(user.getBiography(), language, mContext, new MessageAdapter.TranslateCallback() {
+                        Translator.translate(user.getBiography(), language, mContext, new Translator.TranslateCallback() {
                             @Override
                             public void onTranslationSuccess(String translatedText) {
                                 holder.biography.setText(user.getBiography() + "\n(" + translatedText + ")");

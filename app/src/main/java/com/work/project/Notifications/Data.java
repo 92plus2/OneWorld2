@@ -70,6 +70,13 @@ public class Data {
         }
     }
 
+    public int getIcon(){
+        if(notificationType == NEW_MESSAGE)
+            return R.drawable.ic_baseline_chat_bubble_24;
+        else
+            return R.drawable.ic_baseline_star_24;
+    }
+
     public String getUserId() {
         return userId;
     }

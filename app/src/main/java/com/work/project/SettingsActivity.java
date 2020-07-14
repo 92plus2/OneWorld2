@@ -39,10 +39,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.work.project.Adapter.LanguageAdapter;
-import com.work.project.Model.CountryUtil;
 import com.work.project.Model.LanguageItem;
-import com.work.project.Model.LanguageUtil;
 import com.work.project.Model.User;
+import com.work.project.Util.CountryUtil;
+import com.work.project.Util.LanguageUtil;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
