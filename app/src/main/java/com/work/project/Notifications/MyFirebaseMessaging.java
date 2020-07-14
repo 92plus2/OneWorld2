@@ -16,8 +16,14 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.work.project.MessageActivity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class MyFirebaseMessaging extends FirebaseMessagingService {
     private static int notificationID = 1;
+    private static Map<String, List<Integer>> messagesFromUser = new HashMap<>();
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -31,6 +37,14 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         }
 
         int id = notificationID++;
+        if(data.getNotificationType() == Data.NEW_MESSAGE){
+            String userId = data.getUserId();
+            if(!messagesFromUser.containsKey(userId))
+                messagesFromUser.put(userId, new ArrayList<>());
+
+            List<Integer> notifications = messagesFromUser.get(userId);
+            notifications.add(id);
+        }
 
         Resources res = getApplicationContext().getResources();
         String title = data.getTitle(res);
@@ -49,6 +63,20 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         }
     }
 
+    public static void removeMessageNotificationsFromUser(Context context, String userId){
+        if(!messagesFromUser.containsKey(userId))
+            return;
+        NotificationManager notificationManager = getNotificationManager(context);
+        for(int id : messagesFromUser.get(userId)){
+            notificationManager.cancel(id);
+        }
+    }
+
+    public static void removeAllNotifications(Context context){
+        getNotificationManager(context).cancelAll();
+        messagesFromUser.clear();
+    }
+
     private void sendOreoNotification(int id, String title, String body, Intent intent, int icon){
         PendingIntent pendingIntent;
         if(intent != null)
@@ -62,8 +90,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         Notification.Builder builder = oreoNotification.getOreoNotification(title, body, pendingIntent,
                 defaultSound, icon);
 
-        oreoNotification.getManager().notify(id, builder.build());
-
+        getNotificationManager(getApplicationContext()).notify(id, builder.build());
     }
 
     private void sendOldNotification(int id, String title, String body, Intent intent, int icon) {
@@ -81,8 +108,12 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setSound(defaultSound)
                 .setContentIntent(pendingIntent);
-        NotificationManager noti = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
-        noti.notify(id, builder.build());
+        NotificationManager notificationManager = getNotificationManager(getApplicationContext());
+        notificationManager.notify(id, builder.build());
+    }
+
+    private static NotificationManager getNotificationManager(Context context){
+        return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 }

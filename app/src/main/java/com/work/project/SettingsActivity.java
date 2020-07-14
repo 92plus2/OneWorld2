@@ -41,6 +41,7 @@ import com.google.firebase.storage.UploadTask;
 import com.work.project.Adapter.LanguageAdapter;
 import com.work.project.Model.LanguageItem;
 import com.work.project.Model.User;
+import com.work.project.Notifications.MyFirebaseMessaging;
 import com.work.project.Util.CountryUtil;
 import com.work.project.Util.LanguageUtil;
 
@@ -99,25 +100,20 @@ public class SettingsActivity extends AppCompatActivity {
         // если мы пришли из регистрации, заменяем кнопку Log out на Next
         if(getIntent().hasExtra(FROM_REGISTRATION)){
             logOut.setText(R.string.finish_registration);
-            logOut.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    currentUserRef.child("shouldFinishRegistration").setValue(false);
-                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
+            logOut.setOnClickListener(view -> {
+                currentUserRef.child("shouldFinishRegistration").setValue(false);
+                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             });
         }
         else {
-            logOut.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    FirebaseAuth.getInstance().signOut();
-                    Intent intent = new Intent(SettingsActivity.this, StartActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
+            logOut.setOnClickListener(view -> {
+                FirebaseAuth.getInstance().signOut();
+                MyFirebaseMessaging.removeAllNotifications(SettingsActivity.this);
+                Intent intent = new Intent(SettingsActivity.this, StartActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             });
         }
 

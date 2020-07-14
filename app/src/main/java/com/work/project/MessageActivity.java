@@ -45,6 +45,7 @@ import com.work.project.Model.Chat;
 import com.work.project.Model.User;
 import com.work.project.Notifications.Client;
 import com.work.project.Notifications.Data;
+import com.work.project.Notifications.MyFirebaseMessaging;
 import com.work.project.Notifications.MyResponse;
 import com.work.project.Notifications.Sender;
 import com.work.project.Notifications.Token;
@@ -427,6 +428,7 @@ public class MessageActivity extends AppCompatActivity {
             hasChatsListener = true;
         }
         globalUserChatId = otherUserId;
+        MyFirebaseMessaging.removeMessageNotificationsFromUser(this, otherUserId);
     }
 
     @Override
