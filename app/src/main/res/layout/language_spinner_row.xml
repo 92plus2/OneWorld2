@@ -19,6 +19,6 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="5dp"
         android:gravity="center"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorWhite"
         android:textSize="20sp" />
 </RelativeLayout>
