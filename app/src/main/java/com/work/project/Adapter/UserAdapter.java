@@ -118,15 +118,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             else
                 holder.username.setText(res.getString(R.string.username_and_age_format, user.getUsername(), age));
 
-            String languageName = LanguageUtil.getLongLanguageString(res, user.getLanguageID());
+            String languageName = LanguageUtil.getLongLanguageString(res, user.getNewLanguageID());
             String languageText = formatSentence(R.array.username_knows_language, user, languageName);
             holder.language.setText(languageText);
-            holder.langImg.setImageResource(LanguageUtil.getLanguageDrawable(user.getLanguageID()));
+            holder.langImg.setImageResource(LanguageUtil.getLanguageDrawable(user.getNewLanguageID()));
 
-            String countryName = CountryUtil.getLongCountryString(res, user.getCountryID());
+            String countryName = CountryUtil.getLongCountryString(res, user.getNewCountryID());
             String countryText = formatSentence(R.array.username_is_from_country, user, countryName);
             holder.country.setText(countryText);
-            holder.countryImg.setImageResource(CountryUtil.getCountryDrawable(user.getCountryID()));
+            holder.countryImg.setImageResource(CountryUtil.getCountryDrawable(user.getNewCountryID()));
 
             holder.biographyScrollView.setOnTouchListener((view, event) -> {
                 // Чтобы можно было скроллить биографию, т. к. RecyclerView перехватывает touchEvent
@@ -142,7 +142,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 holder.biography.setText(user.getBiography());
 
                 // загружаем язык нашего пользователя и переводим
-                DatabaseReference curUserRef = User.getCurrentUserReference().child("languageID");
+                DatabaseReference curUserRef = User.getCurrentUserReference().child("newLanguageID");
                 curUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

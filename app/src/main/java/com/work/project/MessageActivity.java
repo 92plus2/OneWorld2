@@ -175,7 +175,7 @@ public class MessageActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         currentUser = dataSnapshot.getValue(User.class);
-                        startReadingMessages(otherUser.getImageURL(), LanguageUtil.getShortLanguageString(currentUser.getLanguageID()));
+                        startReadingMessages(otherUser.getImageURL(), LanguageUtil.getShortLanguageString(currentUser.getNewLanguageID()));
                     }
 
                     @Override

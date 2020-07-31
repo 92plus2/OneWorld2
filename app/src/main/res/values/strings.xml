@@ -85,6 +85,8 @@
     <string name="finish_registration">Finish registration</string>
     <string name="translation_error">Translation error!</string>
     <string name="app_theme">App Theme</string>
+    <string name="unknown_country">Unknown country! Update the app</string>
+    <string name="unknown_language">Unknown language! Update the app</string>
 
     <string-array name="gender">
         <item>Not selected</item>

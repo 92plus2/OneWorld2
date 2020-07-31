@@ -26,7 +26,7 @@ public class CountryUtil {
             case USA:
                 return res.getString(R.string.usa);
             default:
-                throw new IllegalArgumentException("Wrong countryId: " + countryId);
+                return res.getString(R.string.unknown_country);
         }
     }
 
@@ -49,7 +49,8 @@ public class CountryUtil {
             case USA:
                 return R.drawable.usa;
             default:
-                throw new IllegalArgumentException("Wrong countryId: " + countryId);
+                // будем считать, что чел из сша, если не знаем страну
+                return R.drawable.usa;
         }
     }
 

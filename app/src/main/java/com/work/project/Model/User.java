@@ -20,8 +20,8 @@ public class User {
     private String status;
     private Date dateOfBirth;
     private String biography;
-    private int countryID;
-    private int languageID;
+    private int newCountryID;
+    private int newLanguageID;
     private int genderID;
     // кидаем пользователя в SettingsActivity
     private boolean shouldFinishRegistration = false;
@@ -117,20 +117,20 @@ public class User {
         this.biography = biography;
     }
 
-    public int getCountryID() {
-        return countryID;
+    public int getNewCountryID() {
+        return newCountryID;
     }
 
-    public void setCountryID(int countryID) {
-        this.countryID = countryID;
+    public void setNewCountryID(int newCountryID) {
+        this.newCountryID = newCountryID;
     }
 
-    public int getLanguageID() {
-        return languageID;
+    public int getNewLanguageID() {
+        return newLanguageID;
     }
 
-    public void setLanguageID(int languageID) {
-        this.languageID = languageID;
+    public void setNewLanguageID(int newLanguageID) {
+        this.newLanguageID = newLanguageID;
     }
 
     public int getGenderID() {

@@ -132,7 +132,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if(calledTimes == 1)
                     return;
                 LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
-                currentUserRef.child("countryID").setValue(clickedItem.getLanguageId());
+                currentUserRef.child("newCountryID").setValue(clickedItem.getLanguageId());
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -149,7 +149,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if(calledTimes == 1)
                     return;
                 LanguageItem clickedItem = (LanguageItem) parent.getItemAtPosition(position);
-                currentUserRef.child("languageID").setValue(clickedItem.getLanguageId());
+                currentUserRef.child("newLanguageID").setValue(clickedItem.getLanguageId());
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -227,11 +227,11 @@ public class SettingsActivity extends AppCompatActivity {
                 else
                     Glide.with(SettingsActivity.this).load(user.getImageURL()).into(image_profile);
 
-                int countryID = user.getCountryID();
+                int countryID = user.getNewCountryID();
                 int countryPosition = countryList.indexOf(new LanguageItem(getResources(), countryID, true));
                 spinnerCountries.setSelection(countryPosition, false);
 
-                int languageID = user.getLanguageID();
+                int languageID = user.getNewLanguageID();
                 int languagePosition = languageList.indexOf(new LanguageItem(getResources(), languageID, false));
                 spinnerLanguages.setSelection(languagePosition, false);
 
