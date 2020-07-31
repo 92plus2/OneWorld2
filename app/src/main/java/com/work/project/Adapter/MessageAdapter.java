@@ -224,14 +224,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         Translator.translate(translationText, language, mContext, new Translator.TranslateCallback() {
             @Override
             public void onTranslationSuccess(String translatedText) {
-                holder.clickToTranslate.setSingleLine(false);
-                holder.clickToTranslate.setTextSize(18);
-                holder.clickToTranslate.setText("(" + translatedText + ")");
+                if(isHolderValid()) {
+                    holder.clickToTranslate.setSingleLine(false);
+                    holder.clickToTranslate.setTextSize(18);
+                    holder.clickToTranslate.setText("(" + translatedText + ")");
+                }
             }
 
             @Override
             public void onTranslationSameLanguage() {
-                holder.clickToTranslate.setVisibility(View.GONE);
+                if(isHolderValid())
+                    holder.clickToTranslate.setVisibility(View.GONE);
+            }
+
+            private boolean isHolderValid(){
+                return translationText.equals(holder.messageText.getText().toString());
             }
         });
     }
