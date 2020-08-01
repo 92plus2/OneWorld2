@@ -64,7 +64,7 @@
     <string name="forgot_your_password">Forgot your password?</string>
     <string name="type_a_message">Type a message…</string>
     <string name="create_a_new_account">Create a new account</string>
-    <string name="username">Username</string>
+    <string name="username">Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="register">register</string>
