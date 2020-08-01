@@ -113,4 +113,28 @@
         android:layout_marginBottom="50dp"
         android:background="@android:drawable/btn_star"
         android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/StarTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/like_button"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="29dp"
+        android:layout_toEndOf="@id/like_button"
+        android:layout_weight="1"
+        android:background="@drawable/background_left"
+        android:maxWidth="120dp"
+        android:padding="10dp"
+        android:singleLine="false"
+        android:text="Сlick on a star to like this user" />
+
+    <TextView
+        android:id="@+id/UsersTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_left"
+        android:maxWidth="108dp"
+        android:padding="10dp"
+        android:text="Swipe to view another user" />
 </RelativeLayout>
