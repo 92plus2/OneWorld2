@@ -45,14 +45,13 @@ public class ProfileFragment extends Fragment {
 
     CircleImageView image_profile;
     TextView username;
-
+    TextView tip;
     DatabaseReference currentUserRef;
 
     StorageReference storageReference;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
-
     private ValueEventListener currentUserListener;
 
     private MaterialEditText biography;
@@ -62,7 +61,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
+        tip = view.findViewById(R.id.ImageTip);
         image_profile = view.findViewById(R.id.profile_image);
         username = view.findViewById(R.id.username);
 
@@ -96,8 +95,10 @@ public class ProfileFragment extends Fragment {
                 username.setText(user.getUsername());
                 if (user.getImageURL().equals("default")) {
                     image_profile.setImageResource(R.mipmap.ic_launcher);
+
                 } else {
                     Glide.with(getContext()).load(user.getImageURL()).into(image_profile);
+                    tip.setVisibility(View.GONE);
                 }
                 String text = user.getBiography();
                 if (text != null) {

@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,6 +47,7 @@ public class UsersFragment extends Fragment {
     private Set<String> ourLikes;  // id пользователей, которых мы лайкнули. Используется только в "Search Users"
     private DatabaseReference reference;
     private String currentUserId;
+    TextView StarTip;
     List<Chatlist> chatlists = new ArrayList<>();
     ImageView ghost;
     private Map<DatabaseReference, ValueEventListener> listeners = new HashMap<>();
@@ -69,7 +71,6 @@ public class UsersFragment extends Fragment {
         reference = FirebaseDatabase.getInstance().getReference();
 
         View view = inflater.inflate(R.layout.fragment_users, container, false);
-
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -77,6 +78,7 @@ public class UsersFragment extends Fragment {
         peopleWhoLikedUs = new HashSet<>();
         ourLikes = new HashSet<>();
         ghost = view.findViewById(R.id.ghost);
+        StarTip = view.findViewById(R.id.StarTip);
         userAdapter = new UserAdapter(getContext(),  mUsers, isSearchUsers()? UserAdapter.SEARCH_USERS : UserAdapter.FRIEND_REQUESTS);
         recyclerView.setAdapter(userAdapter);
 
@@ -119,8 +121,10 @@ public class UsersFragment extends Fragment {
                     ourLikes.add(userId);
                 }
                 deleteUsersWithLikes();
+                /*if(!ourLikes.isEmpty()){
+                    StarTip.setVisibility(View.GONE);
+                }*/
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }

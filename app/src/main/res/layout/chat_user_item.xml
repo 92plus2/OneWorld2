@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:padding="10dp"
     android:background="@color/colorPrimary"
@@ -54,4 +55,20 @@
         android:textColor="@color/colorPrimaryDark"
         android:layout_marginStart="20dp"
         android:maxLines="1"/>
+
+    <TextView
+        android:id="@+id/StarTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="StarTip"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/UsersTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:visibility="gone"
+        tools:visibility="gone" />
 </RelativeLayout>
