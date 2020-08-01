@@ -99,7 +99,7 @@ public class MessageActivity extends AppCompatActivity {
     boolean notify = false;
 
     public final static String TAG = "oneworld";
-    private final static int MAX_MESSAGES = 100;
+    private final static int MAX_MESSAGES = 300;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
