@@ -110,6 +110,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 mContext.startActivity(intent);
             });
         } else {
+            holder.StarTip.setVisibility(View.GONE);
             Resources res = mContext.getResources();
 
             int age = user.getAge();
@@ -222,6 +223,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         private final ImageButton likeButton;
         public TextView biography;
         public TextView language;
+        public TextView StarTip;
         public TextView country;
         public ImageView langImg;
         public ImageView countryImg;
@@ -234,6 +236,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             profileImage = itemView.findViewById(R.id.profile_image);
             imgOnline = itemView.findViewById(R.id.img_online);
             imgOffline = itemView.findViewById(R.id.img_offline);
+            StarTip = itemView.findViewById(R.id.StarTip);
             biography = itemView.findViewById(R.id.user_biography);
             lastMsg = itemView.findViewById(R.id.last_msg);
             likeButton = itemView.findViewById(R.id.like_button);

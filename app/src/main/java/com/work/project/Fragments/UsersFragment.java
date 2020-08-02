@@ -1,6 +1,7 @@
 package com.work.project.Fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.AttributeSet;
@@ -78,7 +79,6 @@ public class UsersFragment extends Fragment {
         peopleWhoLikedUs = new HashSet<>();
         ourLikes = new HashSet<>();
         ghost = view.findViewById(R.id.ghost);
-        StarTip = view.findViewById(R.id.StarTip);
         userAdapter = new UserAdapter(getContext(),  mUsers, isSearchUsers()? UserAdapter.SEARCH_USERS : UserAdapter.FRIEND_REQUESTS);
         recyclerView.setAdapter(userAdapter);
 
@@ -124,6 +124,8 @@ public class UsersFragment extends Fragment {
                 /*if(!ourLikes.isEmpty()){
                     StarTip.setVisibility(View.GONE);
                 }*/
+
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

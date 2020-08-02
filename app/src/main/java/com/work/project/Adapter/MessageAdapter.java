@@ -233,8 +233,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
             @Override
             public void onTranslationSameLanguage() {
-                if(isHolderValid())
-                    holder.clickToTranslate.setVisibility(View.GONE);
+                if(isHolderValid()) {
+                    holder.clickToTranslate.setText(R.string.same_lang);
+                    holder.clickToTranslate.setText(holder.clickToTranslate.getText() +  "\uD83E\uDD14");
+                }
             }
 
             private boolean isHolderValid(){
