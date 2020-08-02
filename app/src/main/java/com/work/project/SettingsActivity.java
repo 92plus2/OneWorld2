@@ -38,6 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.work.project.Adapter.LanguageAdapter;
 import com.work.project.Model.LanguageItem;
 import com.work.project.Model.User;
@@ -58,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
     // SettingsActivity также используется и в регистрации пользователя
     public final static String FROM_REGISTRATION = "fromRegistration";
     CircleImageView image_profile;
-    TextView username;
+    private MaterialEditText username;
 
     DatabaseReference currentUserRef;
     private ValueEventListener currentUserListener;
@@ -267,6 +268,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        currentUserRef.child("username").setValue(username.getText().toString());
         currentUserRef.removeEventListener(currentUserListener);
     }
 
