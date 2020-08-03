@@ -306,7 +306,11 @@ public class MessageActivity extends AppCompatActivity {
                 Token token = dataSnapshot.getValue(Token.class);
                 Data data = new Data(senderId, receiverId, senderName, message, notificationType);
 
-                Sender sender = new Sender(data, token.getToken());
+                String tokenString;
+                if(token == null || (tokenString = token.getToken()) == null)
+                    return;
+
+                Sender sender = new Sender(data, tokenString);
 
                 apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
                     @Override
@@ -435,7 +439,8 @@ public class MessageActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         status("offline");
-        chats.removeEventListener(chatsListener);
+        if(chats != null)
+            chats.removeEventListener(chatsListener);
         hasChatsListener = false;
         globalUserChatId = null;
     }
