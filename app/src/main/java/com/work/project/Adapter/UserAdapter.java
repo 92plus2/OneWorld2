@@ -118,15 +118,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             boolean hasVisited = sp.getBoolean("hasVisited3", false);
 
             if (!hasVisited) {
-                holder.StarTip.setVisibility(View.VISIBLE);
-                holder.UserTip.setVisibility(View.VISIBLE);
+                holder.starTip.setVisibility(View.VISIBLE);
+                holder.userTip.setVisibility(View.VISIBLE);
                 SharedPreferences.Editor e = sp.edit();
                 e.putBoolean("hasVisited3", true);
                 e.apply(); // не забудьте подтвердить изменения
             }
             else {
-                holder.StarTip.setVisibility(View.GONE);
-                holder.UserTip.setVisibility(View.GONE);
+                holder.starTip.setVisibility(View.GONE);
+                holder.userTip.setVisibility(View.GONE);
             }
             Resources res = mContext.getResources();
 
@@ -245,8 +245,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         private final ImageButton likeButton;
         public TextView biography;
         public TextView language;
-        public TextView StarTip;
-        public TextView UserTip;
+        public TextView starTip;
+        public TextView userTip;
         public TextView country;
         public ImageView langImg;
         public ImageView countryImg;
@@ -259,8 +259,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             profileImage = itemView.findViewById(R.id.profile_image);
             imgOnline = itemView.findViewById(R.id.img_online);
             imgOffline = itemView.findViewById(R.id.img_offline);
-            StarTip = itemView.findViewById(R.id.StarTip);
-            UserTip = itemView.findViewById(R.id.UsersTip);
+            starTip = itemView.findViewById(R.id.star_tip);
+            userTip = itemView.findViewById(R.id.users_tip);
             biography = itemView.findViewById(R.id.user_biography);
             lastMsg = itemView.findViewById(R.id.last_msg);
             likeButton = itemView.findViewById(R.id.like_button);
