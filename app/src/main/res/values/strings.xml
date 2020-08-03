@@ -32,6 +32,10 @@
     <string name="french">French</string>
     <string name="italian">Italian</string>
     <string name="chinese">Chinese</string>
+    <string name="portuguese">Portuguese</string>
+    <string name="japanese">Japanese</string>
+    <string name="korean">Korean</string>
+    <string name="turkish">Turkish</string>
 
     <string name="russia">Russia</string>
     <string name="uk">UK</string>
@@ -79,7 +83,7 @@
     <string name="thailand">Thailand</string>
     <string name="turkey">Turkey</string>
     <string name="ukraine">Ukraine</string>
-    <string name="united_arab_emirates">United Arab Emirates</string>
+    <string name="united_arab_emirates">UAE</string>
     <string name="vietnam">Vietnam</string>
 
 

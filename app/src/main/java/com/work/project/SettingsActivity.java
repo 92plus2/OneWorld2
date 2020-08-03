@@ -335,6 +335,11 @@ public class SettingsActivity extends AppCompatActivity {
         languageList.add(new LanguageItem(res, LanguageUtil.FRENCH, false));
         languageList.add(new LanguageItem(res, LanguageUtil.ITALIAN, false));
         languageList.add(new LanguageItem(res, LanguageUtil.CHINIZE, false));
+        languageList.add(new LanguageItem(res, LanguageUtil.JAPANESE, false));
+        languageList.add(new LanguageItem(res, LanguageUtil.PORTUGUESE, false));
+        languageList.add(new LanguageItem(res, LanguageUtil.TURKISH, false));
+        languageList.add(new LanguageItem(res, LanguageUtil.KOREAN, false));
+
         return languageList;
     }
 
