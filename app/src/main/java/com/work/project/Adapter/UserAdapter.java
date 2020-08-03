@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.work.project.MainActivity;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
 import com.work.project.Model.User;
@@ -38,7 +36,6 @@ import com.work.project.Util.LanguageUtil;
 import com.work.project.Util.Translator;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -174,7 +171,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                              languageId = ((Long) dataSnapshot.getValue()).intValue();
 
                         String language = LanguageUtil.getShortLanguageString(languageId);
-                        Log.d(MessageActivity.TAG, "language:" + language);
 
                         Translator.translate(user.getBiography(), language, mContext, new Translator.TranslateCallback() {
                             @Override
@@ -185,6 +181,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                             @Override
                             public void onTranslationSameLanguage() {
                                 // оставляем биографию как есть
+                            }
+
+                            @Override
+                            public int getValidationId() {
+                                return holder.getValidationId();
                             }
                         });
                     }
@@ -233,15 +234,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return pageType == CHATS;
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder {
-        // chat_user_item and user_card
+    public static class UserViewHolder extends Translator.ValidatableHolder {
+        // используется в chat_user_item и user_card
         public TextView username;
         public ImageView profileImage;
-        // chat_user_item
+        // только chat_user_item
         private TextView lastMsg;
         private ImageView imgOnline;
         private ImageView imgOffline;
-        // user_card
+        // только user_card
         private final ImageButton likeButton;
         public TextView biography;
         public TextView language;
@@ -337,7 +338,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onViewRecycled(@NonNull UserViewHolder holder) {
-        super.onViewRecycled(holder);
+        holder.onRecycled();
         if(listeners.containsKey(holder)){
             Pair<DatabaseReference, ValueEventListener> pair = listeners.remove(holder);
             pair.first.removeEventListener(pair.second);

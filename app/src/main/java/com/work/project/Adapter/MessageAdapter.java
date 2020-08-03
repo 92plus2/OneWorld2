@@ -54,6 +54,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     @Override
+    public void onViewRecycled(@NonNull MessageViewHolder holder) {
+        holder.onRecycled();
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder holder, int position) {
         final Chat chat = mChat.get(position);
         if (holder.time != null) {
@@ -174,8 +179,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         Glide.with(context).load(uri).into(activity.bigPhotoView);
     }
 
-    public static class MessageViewHolder extends RecyclerView.ViewHolder{
-
+    public static class MessageViewHolder extends Translator.ValidatableHolder{
         public TextView messageText;
         public TextView time;
 
@@ -224,22 +228,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         Translator.translate(translationText, language, mContext, new Translator.TranslateCallback() {
             @Override
             public void onTranslationSuccess(String translatedText) {
-                if(isHolderValid()) {
-                    holder.clickToTranslate.setSingleLine(false);
-                    holder.clickToTranslate.setTextSize(18);
-                    holder.clickToTranslate.setText("(" + translatedText + ")");
-                }
+                holder.clickToTranslate.setSingleLine(false);
+                holder.clickToTranslate.setTextSize(18);
+                holder.clickToTranslate.setText("(" + translatedText + ")");
             }
 
             @Override
             public void onTranslationSameLanguage() {
-                if(isHolderValid()) {
-                    holder.clickToTranslate.setText(mContext.getString(R.string.same_lang) + "\uD83E\uDD14");
-                }
+                holder.clickToTranslate.setText(mContext.getString(R.string.same_lang));
             }
 
-            private boolean isHolderValid(){
-                return translationText.equals(holder.messageText.getText().toString());
+            @Override
+            public int getValidationId() {
+                return holder.getValidationId();
             }
         });
     }

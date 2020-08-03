@@ -1,7 +1,11 @@
 package com.work.project.Util;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -19,6 +23,8 @@ import cz.msebera.android.httpclient.Header;
 public class Translator {
     public static void translate(String text, String language, Context context, TranslateCallback callback){
         language = language.toLowerCase();
+        int validationId = callback.getValidationId();
+
         Http.post(text, language, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -29,10 +35,12 @@ public class Translator {
                     JSONObject transObject2 = transObject.getJSONObject(0);
                     String translatedText = transObject2.getString("translatedText");
 
-                    if(!translatedText.equals(text))
-                        callback.onTranslationSuccess(translatedText);
-                    else
-                        callback.onTranslationSameLanguage();
+                    if(validationId == callback.getValidationId()) {
+                        if (!translatedText.equals(text))
+                            callback.onTranslationSuccess(translatedText);
+                        else
+                            callback.onTranslationSameLanguage();
+                    }
                 }
                 catch (JSONException e) {
                     Toast.makeText(context, R.string.translation_error, Toast.LENGTH_SHORT).show();
@@ -43,7 +51,29 @@ public class Translator {
 
     public interface TranslateCallback {
         void onTranslationSuccess(String translatedText);
+
         void onTranslationSameLanguage();
+
+        default int getValidationId(){
+            return 0;
+        }
+    }
+
+    // когда Holder переиспользован (recycled), validationId увеличивается на 1
+    public static abstract class ValidatableHolder extends RecyclerView.ViewHolder {
+        private int validationId = 0;
+
+        public ValidatableHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+
+        public int getValidationId(){
+            return validationId;
+        }
+
+        public void onRecycled(){
+            validationId++;
+        }
     }
 
     public static class Http {
