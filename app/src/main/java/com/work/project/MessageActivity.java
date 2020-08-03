@@ -87,7 +87,7 @@ public class MessageActivity extends AppCompatActivity {
 
     MessageAdapter messageAdapter;
     List<Chat> mChat;
-    Map<Chat, Integer> chatMap;
+    Map<Chat, Integer> chatIndices;
     StorageReference storageReference;
     RecyclerView recyclerView;
 
@@ -336,7 +336,7 @@ public class MessageActivity extends AppCompatActivity {
 
     private void startReadingMessages(final String imageurl, final String destLanguage){
         mChat = new ArrayList<>();
-        chatMap = new HashMap<>();
+        chatIndices = new HashMap<>();
         messageAdapter = new MessageAdapter(MessageActivity.this, mChat, imageurl, destLanguage);
         recyclerView.setAdapter(messageAdapter);
 
@@ -374,7 +374,7 @@ public class MessageActivity extends AppCompatActivity {
         for (DataSnapshot snapshot : messages.getChildren()) {
             Chat chat = snapshot.getValue(Chat.class);
 
-            if (!chatMap.containsKey(chat)) {
+            if (!chatIndices.containsKey(chat)) {
                 // добавляем новое сообщение
                 newMessages.add(chat);
                 // прочитаем его, если оно послано нам
@@ -386,7 +386,7 @@ public class MessageActivity extends AppCompatActivity {
             }
             else {
                 // это старое сообщение. Проверим, прочитали ли его
-                int index = chatMap.get(chat);
+                int index = chatIndices.get(chat);
                 Chat ourChat = mChat.get(index);
                 if(ourChat.isSeen() != chat.isSeen())
                     seenMessages.add(ourChat);
@@ -397,7 +397,7 @@ public class MessageActivity extends AppCompatActivity {
             // добавляем в список новые сообщения
             for (Chat newMessage : newMessages) {
                 mChat.add(newMessage);
-                chatMap.put(newMessage, mChat.size() - 1);
+                chatIndices.put(newMessage, mChat.size() - 1);
                 messageAdapter.notifyItemInserted(mChat.size() - 1);
             }
 
@@ -405,7 +405,7 @@ public class MessageActivity extends AppCompatActivity {
             for(Chat message : seenMessages){
                 //Log.d(TAG, "seen message: " + message.getMessage());
                 message.setSeen(true);
-                messageAdapter.notifyItemChanged(chatMap.get(message));
+                messageAdapter.notifyItemChanged(chatIndices.get(message));
             }
 
             // скроллим в конец

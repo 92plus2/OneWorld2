@@ -110,6 +110,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.messageText.setVisibility(View.VISIBLE);
             if (holder.isLeftMessage()) {
                 holder.clickToTranslate.setVisibility(View.VISIBLE);
+                holder.clickToTranslate.setText(R.string.click_to_translate);
+                holder.clickToTranslate.setTextSize(12);
             }
         }
 

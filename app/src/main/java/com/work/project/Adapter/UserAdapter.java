@@ -97,8 +97,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
 
         if (isChat()) {
-
-
             holder.username.setText(user.getUsername());
             observeLastMessage(user, holder);
             if (user.getStatus().equals("online")){
