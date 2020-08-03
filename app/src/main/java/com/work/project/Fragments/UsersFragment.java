@@ -108,6 +108,7 @@ public class UsersFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         };
+
         DatabaseReference likesRef = reference.child("Likes").child("YouWereLikedBy").child(currentUserId);
         likesRef.limitToLast(MAX_USERS).addValueEventListener(likesListener);
         listeners.put(likesRef, likesListener);

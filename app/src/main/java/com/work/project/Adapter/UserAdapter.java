@@ -3,6 +3,7 @@ package com.work.project.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Log;
 import android.util.Pair;
@@ -26,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.work.project.MainActivity;
 import com.work.project.MessageActivity;
 import com.work.project.Model.Chat;
 import com.work.project.Model.User;
@@ -36,13 +38,16 @@ import com.work.project.Util.LanguageUtil;
 import com.work.project.Util.Translator;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private Context mContext;
     private RecyclerView recyclerView;
     private List<User> mUsers;
+    private Set<String> ourLikes;
     private Map<User, Long> lastMessageTimes;
     private Map<RecyclerView.ViewHolder, Pair<DatabaseReference, ValueEventListener>> listeners;
 
@@ -95,6 +100,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
 
         if (isChat()) {
+
+
             holder.username.setText(user.getUsername());
             observeLastMessage(user, holder);
             if (user.getStatus().equals("online")){
@@ -110,7 +117,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 mContext.startActivity(intent);
             });
         } else {
-            holder.StarTip.setVisibility(View.GONE);
+            SharedPreferences sp = mContext.getSharedPreferences("MY_SETTINGS",
+                    Context.MODE_PRIVATE);
+            // SharedPreferences mySharedPreferences = getSharedPreferences(String.valueOf(MainActivity.this), Context.MODE_PRIVATE);
+            boolean hasVisited = sp.getBoolean("hasVisited3", false);
+
+            if (!hasVisited) {
+                holder.StarTip.setVisibility(View.VISIBLE);
+                holder.UserTip.setVisibility(View.VISIBLE);
+                SharedPreferences.Editor e = sp.edit();
+                e.putBoolean("hasVisited3", true);
+                e.apply(); // не забудьте подтвердить изменения
+            }
+            else {
+                holder.StarTip.setVisibility(View.GONE);
+                holder.UserTip.setVisibility(View.GONE);
+            }
             Resources res = mContext.getResources();
 
             int age = user.getAge();
@@ -224,6 +246,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public TextView biography;
         public TextView language;
         public TextView StarTip;
+        public TextView UserTip;
         public TextView country;
         public ImageView langImg;
         public ImageView countryImg;
@@ -237,6 +260,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             imgOnline = itemView.findViewById(R.id.img_online);
             imgOffline = itemView.findViewById(R.id.img_offline);
             StarTip = itemView.findViewById(R.id.StarTip);
+            UserTip = itemView.findViewById(R.id.UsersTip);
             biography = itemView.findViewById(R.id.user_biography);
             lastMsg = itemView.findViewById(R.id.last_msg);
             likeButton = itemView.findViewById(R.id.like_button);
