@@ -33,7 +33,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         Data data = new Data(remoteMessage.getData());
 
         // сообщение пришло не нам
-        if(!data.getReceiverId().equals(User.getCurrentUserId()))
+        if(data.getReceiverId() == null || !data.getReceiverId().equals(User.getCurrentUserId()))
             return;
 
         // если мы в чате с пользователем - не посылаем уведомление

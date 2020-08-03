@@ -146,6 +146,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             holder.country.setText(countryText);
             holder.countryImg.setImageResource(CountryUtil.getCountryDrawable(user.getNewCountryID()));
 
+            holder.biography.setText(R.string.no_biography);
             holder.biographyScrollView.setOnTouchListener((view, event) -> {
                 // Чтобы можно было скроллить биографию, т. к. RecyclerView перехватывает touchEvent
                 if(holder.biography.getHeight() > holder.biographyScrollView.getHeight()) {
