@@ -285,15 +285,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String theLastMessage = null;
                 long lastMessageTime = 0;
-                String seen_message = mContext.getResources().getString(R.string.message_delivered);
+                String seen_message = "";
                 String lasttime = null;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
                     if (chat != null) {
                         theLastMessage = chat.getMessage();
-                        boolean bl = chat.isSeen();
-                        if(bl){
-                            seen_message = mContext.getResources().getString(R.string.message_seen);
+                        if(chat.getSender().equals(fuser.getUid())) {
+                            seen_message = mContext.getResources().getString(R.string.message_delivered);
+                            boolean bl = chat.isSeen();
+                            if (bl) {
+                                seen_message = mContext.getResources().getString(R.string.message_seen);
+                            }
+                        }else{
+                            seen_message ="";
                         }
                         lastMessageTime = chat.getExactTime();
                         lasttime = chat.getTime();

@@ -4,15 +4,18 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +52,7 @@ import com.work.project.Notifications.MyFirebaseMessaging;
 import com.work.project.Notifications.MyResponse;
 import com.work.project.Notifications.Sender;
 import com.work.project.Notifications.Token;
+import com.work.project.Util.CountryUtil;
 import com.work.project.Util.LanguageUtil;
 
 import java.text.DateFormat;
@@ -60,18 +64,30 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.content.res.Resources;
+
+import com.work.project.R;
+import com.work.project.Util.Translator;
+
+import static com.work.project.R.drawable;
+
 public class MessageActivity extends AppCompatActivity {
     public static Map<String, Uri> localImageFiles = new HashMap<>();  // если мы загрузили картинку на сервер, но она есть у нас в файле локально
     public static String globalUserChatId = null;  // id пользователя, с которым мы переписываемся.
 
     CircleImageView profile_image;
     TextView username;
-
+    TextView username2;
+    TextView language;
+    TextView biography;
+    TextView country;
+    public ImageView langImg;
+    public ImageView countryImg;
+    CircleImageView profile_image2;
     String currentUserId;
     String otherUserId;
     DatabaseReference chats;
@@ -82,8 +98,10 @@ public class MessageActivity extends AppCompatActivity {
     DatabaseReference otherUserRef;
 
     ImageButton btn_send;
+    Button show;
     ImageButton photo_but;
     EditText text_send;
+    RelativeLayout bio;
 
     MessageAdapter messageAdapter;
     List<Chat> mChat;
@@ -103,6 +121,7 @@ public class MessageActivity extends AppCompatActivity {
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
+    private Object Context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,10 +141,19 @@ public class MessageActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         profile_image = findViewById(R.id.profile_image);
+        profile_image2 = findViewById(R.id.profile_image2);
         username = findViewById(R.id.username);
+        username2 = findViewById(R.id.username2);
+        biography = findViewById(R.id.user_biography);
         btn_send = findViewById(R.id.btn_send);
+        show = findViewById(R.id.show_bio);
+        bio = findViewById(R.id.info);
         photo_but = findViewById(R.id.btn_img);
         text_send = findViewById(R.id.text_send);
+        langImg = findViewById(R.id.lang_img);
+        countryImg = findViewById(R.id.country_img);
+        language = findViewById(R.id.language);
+        country = findViewById(R.id.country);
 
         bigPhotoLayout = findViewById(R.id.big_photo_layout);
         bigPhotoView = findViewById(R.id.big_photo_image_view);
@@ -139,6 +167,19 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 openImage();
+            }
+        });
+        show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(bio.getVisibility() == View.GONE) {
+                    bio.setVisibility(View.VISIBLE);
+                    show.setBackgroundResource(drawable.ic_baseline_arrow_drop_up_24);
+                }
+                else {
+                    bio.setVisibility(View.GONE);
+                    show.setBackgroundResource(drawable.ic_baseline_arrow_drop_down_24);
+                }
             }
         });
 
@@ -170,6 +211,29 @@ public class MessageActivity extends AppCompatActivity {
                 } else {
                     Glide.with(getApplicationContext()).load(otherUser.getImageURL()).into(profile_image);
                 }
+                username2.setText(otherUser.getUsername() + ", " + otherUser.getAge());
+                if (otherUser.getImageURL().equals("default")){
+                    profile_image2.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    Glide.with(getApplicationContext()).load(otherUser.getImageURL()).into(profile_image2);
+                }
+                Resources res = getResources();
+                String languageName = LanguageUtil.getLongLanguageString(res, otherUser.getNewLanguageID());
+                String languageText = formatSentence(R.array.username_knows_language, otherUser, languageName);
+                language.setText(languageText);
+                langImg.setImageResource(LanguageUtil.getLanguageDrawable(otherUser.getNewLanguageID()));
+
+                String countryName = CountryUtil.getLongCountryString(res, otherUser.getNewCountryID());
+                String countryText = formatSentence(R.array.username_is_from_country, otherUser, countryName);
+                country.setText(countryText);
+                countryImg.setImageResource(CountryUtil.getCountryDrawable(otherUser.getNewCountryID()));
+                biography.setText(R.string.no_biography);
+                if(otherUser.getBiography() != null && !otherUser.getBiography().isEmpty()) {
+                    biography.setText(otherUser.getBiography());
+
+
+                }
+
 
                 currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -206,7 +270,11 @@ public class MessageActivity extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, IMAGE_REQUEST);
     }
-
+    private String formatSentence(int arrayId, User user, Object info){
+        Resources res = this.getResources();
+        String format = res.getStringArray(arrayId)[user.getGenderID()];
+        return String.format(format, user.getUsername(), info);
+    }
     private String getFileExtension(Uri uri){
         ContentResolver contentResolver = this.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();

@@ -21,31 +21,154 @@
             app:popupTheme="@style/MenuStyle">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
                 android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:id="@+id/profile_image"/>
+                android:layout_height="30dp" />
 
             <TextView
+                android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/username"
-                android:textSize="18sp"
+                android:layout_marginStart="25dp"
                 android:textColor="@color/colorWhite"
-                android:textStyle="bold"
-                android:layout_marginStart="25dp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/show_bio"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/ic_baseline_arrow_drop_down_24"
+                android:foregroundGravity="center_vertical"
+                android:gravity="right|center_vertical|end" />
 
         </androidx.appcompat.widget.Toolbar>
+
 
 
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recycler_view"
-        android:layout_below="@id/bar_layout"
-        android:layout_above="@id/bottom"/>
+        android:layout_above="@id/bottom"
+        android:layout_below="@id/bar_layout">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <RelativeLayout
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="560dp"
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="100dp"
+        android:background="@color/colorPrimaryDark"
+        android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:visibility="gone"
+        app:popupTheme="@style/MenuStyle">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image2"
+            android:layout_width="132dp"
+            android:layout_height="132dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/username2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_image2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TableLayout
+            android:id="@+id/language_and_country_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/username2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp">
+
+            <TableRow
+                android:id="@+id/country_text_and_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:textColor="@color/colorWhite"
+                    tools:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/country_img"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/language_text_and_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/language"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:textColor="@color/colorWhite"
+                    tools:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/lang_img"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp" />
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@id/language_and_country_info"
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center">
+
+            <ScrollView
+                android:id="@+id/biography_scrollview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/user_biography"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|start"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20sp" />
+            </ScrollView>
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -59,6 +182,7 @@
             android:id="@+id/btn_img"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
             android:background="@drawable/ic_baseline_photo_24" />
 
@@ -66,7 +190,7 @@
             android:textCursorDrawable="@null"
             android:id="@+id/text_send"
             android:layout_width="316dp"
-            android:layout_height="35dp"
+            android:layout_height="45dp"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@id/btn_send"
             android:layout_toEndOf="@id/btn_img"
@@ -80,6 +204,7 @@
             android:id="@+id/btn_send"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:background="@drawable/ic_baseline_send_24" />
 

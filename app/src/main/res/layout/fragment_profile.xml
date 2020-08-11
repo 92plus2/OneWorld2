@@ -85,7 +85,9 @@
         app:met_floatingLabel="normal"
         app:met_textColor="@color/colorWhite"
         app:met_textColorHint="@color/colorWhite"
-        app:met_underlineColor="@color/colorWhite" />
+        app:met_underlineColor="@color/colorWhite"
+        android:inputType="textCapSentences|textMultiLine"
+        />
 
 
 </RelativeLayout>
