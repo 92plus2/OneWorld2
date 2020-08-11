@@ -136,4 +136,12 @@
         android:maxWidth="108dp"
         android:padding="10dp"
         android:text="Swipe to view another user" />
+
+    <TextView
+        android:id="@+id/seen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:visibility="gone"
+        tools:visibility="gone" />
 </RelativeLayout>

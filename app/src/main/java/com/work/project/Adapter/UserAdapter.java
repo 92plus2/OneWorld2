@@ -246,6 +246,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public TextView biography;
         public TextView language;
         public TextView starTip;
+        public TextView seen_mes;
         public TextView userTip;
         public TextView country;
         public ImageView langImg;
@@ -256,6 +257,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public UserViewHolder(View itemView) {
             super(itemView);
             username = itemView.findViewById(R.id.username);
+            seen_mes = itemView.findViewById(R.id.seen);
             profileImage = itemView.findViewById(R.id.profile_image);
             imgOnline = itemView.findViewById(R.id.img_online);
             imgOffline = itemView.findViewById(R.id.img_offline);
@@ -283,11 +285,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String theLastMessage = null;
                 long lastMessageTime = 0;
+                String seen_message = mContext.getResources().getString(R.string.message_delivered);
                 String lasttime = null;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
                     if (chat != null) {
                         theLastMessage = chat.getMessage();
+                        boolean bl = chat.isSeen();
+                        if(bl){
+                            seen_message = mContext.getResources().getString(R.string.message_seen);
+                        }
                         lastMessageTime = chat.getExactTime();
                         lasttime = chat.getTime();
                     }
@@ -298,6 +305,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     if(theLastMessage.length() > 30){
                         theLastMessage = theLastMessage.substring(0, 30) + "...";
                     }
+                    holder.seen_mes.setText(seen_message);
                     holder.lastMsg.setText(mContext.getResources().getString(R.string.message_and_time_format, theLastMessage, lasttime));
                 }
                 else {
