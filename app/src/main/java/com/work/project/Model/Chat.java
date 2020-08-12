@@ -13,6 +13,7 @@ public class Chat {  // на самом деле сообщение ffs
     private String message;
     private String time;
     private long exactTime;
+    private long zoneOffset;
     private boolean seen;
 
     public Chat(String sender, String receiver, String message, boolean seen, String time, String photo) {
@@ -80,6 +81,15 @@ public class Chat {  // на самом деле сообщение ffs
     public void setExactTime(long exactTime) {
         this.exactTime = exactTime;
     }
+
+    public long getZoneOffset() {
+        return zoneOffset;
+    }
+
+    public void setZoneOffset(long zoneOffset) {
+        this.zoneOffset = zoneOffset;
+    }
+
 
     public boolean isSeen() {
         return seen;

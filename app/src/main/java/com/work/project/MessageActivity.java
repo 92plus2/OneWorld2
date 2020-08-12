@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,6 +59,8 @@ import com.work.project.Util.LanguageUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,6 +68,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Calendar;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -96,6 +101,7 @@ public class MessageActivity extends AppCompatActivity {
     User currentUser;
     DatabaseReference currentUserRef;
     DatabaseReference otherUserRef;
+    DatabaseReference usersRef;
 
     ImageButton btn_send;
     Button show;
@@ -122,6 +128,8 @@ public class MessageActivity extends AppCompatActivity {
     private Uri imageUri;
     private StorageTask uploadTask;
     private Object Context;
+
+    long zoneOffset = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,6 +191,9 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        Calendar calendar = Calendar.getInstance();
+        zoneOffset = calendar.get(Calendar.ZONE_OFFSET) / 3600000;
+
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -200,6 +211,7 @@ public class MessageActivity extends AppCompatActivity {
 
         currentUserRef = User.getReferenceById(currentUserId);
         otherUserRef = User.getReferenceById(otherUserId);
+        usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
         otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -342,17 +354,44 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void sendMessage(String message, String photoUrl){
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", currentUserId);
         hashMap.put("receiver", otherUserId);
         hashMap.put("message", message);
         hashMap.put("seen", false);
+
+       /* final long[] senderTime = new long[1];
+        final long[] receiverTime = new long[1];
+        usersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                senderTime[0] = Long.parseLong(snapshot.child(currentUserId).child("dateOfBirth").child("timezoneOffset").getValue(String.class));
+                receiverTime[0] = Long.parseLong(snapshot.child(otherUserId).child("dateOfBirth").child("timezoneOffset").getValue(String.class));
+                // convert to hours
+                senderTime[0] /= 60;
+                receiverTime[0] /= 60;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });*/
+
+       // DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+
+        //LocalDateTime date = LocalDateTime.now();
+
         Date currentDate = new Date();
         DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+       // String time = timeFormat.format(date.plusHours(0));
         String time = timeFormat.format(currentDate);
+
         hashMap.put("time", time);
-        hashMap.put("exactTime", System.currentTimeMillis());
+        hashMap.put("exactTime", System.currentTimeMillis());// + (receiverTime[0] - senderTime[0]) * (60 * 1000));
+        hashMap.put("zoneOffset", zoneOffset);
         hashMap.put("photo", photoUrl);
         chats.push().setValue(hashMap);
 

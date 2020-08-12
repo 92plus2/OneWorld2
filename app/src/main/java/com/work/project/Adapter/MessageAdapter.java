@@ -2,6 +2,7 @@ package com.work.project.Adapter;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,7 +23,15 @@ import com.work.project.Model.Chat;
 import com.work.project.R;
 import com.work.project.Util.Translator;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
@@ -58,11 +68,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         holder.onRecycled();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder holder, int position) {
         final Chat chat = mChat.get(position);
-        if (holder.time != null) {
-            holder.time.setText(chat.getTime());
+            if (holder.time != null) {
+                if (holder.isLeftMessage()) {
+                    DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+                    LocalTime date = LocalTime.parse(chat.getTime(), DateTimeFormatter.ofPattern("HH:mm"));
+                    String time = timeFormat.format(date.plusHours(Calendar.getInstance().get(Calendar.ZONE_OFFSET) - chat.getZoneOffset()));
+                    holder.time.setText(time);
+                } else {
+                    holder.time.setText(chat.getTime());
+                }
         }
         holder.messageText.setText(chat.getMessage());
 
