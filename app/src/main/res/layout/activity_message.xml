@@ -36,9 +36,11 @@
 
             <Button
                 android:id="@+id/show_bio"
+
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="5dp"
+
                 android:background="@drawable/ic_baseline_arrow_drop_down_24"
                 android:foregroundGravity="center_vertical"
                 android:gravity="right|center_vertical|end" />
@@ -62,11 +64,14 @@
     <RelativeLayout
         android:id="@+id/info"
         android:layout_width="match_parent"
-        android:layout_height="560dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="55dp"
         android:layout_marginBottom="100dp"
+        android:animateLayoutChanges="true"
         android:background="@color/colorPrimaryDark"
+        android:paddingBottom="20dp"
         android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
+
         android:visibility="gone"
         app:popupTheme="@style/MenuStyle">
 

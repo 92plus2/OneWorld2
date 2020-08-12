@@ -243,7 +243,35 @@ public class MessageActivity extends AppCompatActivity {
                 if(otherUser.getBiography() != null && !otherUser.getBiography().isEmpty()) {
                     biography.setText(otherUser.getBiography());
 
+                    // загружаем язык нашего пользователя и переводим
+                    DatabaseReference curUserRef = User.getCurrentUserReference().child("newLanguageID");
+                    curUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            int languageId = 0;
+                            if(dataSnapshot.exists())
+                                languageId = ((Long) dataSnapshot.getValue()).intValue();
 
+                            String language = LanguageUtil.getShortLanguageString(languageId);
+
+                            Translator.translate(otherUser.getBiography(), language,  new Translator.TranslateCallback() {
+                                @Override
+                                public void onTranslationSuccess(String translatedText) {
+                                    biography.setText(otherUser.getBiography() + "\n(" + translatedText + ")");
+                                }
+
+                                @Override
+                                public void onTranslationSameLanguage() {
+                                    // оставляем биографию как есть
+                                }
+
+
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {}
+                    });
                 }
 
 

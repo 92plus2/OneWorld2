@@ -171,7 +171,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
                         String language = LanguageUtil.getShortLanguageString(languageId);
 
-                        Translator.translate(user.getBiography(), language, mContext, new Translator.TranslateCallback() {
+                        Translator.translate(user.getBiography(), language,  new Translator.TranslateCallback() {
                             @Override
                             public void onTranslationSuccess(String translatedText) {
                                 holder.biography.setText(user.getBiography() + "\n(" + translatedText + ")");
