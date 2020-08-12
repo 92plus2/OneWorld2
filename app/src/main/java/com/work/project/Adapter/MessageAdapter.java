@@ -76,7 +76,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 if (holder.isLeftMessage()) {
                     DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
                     LocalTime date = LocalTime.parse(chat.getTime(), DateTimeFormatter.ofPattern("HH:mm"));
-                    String time = timeFormat.format(date.plusHours(Calendar.getInstance().get(Calendar.ZONE_OFFSET) - chat.getZoneOffset()));
+                    String time = timeFormat.format(date.plusHours((Calendar.getInstance().get(Calendar.ZONE_OFFSET) / 3600000) - chat.getZoneOffset()));
                     holder.time.setText(time);
                 } else {
                     holder.time.setText(chat.getTime());
