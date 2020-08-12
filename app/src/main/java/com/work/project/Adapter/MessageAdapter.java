@@ -227,7 +227,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private void translate(final MessageViewHolder holder) {
         String translationText = holder.messageText.getText().toString();
         String language = destLanguage.toLowerCase();
-        Translator.translate(translationText, language, mContext, new Translator.TranslateCallback() {
+        Translator.translate(translationText, language,  new Translator.TranslateCallback() {
             @Override
             public void onTranslationSuccess(String translatedText) {
                 holder.clickToTranslate.setSingleLine(false);

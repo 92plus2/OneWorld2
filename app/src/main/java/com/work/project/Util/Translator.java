@@ -21,7 +21,7 @@ import java.net.URLEncoder;
 import cz.msebera.android.httpclient.Header;
 
 public class Translator {
-    public static void translate(String text, String language, Context context, TranslateCallback callback){
+    public static void translate(String text, String language,  TranslateCallback callback){
         language = language.toLowerCase();
         int validationId = callback.getValidationId();
 
@@ -43,7 +43,7 @@ public class Translator {
                     }
                 }
                 catch (JSONException e) {
-                    Toast.makeText(context, R.string.translation_error, Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(context, R.string.translation_error, Toast.LENGTH_SHORT).show();
                 }
             }
         });
