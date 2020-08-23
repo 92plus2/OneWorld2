@@ -86,7 +86,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return new UserViewHolder(view);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         final User user = mUsers.get(position);
@@ -142,10 +142,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             holder.langImg.setImageResource(LanguageUtil.getLanguageDrawable(user.getNewLanguageID()));
 
             String countryName = CountryUtil.getLongCountryString(res, user.getNewCountryID());
+
             String countryText = formatSentence(R.array.username_is_from_country, user, countryName);
             holder.country.setText(countryText);
             holder.countryImg.setImageResource(CountryUtil.getCountryDrawable(user.getNewCountryID()));
-
+            if(user.getGenderID() == 1){
+                holder.language.setTextColor(mContext.getResources().getColor(R.color.blue));
+                holder.country.setTextColor(mContext.getResources().getColor(R.color.blue));
+            }
+            if(user.getGenderID() == 2){
+                holder.language.setTextColor(mContext.getResources().getColor(R.color.rose));
+                holder.country.setTextColor(mContext.getResources().getColor(R.color.rose));
+            }
+            if(user.getGenderID() == 0){
+                holder.language.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+                holder.country.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+            }
             holder.biography.setText(R.string.no_biography);
             holder.biographyScrollView.setOnTouchListener((view, event) -> {
                 // Чтобы можно было скроллить биографию, т. к. RecyclerView перехватывает touchEvent
@@ -315,6 +327,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 }
                 else {
                     holder.lastMsg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+                    seen_message ="";
+                    holder.seen_mes.setText(seen_message);
                     holder.lastMsg.setText(R.string.no_messages);
                 }
 

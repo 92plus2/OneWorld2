@@ -80,6 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
                     hashMap.put("status", "offline");
                     hashMap.put("email", email);
                     hashMap.put("shouldFinishRegistration", true);
+                    hashMap.put("last_visit", System.currentTimeMillis());
 
                     reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override

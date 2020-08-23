@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,11 +40,12 @@ import java.util.Set;
 
 
 public class UsersFragment extends Fragment {
-    final static int MAX_USERS = 100;
+    final static int MAX_USERS = 300;
     final static boolean STAY_IN_SEARCH = true;  // оставаться в поиске. Пока что так, потому что мало пользователей
     private MyRecyclerView recyclerView;
     private UserAdapter userAdapter;
     private List<User> mUsers;
+    DatabaseReference otherUserRef;
     private Set<String> peopleWhoLikedUs;  // id пользователей, которые нас лайкнули. Используется только в "Search Users"
     private Set<String> ourLikes;  // id пользователей, которых мы лайкнули. Используется только в "Search Users"
     private DatabaseReference reference;
@@ -279,15 +281,32 @@ public class UsersFragment extends Fragment {
             return false;
         if(peopleWhoLikedUs.contains(userId) || ourLikes.contains(userId))
             return false;
-        // проверяем, переписывались ли мы с пользователем
-        for(Chatlist chatlist : chatlists){
-            if(chatlist.id.equals(userId))
-                return false;
-        }
+       /* otherUserRef = User.getReferenceById(userId);
+        final int[] k = {0};
+
+
+        otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User otherUser = dataSnapshot.getValue(User.class);
+                if (System.currentTimeMillis() / 1000 >= 1598259100)
+                    if ((System.currentTimeMillis() - otherUser.getLast_visit()) >= 259200000) {
+                        k[0] = 1;
+                    }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+            // показываем приведение, если список пользователей пуст
+            });
+        if(k[0] == 1){
+            return false;
+        }*/
         return true;
     }
-
-    // показываем приведение, если список пользователей пуст
     private void updateGhostVisibility(){
         if(mUsers.isEmpty())
             ghost.setVisibility(View.VISIBLE);

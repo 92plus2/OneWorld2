@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     private void status(String status){
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status", status);
-
+        hashMap.put("last_visit", System.currentTimeMillis());
         userRef.updateChildren(hashMap);
     }
 
@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         status("online");
+
     }
 
     @Override

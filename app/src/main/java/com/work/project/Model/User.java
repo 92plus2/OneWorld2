@@ -18,6 +18,7 @@ public class User {
     private String username;
     private String imageURL;
     private String status;
+    private long last_visit;
     private Date dateOfBirth;
     private String biography;
     private int newCountryID;
@@ -55,6 +56,7 @@ public class User {
     public void setId(String id) {
         this.id = id;
     }
+
 
     public String getUsername() {
         return username;
@@ -139,6 +141,13 @@ public class User {
 
     public void setGenderID(int genderID) {
         this.genderID = genderID;
+    }
+    public long getLast_visit() {
+        return last_visit;
+    }
+
+    public void setLast_visit(long last_visit) {
+        this.last_visit = last_visit;
     }
 
     public boolean isShouldFinishRegistration() {

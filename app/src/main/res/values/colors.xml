@@ -2,6 +2,8 @@
 <!-- светлая тема. Здесь черный это белый, и наоборот ;) -->
 <resources>
     <color name="colorPrimaryDark">#BDBCBC</color>
+    <color name="blue">#00B8D4</color>
+    <color name="rose">#D5518C</color>
     <color name="colorPrimary">#FAFAFA</color>
     <color name="colorAccent">#E8E6E6</color>
     <color name="colorBlack">#E8E6E6</color>
