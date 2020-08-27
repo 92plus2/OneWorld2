@@ -1,8 +1,7 @@
 package com.work.project.Util;
 
-import android.content.Context;
+import android.text.Html;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.work.project.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +32,7 @@ public class Translator {
                     JSONArray transObject = jsonObject.getJSONArray("translations");
                     JSONObject transObject2 = transObject.getJSONObject(0);
                     String translatedText = transObject2.getString("translatedText");
+                    translatedText = Html.fromHtml(translatedText).toString();
 
                     if(validationId == callback.getValidationId()) {
                         if (!translatedText.equals(text))

@@ -35,18 +35,17 @@ import com.work.project.Util.CountryUtil;
 import com.work.project.Util.LanguageUtil;
 import com.work.project.Util.Translator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private Context mContext;
     private RecyclerView recyclerView;
     private List<User> mUsers;
-    private Set<String> ourLikes;
-    private Map<User, Long> lastMessageTimes;
-    private Map<RecyclerView.ViewHolder, Pair<DatabaseReference, ValueEventListener>> listeners;
+    private Map<User, Chat> lastMessages;
+    private List<Pair<DatabaseReference, ValueEventListener>> listeners;
 
     FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
     private String fuserName;
@@ -58,8 +57,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public UserAdapter(Context mContext, List<User> mUsers, int pageType){
         this.mUsers = mUsers;
         this.mContext = mContext;
-        this.lastMessageTimes = new HashMap<>();
-        this.listeners = new HashMap<>();
+        this.lastMessages = new HashMap<>();
+        this.listeners = new ArrayList<>();
         this.pageType = pageType;
 
         // получаем имя пользователя
@@ -73,6 +72,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+
+        // начинаем следить за новыми сообщениями
+        if(isChat()){
+            for(User user : mUsers)
+                observeLastMessage(user);
+        }
     }
 
     @NonNull
@@ -98,7 +103,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         if (isChat()) {
             holder.username.setText(user.getUsername());
-            observeLastMessage(user, holder);
+            if(lastMessages.containsKey(user))
+                holder.showLastMessage(lastMessages.get(user));
             if (user.getStatus().equals("online")){
                 holder.imgOnline.setVisibility(View.VISIBLE);
                 holder.imgOffline.setVisibility(View.GONE);
@@ -245,7 +251,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return pageType == CHATS;
     }
 
-    public static class UserViewHolder extends Translator.ValidatableHolder {
+    public class UserViewHolder extends Translator.ValidatableHolder {
         // используется в chat_user_item и user_card
         public TextView username;
         public ImageView profileImage;
@@ -258,7 +264,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public TextView biography;
         public TextView language;
         public TextView starTip;
-        public TextView seen_mes;
+        public TextView seenMessage;
         public TextView userTip;
         public TextView country;
         public ImageView langImg;
@@ -269,7 +275,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         public UserViewHolder(View itemView) {
             super(itemView);
             username = itemView.findViewById(R.id.username);
-            seen_mes = itemView.findViewById(R.id.seen);
+            seenMessage = itemView.findViewById(R.id.seen);
             profileImage = itemView.findViewById(R.id.profile_image);
             imgOnline = itemView.findViewById(R.id.img_online);
             imgOffline = itemView.findViewById(R.id.img_offline);
@@ -284,52 +290,57 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             countryImg = itemView.findViewById(R.id.country_img);
             biographyScrollView = itemView.findViewById(R.id.biography_scrollview);
         }
+
+        public void showLastMessage(Chat chat){
+            if(chat != null) {
+                String lastMessage = chat.getMessage();
+                if(lastMessage.length() > 30){
+                    lastMessage = lastMessage.substring(0, 30) + "...";
+                }
+
+                lastMsg.setText(mContext.getResources().getString(R.string.message_and_time_format, lastMessage, chat.getTime()));
+                lastMsg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+
+                String seenMessageString = "";
+                if(chat.getSender().equals(fuser.getUid())) {
+                    seenMessageString = mContext.getResources().getString(R.string.message_delivered);
+                    if (chat.isSeen()) {
+                        seenMessageString = mContext.getResources().getString(R.string.message_seen);
+                    }
+                }
+                seenMessage.setText(seenMessageString);
+            }
+            else {
+                lastMsg.setText(R.string.no_messages);
+                lastMsg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
+                seenMessage.setText("");
+            }
+        }
     }
 
-    private void observeLastMessage(final User user, final UserViewHolder holder){
+    private void observeLastMessage(final User user){
         //Log.d("oneworld", "user name to observe: " + user.getUsername());
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         final DatabaseReference chatReference = User.getChatBetween(firebaseUser.getUid(), user.getId());
         final ValueEventListener chatListener = new ValueEventListener() {
-            @SuppressLint("ResourceAsColor")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String theLastMessage = null;
-                long lastMessageTime = 0;
-                String seen_message = "";
-                String lasttime = null;
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Chat chat = snapshot.getValue(Chat.class);
-                    if (chat != null) {
-                        theLastMessage = chat.getMessage();
-                        if(chat.getSender().equals(fuser.getUid())) {
-                            seen_message = mContext.getResources().getString(R.string.message_delivered);
-                            boolean bl = chat.isSeen();
-                            if (bl) {
-                                seen_message = mContext.getResources().getString(R.string.message_seen);
-                            }
-                        }else{
-                            seen_message ="";
-                        }
-                        lastMessageTime = chat.getExactTime();
-                        lasttime = chat.getTime();
-                    }
+                // если есть хотя бы одно сообщение в чате - загружаем информацию про него
+                Chat chat = null;
+
+                if(dataSnapshot.getChildrenCount() > 0){
+                    DataSnapshot chatSnapshot = dataSnapshot.getChildren().iterator().next();
+                    chat = chatSnapshot.getValue(Chat.class);
+                    lastMessages.put(user, chat);
                 }
 
-                if(theLastMessage != null) {
-                    holder.lastMsg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-                    if(theLastMessage.length() > 30){
-                        theLastMessage = theLastMessage.substring(0, 30) + "...";
+                // у нас новое сообщение - отобразим его в ViewHolder
+                if(chat != null) {
+                    UserViewHolder holder = (UserViewHolder) recyclerView.findViewHolderForAdapterPosition(mUsers.indexOf(user));
+                    if (holder != null) {
+                        holder.showLastMessage(chat);
                     }
-                    holder.seen_mes.setText(seen_message);
-                    holder.lastMsg.setText(mContext.getResources().getString(R.string.message_and_time_format, theLastMessage, lasttime));
-                }
-                else {
-                    holder.lastMsg.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-                    seen_message ="";
-                    holder.seen_mes.setText(seen_message);
-                    holder.lastMsg.setText(R.string.no_messages);
                 }
 
                 // Мы хотим, чтобы пользователи были отсортированы
@@ -339,11 +350,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                     return;
                 }
                 mUsers.remove(user);
+
+                long messageTime = (chat != null? chat.getExactTime() : 0);
+
                 int position;
                 for(position = mUsers.size() - 1; position >= 0; position--){
                     User otherUser = mUsers.get(position);
-                    if(lastMessageTimes.containsKey(otherUser)
-                            && lastMessageTimes.get(otherUser) >= lastMessageTime)
+                    if(lastMessages.containsKey(otherUser)
+                            && lastMessages.get(otherUser).getExactTime() >= messageTime)
                         break;
                 }
                 position++;
@@ -351,29 +365,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 if(recyclerView.getItemAnimator() == null && allUsersHaveTimes())
                     recyclerView.setItemAnimator(new DefaultItemAnimator());
                 notifyItemMoved(oldPosition, position);
-                lastMessageTimes.put(user, lastMessageTime);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         };
-        listeners.put(holder, new Pair<>(chatReference, chatListener));
+        listeners.add(new Pair<>(chatReference, chatListener));
         chatReference.limitToLast(1).addValueEventListener(chatListener);
-    }
-
-
-    @Override
-    public void onViewRecycled(@NonNull UserViewHolder holder) {
-        holder.onRecycled();
-        if(listeners.containsKey(holder)){
-            Pair<DatabaseReference, ValueEventListener> pair = listeners.remove(holder);
-            pair.first.removeEventListener(pair.second);
-        }
     }
 
     private boolean allUsersHaveTimes(){
         for(User user : mUsers){
-            if(!lastMessageTimes.containsKey(user))
+            if(!lastMessages.containsKey(user))
                 return false;
         }
         return true;
@@ -390,7 +393,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        for(Pair<DatabaseReference, ValueEventListener> pair : listeners.values()){
+        for(Pair<DatabaseReference, ValueEventListener> pair : listeners){
             pair.first.removeEventListener(pair.second);
         }
     }
