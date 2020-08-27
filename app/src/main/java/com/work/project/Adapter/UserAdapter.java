@@ -362,9 +362,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 }
                 position++;
                 mUsers.add(position, user);
-                if(recyclerView.getItemAnimator() == null && allUsersHaveTimes())
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
                 notifyItemMoved(oldPosition, position);
+                recyclerView.scrollToPosition(0);
+                if(recyclerView.getItemAnimator() == null && allUsersHaveTimes()) {
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                }
             }
 
             @Override
