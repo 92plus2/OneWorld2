@@ -47,6 +47,7 @@ public class UsersFragment extends Fragment {
     private List<User> mUsers;
     DatabaseReference otherUserRef;
     private Set<String> peopleWhoLikedUs;  // id пользователей, которые нас лайкнули. Используется только в "Search Users"
+    private Set<String> oldUsers;
     private Set<String> ourLikes;  // id пользователей, которых мы лайкнули. Используется только в "Search Users"
     private DatabaseReference reference;
     private String currentUserId;
@@ -95,6 +96,7 @@ public class UsersFragment extends Fragment {
     }
 
     private void startListeningForLikes(){
+
         ValueEventListener likesListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -110,10 +112,10 @@ public class UsersFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         };
-
         DatabaseReference likesRef = reference.child("Likes").child("YouWereLikedBy").child(currentUserId);
         likesRef.limitToLast(MAX_USERS).addValueEventListener(likesListener);
         listeners.put(likesRef, likesListener);
+
 
         ValueEventListener ourLikesListener = new ValueEventListener() {
             @Override
@@ -133,6 +135,7 @@ public class UsersFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
+
         };
         DatabaseReference ourLikesRef = reference.child("Likes").child("YourLikes").child(currentUserId);
         ourLikesRef.limitToLast(MAX_USERS).addValueEventListener(ourLikesListener);
@@ -259,7 +262,10 @@ public class UsersFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User newUser = dataSnapshot.getValue(User.class);
-                        mUsers.add(newUser);
+
+                            if (System.currentTimeMillis() / 1000 <= 1599198126 || (System.currentTimeMillis() - newUser.getLast_visit()) < 259200000) {
+                                mUsers.add(newUser);
+                            }
                         userAdapter.notifyItemInserted(mUsers.size() - 1);
                         leftUsersToLoad--;
                         if (leftUsersToLoad == 0)
@@ -281,30 +287,7 @@ public class UsersFragment extends Fragment {
             return false;
         if(peopleWhoLikedUs.contains(userId) || ourLikes.contains(userId))
             return false;
-       /* otherUserRef = User.getReferenceById(userId);
-        final int[] k = {0};
 
-
-        otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User otherUser = dataSnapshot.getValue(User.class);
-                if (System.currentTimeMillis() / 1000 >= 1598259100)
-                    if ((System.currentTimeMillis() - otherUser.getLast_visit()) >= 259200000) {
-                        k[0] = 1;
-                    }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-
-            // показываем приведение, если список пользователей пуст
-            });
-        if(k[0] == 1){
-            return false;
-        }*/
         return true;
     }
     private void updateGhostVisibility(){
@@ -313,6 +296,7 @@ public class UsersFragment extends Fragment {
         else
             ghost.setVisibility(View.GONE);
     }
+
 
     public static class MyRecyclerView extends RecyclerView {
         int currentItem = 0;
