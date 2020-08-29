@@ -47,7 +47,6 @@ public class UsersFragment extends Fragment {
     private List<User> mUsers;
     DatabaseReference otherUserRef;
     private Set<String> peopleWhoLikedUs;  // id пользователей, которые нас лайкнули. Используется только в "Search Users"
-    private Set<String> oldUsers;
     private Set<String> ourLikes;  // id пользователей, которых мы лайкнули. Используется только в "Search Users"
     private DatabaseReference reference;
     private String currentUserId;
