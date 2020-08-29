@@ -22,7 +22,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/ImageTip"
+                android:id="@+id/image_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@id/profile_image"
@@ -32,7 +32,8 @@
                 android:background="@drawable/background_left"
                 android:maxWidth="120dp"
                 android:padding="10dp"
-                android:text="Click here to change your profile image" />
+                android:visibility="gone"
+                android:text="@string/click_here_to_change_your_profile_image" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="100dp"

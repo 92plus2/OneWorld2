@@ -61,7 +61,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        tip = view.findViewById(R.id.ImageTip);
+        tip = view.findViewById(R.id.image_tip);
         image_profile = view.findViewById(R.id.profile_image);
         username = view.findViewById(R.id.username);
 
@@ -95,10 +95,9 @@ public class ProfileFragment extends Fragment {
                 username.setText(user.getUsername());
                 if (user.getImageURL().equals("default")) {
                     image_profile.setImageResource(R.mipmap.ic_launcher);
-
+                    tip.setVisibility(View.VISIBLE);
                 } else {
                     Glide.with(getContext()).load(user.getImageURL()).into(image_profile);
-                    tip.setVisibility(View.GONE);
                 }
                 String text = user.getBiography();
                 if (text != null) {

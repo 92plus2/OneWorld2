@@ -133,6 +133,7 @@
     <string name="unknown_country">Unknown country! Update the app</string>
     <string name="unknown_language">Unknown language! Update the app</string>
     <string name="same_lang">This is the language you speak &#129300;</string>
+    <string name="click_here_to_change_your_profile_image">Click here to change your profile image</string>
 
     <string-array name="gender">
         <item>Not selected</item>

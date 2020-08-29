@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.MONTH;
@@ -18,7 +19,7 @@ public class User {
     private String username;
     private String imageURL;
     private String status;
-    private long last_visit;
+    private long lastVisit;
     private Date dateOfBirth;
     private String biography;
     private int newCountryID;
@@ -46,6 +47,13 @@ public class User {
         Arrays.sort(ids);
         String encoded = String.format("Chat %s with %s", ids[0], ids[1]);
         return FirebaseDatabase.getInstance().getReference("AllChats").child(encoded);
+    }
+
+    public static void status(String status){
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+        hashMap.put("lastVisit", System.currentTimeMillis());
+        getCurrentUserReference().updateChildren(hashMap);
     }
 
 
@@ -142,12 +150,12 @@ public class User {
     public void setGenderID(int genderID) {
         this.genderID = genderID;
     }
-    public long getLast_visit() {
-        return last_visit;
+    public long getLastVisit() {
+        return lastVisit;
     }
 
-    public void setLast_visit(long last_visit) {
-        this.last_visit = last_visit;
+    public void setLastVisit(long lastVisit) {
+        this.lastVisit = lastVisit;
     }
 
     public boolean isShouldFinishRegistration() {

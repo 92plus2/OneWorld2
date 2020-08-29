@@ -4,10 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -21,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,7 +28,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -56,28 +53,23 @@ import com.work.project.Notifications.Sender;
 import com.work.project.Notifications.Token;
 import com.work.project.Util.CountryUtil;
 import com.work.project.Util.LanguageUtil;
+import com.work.project.Util.Translator;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Calendar;
-import java.util.Set;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import android.content.res.Resources;
-
-import com.work.project.R;
-import com.work.project.Util.Translator;
 
 import static com.work.project.R.drawable;
 
@@ -339,29 +331,20 @@ public class MessageActivity extends AppCompatActivity {
 
                     return  fileReference.getDownloadUrl();
                 }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()){
-                        Uri downloadUri = task.getResult();
-                        assert downloadUri != null;
-                        String mUri = downloadUri.toString();
-                        pd.dismiss();
+            }).addOnCompleteListener((OnCompleteListener<Uri>) task -> {
+                if (task.isSuccessful()){
+                    Uri downloadUri = task.getResult();
+                    assert downloadUri != null;
+                    String mUri = downloadUri.toString();
+                    pd.dismiss();
 
-                        localImageFiles.put(mUri, imageUri);
-                        sendMessage("Photo", mUri);
-                    } else {
-                        Toast.makeText(MessageActivity.this, R.string.failed_to_upload_image, Toast.LENGTH_SHORT).show();
-                        pd.dismiss();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                   // Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    localImageFiles.put(mUri, imageUri);
+                    sendMessage("Photo", mUri);
+                } else {
+                    Toast.makeText(MessageActivity.this, R.string.failed_to_upload_image, Toast.LENGTH_SHORT).show();
                     pd.dismiss();
                 }
-            });
+            }).addOnFailureListener(e -> pd.dismiss());
         } else {
             Toast.makeText(this, R.string.no_image_selected, Toast.LENGTH_SHORT).show();
         }
@@ -383,7 +366,6 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void sendMessage(String message, String photoUrl){
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", currentUserId);
@@ -391,35 +373,12 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("message", message);
         hashMap.put("seen", false);
 
-       /* final long[] senderTime = new long[1];
-        final long[] receiverTime = new long[1];
-        usersRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                senderTime[0] = Long.parseLong(snapshot.child(currentUserId).child("dateOfBirth").child("timezoneOffset").getValue(String.class));
-                receiverTime[0] = Long.parseLong(snapshot.child(otherUserId).child("dateOfBirth").child("timezoneOffset").getValue(String.class));
-                // convert to hours
-                senderTime[0] /= 60;
-                receiverTime[0] /= 60;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });*/
-
-       // DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
-
-        //LocalDateTime date = LocalDateTime.now();
-
         Date currentDate = new Date();
         DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-       // String time = timeFormat.format(date.plusHours(0));
         String time = timeFormat.format(currentDate);
 
         hashMap.put("time", time);
-        hashMap.put("exactTime", System.currentTimeMillis());// + (receiverTime[0] - senderTime[0]) * (60 * 1000));
+        hashMap.put("exactTime", System.currentTimeMillis());
         hashMap.put("zoneOffset", zoneOffset);
         hashMap.put("photo", photoUrl);
         chats.push().setValue(hashMap);
@@ -550,19 +509,10 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void status(String status){
-        DatabaseReference curUserRef = User.getCurrentUserReference();
-
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("status", status);
-
-        curUserRef.updateChildren(hashMap);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        status("online");
+        User.status("online");
         if(chats != null && !hasChatsListener) {
             chats.limitToLast(MAX_MESSAGES).addValueEventListener(chatsListener);
             hasChatsListener = true;
@@ -574,7 +524,7 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        status("offline");
+        User.status("offline");
         if(chats != null)
             chats.removeEventListener(chatsListener);
         hasChatsListener = false;

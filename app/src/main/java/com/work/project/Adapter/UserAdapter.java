@@ -152,18 +152,25 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             String countryText = formatSentence(R.array.username_is_from_country, user, countryName);
             holder.country.setText(countryText);
             holder.countryImg.setImageResource(CountryUtil.getCountryDrawable(user.getNewCountryID()));
-            if(user.getGenderID() == 1){
-                holder.language.setTextColor(mContext.getResources().getColor(R.color.blue));
-                holder.country.setTextColor(mContext.getResources().getColor(R.color.blue));
+
+            int textColorRes;
+
+            switch (user.getGenderID()) {
+                case User.MALE:
+                    textColorRes = R.color.blue;
+                    break;
+                case User.FEMALE:
+                    textColorRes = R.color.rose;
+                    break;
+                default:  // User.GENDER_NOT_SPECIFIED:
+                    textColorRes = R.color.colorWhite;
+                    break;
             }
-            if(user.getGenderID() == 2){
-                holder.language.setTextColor(mContext.getResources().getColor(R.color.rose));
-                holder.country.setTextColor(mContext.getResources().getColor(R.color.rose));
-            }
-            if(user.getGenderID() == 0){
-                holder.language.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-                holder.country.setTextColor(mContext.getResources().getColor(R.color.colorWhite));
-            }
+
+            int textColor = mContext.getResources().getColor(textColorRes);
+            holder.language.setTextColor(textColor);
+            holder.country.setTextColor(textColor);
+
             holder.biography.setText(R.string.no_biography);
             holder.biographyScrollView.setOnTouchListener((view, event) -> {
                 // Чтобы можно было скроллить биографию, т. к. RecyclerView перехватывает touchEvent

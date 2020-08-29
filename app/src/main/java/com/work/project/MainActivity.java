@@ -1,8 +1,6 @@
 package com.work.project;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -14,7 +12,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.work.project.Fragments.ChatsFragment;
@@ -23,7 +20,6 @@ import com.work.project.Fragments.UsersFragment;
 import com.work.project.Model.User;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -119,23 +115,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void status(String status){
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("status", status);
-        hashMap.put("last_visit", System.currentTimeMillis());
-        userRef.updateChildren(hashMap);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        status("online");
-
+        User.status("online");
     }
 
     @Override
     protected void onPause() {
-        status("offline");
+        User.status("offline");
         super.onPause();
     }
 }

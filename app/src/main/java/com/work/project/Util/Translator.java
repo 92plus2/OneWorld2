@@ -35,7 +35,7 @@ public class Translator {
                     translatedText = Html.fromHtml(translatedText).toString();
 
                     if(validationId == callback.getValidationId()) {
-                        if (!translatedText.equals(text))
+                        if (!textsEqual(translatedText, text))
                             callback.onTranslationSuccess(translatedText);
                         else
                             callback.onTranslationSameLanguage();
@@ -46,6 +46,13 @@ public class Translator {
                 }
             }
         });
+    }
+
+    // google translate может поменять форматирование текста, нам это не нужно
+    private static boolean textsEqual(String s1, String s2){
+        s1 = s1.toLowerCase().replaceAll("\\s", "");
+        s2 = s2.toLowerCase().replaceAll("\\s", "");
+        return s1.equals(s2);
     }
 
     public interface TranslateCallback {

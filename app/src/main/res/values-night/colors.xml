@@ -2,8 +2,8 @@
 <!-- черная тема -->
 <resources>
     <color name="colorPrimaryDark">#1F2022</color>
-    <color name="blue">#00B8D4</color>
-    <color name="rose">#D5518C</color>
+    <color name="blue">#54A6FF</color>
+    <color name="rose">#FF93CE</color>
     <color name="colorPrimary">#101012</color>
     <color name="colorAccent">#020202</color>
     <color name="colorBlack">#000000</color>

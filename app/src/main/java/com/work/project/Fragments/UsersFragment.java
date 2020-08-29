@@ -1,7 +1,6 @@
 package com.work.project.Fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.AttributeSet;
@@ -18,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -262,7 +260,7 @@ public class UsersFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User newUser = dataSnapshot.getValue(User.class);
 
-                            if (System.currentTimeMillis() / 1000 <= 1599198126 || (System.currentTimeMillis() - newUser.getLast_visit()) < 259200000) {
+                            if (System.currentTimeMillis() / 1000 <= 1599198126 || (System.currentTimeMillis() - newUser.getLastVisit()) < 259200000) {
                                 mUsers.add(newUser);
                             }
                         userAdapter.notifyItemInserted(mUsers.size() - 1);
