@@ -7,8 +7,8 @@ android {
         applicationId "com.work.project"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 3
-        versionName "beta 3"
+        versionCode 4
+        versionName "beta 4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
