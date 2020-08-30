@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.work.project.Adapter.UserAdapter;
+import com.work.project.MessageActivity;
 import com.work.project.Model.Chatlist;
 import com.work.project.Model.User;
 import com.work.project.R;
@@ -43,7 +45,6 @@ public class UsersFragment extends Fragment {
     private MyRecyclerView recyclerView;
     private UserAdapter userAdapter;
     private List<User> mUsers;
-    DatabaseReference otherUserRef;
     private Set<String> peopleWhoLikedUs;  // id пользователей, которые нас лайкнули. Используется только в "Search Users"
     private Set<String> ourLikes;  // id пользователей, которых мы лайкнули. Используется только в "Search Users"
     private DatabaseReference reference;
@@ -121,6 +122,7 @@ public class UsersFragment extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String userId = ds.getKey();
                     ourLikes.add(userId);
+                    Log.d(MessageActivity.TAG, "our like: " + userId);
                 }
                 deleteUsersWithLikes();
                 /*if(!ourLikes.isEmpty()){
@@ -259,12 +261,12 @@ public class UsersFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User newUser = dataSnapshot.getValue(User.class);
-
-                            if (System.currentTimeMillis() / 1000 <= 1599198126 || (System.currentTimeMillis() - newUser.getLastVisit()) < 259200000) {
-                                mUsers.add(newUser);
-                            }
-                        userAdapter.notifyItemInserted(mUsers.size() - 1);
+                        if (System.currentTimeMillis() / 1000 <= 1599198126 || (System.currentTimeMillis() - newUser.getLastVisit()) < 259200000) {
+                            mUsers.add(newUser);
+                            userAdapter.notifyItemInserted(mUsers.size() - 1);
+                        }
                         leftUsersToLoad--;
+
                         if (leftUsersToLoad == 0)
                             updateGhostVisibility();
                     }
@@ -285,6 +287,11 @@ public class UsersFragment extends Fragment {
         if(peopleWhoLikedUs.contains(userId) || ourLikes.contains(userId))
             return false;
 
+        // проверяем, переписывались ли мы с пользователем
+        for(Chatlist chatlist : chatlists){
+            if(chatlist.id.equals(userId))
+                return false;
+        }
         return true;
     }
     private void updateGhostVisibility(){
