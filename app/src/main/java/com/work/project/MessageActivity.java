@@ -441,12 +441,9 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 // загружаем новые сообщения в фоновом процессе
                 if(!isLoadingMessages) {
-                    new Thread() {
-                        @Override
-                        public void run() {
+
                             loadNewMessages(dataSnapshot);
-                        }
-                    }.start();
+
                 }
             }
 
@@ -488,7 +485,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         }
 
-        runOnUiThread(() -> {
+
             // добавляем в список новые сообщения
             for (Chat newMessage : newMessages) {
                 mChat.add(newMessage);
@@ -506,7 +503,7 @@ public class MessageActivity extends AppCompatActivity {
             // скроллим в конец
             recyclerView.scrollToPosition(mChat.size() - 1);
             isLoadingMessages = false;
-        });
+
     }
 
     @Override

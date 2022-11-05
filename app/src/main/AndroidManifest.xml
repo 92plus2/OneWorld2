@@ -16,8 +16,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.work.project.StartActivity"
-            android:screenOrientation="sensorPortrait">
+            android:name="com.work.project.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,32 +25,25 @@
         </activity>
         <activity
             android:name="com.work.project.RegisterActivity"
-            android:parentActivityName="com.work.project.StartActivity"
-            android:screenOrientation="sensorPortrait" />
+            android:parentActivityName="com.work.project.StartActivity" />
 
         <activity
-            android:name="com.work.project.MainActivity"
-            android:screenOrientation="sensorPortrait" />
+            android:name="com.work.project.MainActivity"/>
         <activity
             android:name="com.work.project.LoginActivity"
-            android:parentActivityName="com.work.project.StartActivity"
-            android:screenOrientation="sensorPortrait" />
+            android:parentActivityName="com.work.project.StartActivity" />
         <activity
-            android:name="com.work.project.MessageActivity"
-            android:screenOrientation="sensorPortrait" />
+            android:name="com.work.project.MessageActivity" />
         <activity
             android:name="com.work.project.ResetPasswordActivity"
-            android:parentActivityName="com.work.project.LoginActivity"
-            android:screenOrientation="sensorPortrait" />
+            android:parentActivityName="com.work.project.LoginActivity" />
         <activity
-            android:name="com.work.project.SettingsActivity"
-            android:screenOrientation="sensorPortrait" />
+            android:name="com.work.project.SettingsActivity" />
 
         <service
             android:name=".Notifications.MyFirebaseMessaging"
             android:enabled="true"
-            android:exported="true"
-            android:screenOrientation="sensorPortrait">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
